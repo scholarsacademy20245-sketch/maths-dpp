@@ -400,7 +400,7 @@ const MCQ_OPTS = ["A","B","C","D"];
 function uid(){ return Math.random().toString(36).slice(2,9); }
 function emptyOpts(){ return ["","","",""]; }
 function emptyQ(){ return {text:"",type:"mcq",options:emptyOpts(),answer:"",marks:""}; }
-function emptyDpp(){ return {title:"",batch:"",questions:[]}; }
+function emptyDpp(){ return {title:"",batch:"",chapter:"",questions:[]}; }
 
 // ── Firebase ──────────────────────────────────────────────────────────────
 function dbSaveDpp(dpp){
@@ -444,7 +444,7 @@ function useAllSubmissions(){
 }
 
 // ── Seed ──────────────────────────────────────────────────────────────────
-const SEED_DPP={id:"QE10CH4",title:"Quadratic Equations – DPP 1",batch:"class10",questions:[
+const SEED_DPP={id:"QE10CH4",title:"Quadratic Equations – DPP 1",batch:"class10",chapter:"Quadratic Equations",questions:[
   {text:"Which of the following is a quadratic equation?",type:"mcq",options:["2x + 5 = 0","x² - 7x + 10 = 0","x³ - 4 = 0","1/x + 2 = 0"],answer:"B",marks:"1",image:""},
   {text:"The roots of x² - 16 = 0 are:",type:"mcq",options:["4, -4","16, -16","8, -8","2, -2"],answer:"A",marks:"1",image:""},
   {text:"The sum of the roots of x² - 9x + 20 = 0 is:",type:"mcq",options:["20","9","-9","-20"],answer:"B",marks:"1",image:""},
@@ -559,28 +559,42 @@ function PinScreen({pin,setPin,error,onSubmit,onBack}){
 // ── STUDENT HOME ──────────────────────────────────────────────────────────
 function StudentHome({onBack}){
   const [classSelected,setClassSelected]=useState(null);
-  const [name,setName]=useState("");
-  const [nameSet,setNameSet]=useState(false);
+  const savedName=typeof localStorage!=="undefined"?localStorage.getItem("student_name")||"":"";
+  const [name,setName]=useState(savedName);
+  const [nameInput,setNameInput]=useState("");
+  const [nameSet,setNameSet]=useState(!!savedName);
   const [activeDpp,setActiveDpp]=useState(null);
-  const [tab,setTab]=useState("dpps"); // dpps | leaderboard
+  const [tab,setTab]=useState("dpps");
+
+  function confirmName(n){
+    const trimmed=n.trim();
+    if(!trimmed) return;
+    localStorage.setItem("student_name",trimmed);
+    setName(trimmed);
+    setNameSet(true);
+  }
+  function changeName(){
+    localStorage.removeItem("student_name");
+    setName("");setNameInput("");setNameSet(false);
+  }
 
   if(activeDpp) return <DppAttempt dpp={activeDpp} name={name} onBack={()=>setActiveDpp(null)}/>;
 
   if(!nameSet) return(
-    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#0f0c29,#302b63,#24243e)",display:"flex",alignItems:"center",justifyContent:"center",padding:16}}>
-      <div className="fade-up" style={{...card,maxWidth:360,width:"100%"}}>
-        <button onClick={onBack} style={{background:"none",border:"none",color:"var(--accent2)",fontSize:13,cursor:"pointer",fontWeight:600,marginBottom:14}}>← Home</button>
+    <div style={{minHeight:"100vh",background:"radial-gradient(ellipse at 50% 0%,#1a1060,#08071a)",display:"flex",alignItems:"center",justifyContent:"center",padding:16}}>
+      <div className="pop-in" style={{...card,maxWidth:360,width:"100%",boxShadow:"0 24px 64px rgba(0,0,0,.5)"}}>
+        <button onClick={onBack} style={{background:"rgba(99,102,241,.1)",border:"1px solid rgba(99,102,241,.2)",color:"var(--accent2)",fontSize:12,cursor:"pointer",fontWeight:600,padding:"6px 14px",borderRadius:99,marginBottom:20,transition:"all .2s"}}>← Home</button>
         <div style={{textAlign:"center",marginBottom:22}}>
-          <div style={{fontSize:44,marginBottom:8}}>👋</div>
-          <h2 style={{color:"var(--text)",fontWeight:800,fontSize:21}}>Apna Naam Batao!</h2>
-          <p style={{color:"var(--muted)",fontSize:13,marginTop:4}}>DPP attempt karne se pehle</p>
+          <div style={{width:72,height:72,background:"linear-gradient(135deg,#6366f1,#a78bfa)",borderRadius:22,display:"flex",alignItems:"center",justifyContent:"center",fontSize:36,margin:"0 auto 14px",boxShadow:"0 8px 28px rgba(99,102,241,.4)"}}>🎓</div>
+          <h2 style={{color:"var(--text)",fontWeight:800,fontSize:22,fontFamily:"'Space Grotesk',sans-serif"}}>Apna Naam Batao!</h2>
+          <p style={{color:"var(--muted)",fontSize:13,marginTop:5}}>Ek baar daalo, hamesha yaad rahega</p>
         </div>
         <span style={labelS}>Aapka Naam</span>
-        <input placeholder="Naam likhein…" value={name} onChange={e=>setName(e.target.value)}
-          onKeyDown={e=>e.key==="Enter"&&name.trim()&&setNameSet(true)} style={inputS}/>
-        <button onClick={()=>name.trim()&&setNameSet(true)}
-          style={{...btn("linear-gradient(135deg,#4f46e5,#7c3aed)"),width:"100%",padding:"13px",fontSize:15,marginTop:14,opacity:name.trim()?1:0.5}}>
-          Aage Badhein →
+        <input placeholder="Naam likhein…" value={nameInput} onChange={e=>setNameInput(e.target.value)}
+          onKeyDown={e=>e.key==="Enter"&&confirmName(nameInput)} style={inputS} autoFocus/>
+        <button onClick={()=>confirmName(nameInput)} className="btn-glow"
+          style={{...btn("linear-gradient(135deg,#4f46e5,#7c3aed)"),width:"100%",padding:"14px",fontSize:15,marginTop:14,opacity:nameInput.trim()?1:0.5,borderRadius:14}}>
+          Shuru Karein 🚀
         </button>
       </div>
     </div>
@@ -599,12 +613,15 @@ function StudentHome({onBack}){
 
         {/* Greeting Card */}
         <div className="fade-up greeting-card" style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16}}>
-          <div>
+          <div style={{flex:1}}>
             <p style={{color:"var(--text)",fontWeight:700,fontSize:17,fontFamily:"'Space Grotesk',sans-serif"}}>Namaste, <span style={{color:"var(--accent2)"}}>{name}! 👋</span></p>
             <p style={{color:"var(--muted)",fontSize:12,marginTop:3}}>Aaj bhi practice karo, aage badhte raho!</p>
           </div>
-          <div style={{width:44,height:44,borderRadius:14,background:"linear-gradient(135deg,#6366f1,#a78bfa)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0,boxShadow:"0 4px 14px rgba(99,102,241,.4)"}}>
-            {name.charAt(0).toUpperCase()}
+          <div style={{display:"flex",alignItems:"center",gap:8}}>
+            <button onClick={changeName} title="Naam badlo" style={{background:"rgba(99,102,241,.1)",border:"1px solid rgba(99,102,241,.2)",color:"var(--accent2)",fontSize:11,cursor:"pointer",fontWeight:600,padding:"5px 10px",borderRadius:99,transition:"all .2s"}}>✏️ Naam</button>
+            <div style={{width:44,height:44,borderRadius:14,background:"linear-gradient(135deg,#6366f1,#a78bfa)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0,boxShadow:"0 4px 14px rgba(99,102,241,.4)"}}>
+              {name.charAt(0).toUpperCase()}
+            </div>
           </div>
         </div>
 
@@ -666,31 +683,136 @@ function ClassCard({num,color,onClick}){
   );
 }
 
+const CLASS10_CHAPTERS=[
+  "Real Numbers","Polynomials","Linear Equations","Quadratic Equations",
+  "Arithmetic Progressions","Triangles","Coordinate Geometry","Introduction to Trigonometry",
+  "Heights and Distances","Circles","Constructions","Areas Related to Circles",
+  "Surface Areas and Volumes","Statistics","Probability"
+];
+const CLASS8_CHAPTERS=[
+  "Rational Numbers","Linear Equations in One Variable","Understanding Quadrilaterals",
+  "Practical Geometry","Data Handling","Squares and Square Roots","Cubes and Cube Roots",
+  "Comparing Quantities","Algebraic Expressions","Visualising Solid Shapes",
+  "Mensuration","Exponents and Powers","Direct and Inverse Proportions",
+  "Factorisation","Introduction to Graphs","Playing with Numbers"
+];
+
 function DppList({classKey,name,onSelect}){
   const dpps=useDpps();
+  const [openChapter,setOpenChapter]=useState(null);
   const [search,setSearch]=useState("");
+
   const allForClass=Object.values(dpps).filter(d=>d.batch===classKey);
-  const filtered=allForClass.filter(d=>d.title.toLowerCase().includes(search.toLowerCase()));
+  const chapters=classKey==="class10"?CLASS10_CHAPTERS:CLASS8_CHAPTERS;
+
+  // Group by chapter
+  const byChapter={};
+  allForClass.forEach(d=>{
+    const ch=d.chapter||"Other";
+    if(!byChapter[ch]) byChapter[ch]=[];
+    byChapter[ch].push(d);
+  });
+
+  // Search mode
+  if(search.trim()){
+    const filtered=allForClass.filter(d=>
+      d.title.toLowerCase().includes(search.toLowerCase())||
+      (d.chapter||"").toLowerCase().includes(search.toLowerCase())
+    );
+    return(
+      <div>
+        <div className="search-wrap" style={{marginBottom:12}}>
+          <span className="search-icon">🔍</span>
+          <input className="search-input" placeholder="DPP ya chapter dhundho..." value={search} onChange={e=>setSearch(e.target.value)} autoFocus/>
+          <button onClick={()=>setSearch("")} style={{background:"none",border:"none",color:"var(--muted)",cursor:"pointer",fontSize:16,padding:"0 8px"}}>✕</button>
+        </div>
+        {filtered.length===0?(
+          <div style={{textAlign:"center",padding:"36px 0"}}>
+            <div style={{fontSize:40,marginBottom:10}}>🤔</div>
+            <p style={{color:"var(--muted)"}}>Koi DPP nahi mili</p>
+          </div>
+        ):(
+          <div className="stagger-sm">
+            {filtered.map(d=><DppCard key={d.id} dpp={d} onSelect={()=>onSelect(d)}/>)}
+          </div>
+        )}
+      </div>
+    );
+  }
+
   if(allForClass.length===0) return(
     <div style={{textAlign:"center",padding:"48px 0"}}>
       <div style={{fontSize:48,marginBottom:10}}>📭</div>
       <p style={{color:"var(--muted)",fontSize:14}}>Is class ki abhi koi DPP nahi hai.</p>
     </div>
   );
+
+  // Chapter folder view
   return(
     <div>
-      <div className="search-wrap">
+      <div className="search-wrap" style={{marginBottom:16}}>
         <span className="search-icon">🔍</span>
-        <input className="search-input" placeholder="Chapter dhundho..." value={search} onChange={e=>setSearch(e.target.value)}/>
+        <input className="search-input" placeholder="DPP ya chapter dhundho..." value={search} onChange={e=>setSearch(e.target.value)}/>
       </div>
-      {filtered.length===0?(
-        <div style={{textAlign:"center",padding:"36px 0"}}>
-          <div style={{fontSize:40,marginBottom:10}}>🤔</div>
-          <p style={{color:"var(--muted)"}}>Koi DPP nahi mili "<strong style={{color:"var(--text)"}}>{search}</strong>" ke liye</p>
-        </div>
-      ):(
-        <div className="stagger-sm">
-          {filtered.map(d=><DppCard key={d.id} dpp={d} onSelect={()=>onSelect(d)}/>)}
+      {chapters.map((ch,ci)=>{
+        const chDpps=byChapter[ch]||[];
+        const isOpen=openChapter===ch;
+        const hasOtherDpps=byChapter["Other"]&&ch===chapters[chapters.length-1];
+        return(
+          <div key={ch}>
+            <div onClick={()=>setOpenChapter(isOpen?null:ch)} className="card-hover"
+              style={{display:"flex",alignItems:"center",justifyContent:"space-between",
+                padding:"13px 16px",marginBottom:6,borderRadius:14,cursor:"pointer",
+                background:isOpen?"rgba(99,102,241,.1)":"var(--surface)",
+                border:`1px solid ${isOpen?"rgba(99,102,241,.35)":"var(--border)"}`,
+                transition:"all .2s",boxShadow:isOpen?"0 4px 16px rgba(99,102,241,.12)":"none"}}>
+              <div style={{display:"flex",alignItems:"center",gap:10}}>
+                <div style={{width:36,height:36,borderRadius:10,background:chDpps.length>0?"linear-gradient(135deg,#6366f1,#a78bfa)":"var(--surface2)",
+                  display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,flexShrink:0,
+                  boxShadow:chDpps.length>0?"0 4px 10px rgba(99,102,241,.3)":"none"}}>
+                  {chDpps.length>0?"📂":"📁"}
+                </div>
+                <div>
+                  <p style={{fontWeight:700,color:chDpps.length>0?"var(--text)":"var(--muted)",fontSize:14,fontFamily:"'Space Grotesk',sans-serif"}}>
+                    Ch {ci+1}. {ch}
+                  </p>
+                  <p style={{color:"var(--muted)",fontSize:11,marginTop:1}}>{chDpps.length>0?`${chDpps.length} DPP available`:"Jald aayega"}</p>
+                </div>
+              </div>
+              <div style={{display:"flex",alignItems:"center",gap:8}}>
+                {chDpps.length>0&&<span className="badge" style={{background:"rgba(99,102,241,.12)",color:"var(--accent2)",border:"1px solid rgba(99,102,241,.18)"}}>{chDpps.length}</span>}
+                <span style={{color:"var(--muted)",fontSize:16,transition:"transform .2s",transform:isOpen?"rotate(90deg)":"none",display:"inline-block"}}>›</span>
+              </div>
+            </div>
+            {isOpen&&chDpps.length>0&&(
+              <div style={{paddingLeft:16,marginBottom:8}} className="stagger-sm">
+                {chDpps.map(d=><DppCard key={d.id} dpp={d} onSelect={()=>onSelect(d)}/>)}
+              </div>
+            )}
+          </div>
+        );
+      })}
+      {byChapter["Other"]&&byChapter["Other"].length>0&&(
+        <div>
+          <div onClick={()=>setOpenChapter(openChapter==="Other"?null:"Other")} className="card-hover"
+            style={{display:"flex",alignItems:"center",justifyContent:"space-between",
+              padding:"13px 16px",marginBottom:6,borderRadius:14,cursor:"pointer",
+              background:openChapter==="Other"?"rgba(99,102,241,.1)":"var(--surface)",
+              border:`1px solid ${openChapter==="Other"?"rgba(99,102,241,.35)":"var(--border)"}`,transition:"all .2s"}}>
+            <div style={{display:"flex",alignItems:"center",gap:10}}>
+              <div style={{width:36,height:36,borderRadius:10,background:"linear-gradient(135deg,#0891b2,#0e7490)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}>📂</div>
+              <div>
+                <p style={{fontWeight:700,color:"var(--text)",fontSize:14}}>Other DPPs</p>
+                <p style={{color:"var(--muted)",fontSize:11}}>{byChapter["Other"].length} DPP</p>
+              </div>
+            </div>
+            <span style={{color:"var(--muted)",fontSize:16,transition:"transform .2s",transform:openChapter==="Other"?"rotate(90deg)":"none",display:"inline-block"}}>›</span>
+          </div>
+          {openChapter==="Other"&&(
+            <div style={{paddingLeft:16,marginBottom:8}} className="stagger-sm">
+              {byChapter["Other"].map(d=><DppCard key={d.id} dpp={d} onSelect={()=>onSelect(d)}/>)}
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -790,18 +912,22 @@ function Leaderboard(){
 
   return(
     <div className="fade-up">
-      {/* Filter */}
-      <div style={{display:"flex",gap:6,marginBottom:16,background:"var(--surface)",borderRadius:16,padding:5,border:"1px solid var(--border)"}}>
-        {[["all","🌐 All"],["class10","Class 10"],["class8","Class 8"]].map(([k,l])=>(
-          <button key={k} onClick={()=>setFilterClass(k)}
-            className="btn-glow"
-            style={{flex:1,padding:"9px 4px",borderRadius:12,border:"none",cursor:"pointer",fontWeight:700,fontSize:12,
-              background:filterClass===k?"linear-gradient(135deg,#4f46e5,#7c3aed)":"transparent",
-              color:filterClass===k?"#fff":"var(--muted)",transition:"all .25s",
-              boxShadow:filterClass===k?"0 4px 12px rgba(99,102,241,.3)":"none"}}>
-            {l}
-          </button>
-        ))}
+      {/* Filter + Refresh */}
+      <div style={{display:"flex",gap:8,marginBottom:16,alignItems:"center"}}>
+        <div style={{display:"flex",flex:1,gap:6,background:"var(--surface)",borderRadius:16,padding:5,border:"1px solid var(--border)"}}>
+          {[["all","🌐 All"],["class10","Class 10"],["class8","Class 8"]].map(([k,l])=>(
+            <button key={k} onClick={()=>setFilterClass(k)}
+              className="btn-glow"
+              style={{flex:1,padding:"9px 4px",borderRadius:12,border:"none",cursor:"pointer",fontWeight:700,fontSize:12,
+                background:filterClass===k?"linear-gradient(135deg,#4f46e5,#7c3aed)":"transparent",
+                color:filterClass===k?"#fff":"var(--muted)",transition:"all .25s",
+                boxShadow:filterClass===k?"0 4px 12px rgba(99,102,241,.3)":"none"}}>
+              {l}
+            </button>
+          ))}
+        </div>
+        <button onClick={()=>setLoading(true)&&setTimeout(()=>setLoading(false),800)}
+          title="Refresh" style={{background:"var(--surface)",border:"1px solid var(--border)",color:"var(--accent2)",cursor:"pointer",fontSize:16,padding:"9px 13px",borderRadius:12,transition:"all .2s",flexShrink:0}}>🔄</button>
       </div>
 
       {board.length===0?(
@@ -1223,6 +1349,9 @@ function TeacherPanel({onBack}){
           </div>
         )}
 
+        {/* Leaderboard Management Tab */}
+        {tab==="leaderboard"&&<TeacherLeaderboard/>}
+
         {/* All Results Tab */}
         {tab==="results"&&(
           <div className="fade-up">
@@ -1311,6 +1440,7 @@ Return ONLY a valid JSON array, no explanation, no markdown:
         id:"AI_"+uid(),
         title:topic+" – DPP (AI)",
         batch,
+        chapter:topic,
         questions:questions.map(q=>({...q,image:""}))
       };
       setPreview(dpp);
@@ -1490,6 +1620,123 @@ function DppDetail({dpp,onBack,onEdit,onDelete}){
   );
 }
 
+// ── TEACHER LEADERBOARD MANAGER ───────────────────────────────────────────
+function TeacherLeaderboard(){
+  const dpps=useDpps();
+  const allSubs=useAllSubmissions();
+  const [deleting,setDeleting]=useState(false);
+  const [refreshKey,setRefreshKey]=useState(0);
+  const [confirmDelete,setConfirmDelete]=useState(null);
+
+  const studentMap={};
+  Object.entries(allSubs).forEach(([dppId,dppSubs])=>{
+    if(!dppSubs||typeof dppSubs!=="object") return;
+    const dpp=dpps[dppId];
+    if(!dpp) return;
+    Object.values(dppSubs).forEach(sub=>{
+      if(!sub||!sub.studentName) return;
+      const {got,total,pct}=calcScore(dpp,sub.answers||{});
+      if(!studentMap[sub.studentName]) studentMap[sub.studentName]={name:sub.studentName,totalGot:0,totalMax:0,attempts:0};
+      studentMap[sub.studentName].totalGot+=got;
+      studentMap[sub.studentName].totalMax+=total;
+      studentMap[sub.studentName].attempts+=1;
+    });
+  });
+  const board=Object.values(studentMap)
+    .map(s=>({...s,avgPct:s.totalMax>0?Math.round((s.totalGot/s.totalMax)*100):0}))
+    .sort((a,b)=>b.avgPct-a.avgPct);
+
+  async function deleteAllSubmissions(){
+    setDeleting(true);
+    try{ await firebase.database().ref("submissions").remove(); }catch(e){}
+    setDeleting(false);setConfirmDelete(null);setRefreshKey(k=>k+1);
+  }
+
+  async function deleteStudentSubs(studentName){
+    setDeleting(true);
+    try{
+      const snap=await firebase.database().ref("submissions").once("value");
+      const allData=snap.val()||{};
+      const updates={};
+      Object.entries(allData).forEach(([dppId,dppSubs])=>{
+        if(!dppSubs) return;
+        Object.entries(dppSubs).forEach(([subId,sub])=>{
+          if(sub&&sub.studentName===studentName) updates["submissions/"+dppId+"/"+subId]=null;
+        });
+      });
+      await firebase.database().ref().update(updates);
+    }catch(e){}
+    setDeleting(false);setConfirmDelete(null);
+  }
+
+  const medals=["🥇","🥈","🥉"];
+  const colors=["#f59e0b","#94a3b8","#cd7c2f"];
+
+  return(
+    <div className="fade-up" key={refreshKey}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16,flexWrap:"wrap",gap:10}}>
+        <h3 style={{color:"var(--text)",fontWeight:800,fontSize:16}}>🏆 Leaderboard Manager</h3>
+        <div style={{display:"flex",gap:8}}>
+          <button onClick={()=>setRefreshKey(k=>k+1)}
+            style={{background:"var(--surface)",border:"1px solid var(--border)",color:"var(--accent2)",cursor:"pointer",fontSize:13,padding:"8px 14px",borderRadius:10,fontWeight:600}}>
+            🔄 Refresh
+          </button>
+          <button onClick={()=>setConfirmDelete("all")} disabled={board.length===0}
+            style={{background:"rgba(248,113,113,.1)",border:"1px solid rgba(248,113,113,.25)",color:"var(--red)",cursor:board.length===0?"not-allowed":"pointer",fontSize:13,padding:"8px 14px",borderRadius:10,fontWeight:600,opacity:board.length===0?.5:1}}>
+            🗑 Sab Delete
+          </button>
+        </div>
+      </div>
+
+      {confirmDelete&&(
+        <div style={{background:"rgba(248,113,113,.08)",border:"1px solid rgba(248,113,113,.25)",borderRadius:14,padding:"16px",marginBottom:16,textAlign:"center"}}>
+          <p style={{color:"var(--text)",fontWeight:700,marginBottom:6}}>{confirmDelete==="all"?"Sab submissions delete karna chahte ho?":"'"+confirmDelete+"' ki sab submissions delete karo?"}</p>
+          <p style={{color:"var(--muted)",fontSize:12,marginBottom:14}}>Yeh wapas nahi aayega!</p>
+          <div style={{display:"flex",gap:10,justifyContent:"center"}}>
+            <button onClick={()=>setConfirmDelete(null)} style={{background:"var(--surface)",border:"1px solid var(--border)",color:"var(--text)",cursor:"pointer",padding:"8px 20px",borderRadius:10,fontWeight:600,fontSize:13}}>Ruko</button>
+            <button onClick={()=>confirmDelete==="all"?deleteAllSubmissions():deleteStudentSubs(confirmDelete)} disabled={deleting}
+              style={{background:"linear-gradient(135deg,#ef4444,#dc2626)",border:"none",color:"#fff",cursor:"pointer",padding:"8px 20px",borderRadius:10,fontWeight:700,fontSize:13,opacity:deleting?.6:1}}>
+              {deleting?"Deleting...":"Haan, Delete Karo"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {board.length===0?(
+        <div style={{textAlign:"center",padding:"40px 0"}}>
+          <div style={{fontSize:44,marginBottom:8}}>📭</div>
+          <p style={{color:"var(--muted)"}}>Abhi koi submission nahi hai.</p>
+        </div>
+      ):(
+        <div style={{...card,padding:"16px"}}>
+          <p style={{color:"var(--accent2)",fontWeight:700,fontSize:11,textTransform:"uppercase",letterSpacing:1,marginBottom:12}}>Rankings ({board.length} students)</p>
+          {board.map((s,i)=>(
+            <div key={s.name} style={{display:"flex",alignItems:"center",gap:10,padding:"11px 10px",borderRadius:12,marginBottom:6,
+              background:i<3?"var(--surface2)":"transparent",border:i<3?"1px solid var(--border)":"1px solid transparent"}}>
+              <div style={{width:32,height:32,borderRadius:10,background:i<3?colors[i]+"22":"var(--surface2)",
+                display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,color:i<3?colors[i]:"var(--dim)",fontSize:i<3?18:14,flexShrink:0}}>
+                {i<3?medals[i]:i+1}
+              </div>
+              <div style={{flex:1,minWidth:0}}>
+                <p style={{fontWeight:700,color:"var(--text)",fontSize:13,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{s.name}</p>
+                <p style={{color:"var(--muted)",fontSize:11,marginTop:1}}>{s.attempts} attempts · {s.totalGot}/{s.totalMax}M</p>
+              </div>
+              <div style={{display:"flex",alignItems:"center",gap:8}}>
+                <p style={{fontWeight:900,color:i<3?colors[i]:"var(--text)",fontSize:16}}>{s.avgPct}%</p>
+                <button onClick={()=>setConfirmDelete(s.name)} title="Delete"
+                  style={{background:"rgba(248,113,113,.08)",border:"1px solid rgba(248,113,113,.2)",color:"var(--red)",cursor:"pointer",fontSize:12,padding:"4px 8px",borderRadius:8,fontWeight:600,flexShrink:0}}>
+                  🗑
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+
 // ── DPP FORM ──────────────────────────────────────────────────────────────
 function DppForm({initial,onSave,onCancel}){
   const isEdit=!!initial;
@@ -1514,10 +1761,18 @@ function DppForm({initial,onSave,onCancel}){
           <span style={labelS}>DPP Title</span>
           <input placeholder="e.g. Quadratic Equations – DPP 3" value={dpp.title} onChange={e=>setField("title",e.target.value)} style={inputS}/>
           <span style={labelS}>Class</span>
-          <select value={dpp.batch} onChange={e=>setField("batch",e.target.value)} style={inputS}>
+          <select value={dpp.batch} onChange={e=>{setField("batch",e.target.value);setField("chapter","");}} style={inputS}>
             <option value="">-- Class Chunein --</option>
             <option value="class10">Class 10</option>
             <option value="class8">Class 8</option>
+          </select>
+          <span style={labelS}>Chapter</span>
+          <select value={dpp.chapter||""} onChange={e=>setField("chapter",e.target.value)} style={inputS}>
+            <option value="">-- Chapter Chunein --</option>
+            {(dpp.batch==="class10"?CLASS10_CHAPTERS:dpp.batch==="class8"?CLASS8_CHAPTERS:[]).map((ch,i)=>(
+              <option key={ch} value={ch}>Ch {i+1}. {ch}</option>
+            ))}
+            {!dpp.batch&&<option disabled>Pehle class chunein</option>}
           </select>
         </div>
         <div className="fade-up" style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
