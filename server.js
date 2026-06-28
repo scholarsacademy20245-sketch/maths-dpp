@@ -15,7 +15,8 @@ app.post("/generate", async (req, res) => {
       model: "gemini-2.5-flash",
       contents: prompt,
     });
-    res.json({ text: response.text() });
+    const text = response.candidates[0].content.parts[0].text;
+    res.json({ text: text });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: { message: err.message || "Unknown error" } });
