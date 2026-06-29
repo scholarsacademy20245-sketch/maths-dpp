@@ -1441,8 +1441,24 @@ Return ONLY a valid JSON array, no explanation, no markdown:
       const data=await res.json();
       if(data.error){setErr("API Error: "+data.error.message);setLoading(false);return;}
       const text=data.text;
-      const clean=text.replace(/```json|```/g,"").trim();
+      // Clean and fix potentially truncated JSON
+      let clean=text.replace(/```json|```/g,"").trim();
+      // Find the JSON array start and end
+      const arrStart=clean.indexOf("[");
+      const arrEnd=clean.lastIndexOf("]");
+      if(arrStart===-1) throw new Error("AI ne JSON return nahi kiya. Dobara try karo.");
+      if(arrEnd===-1){
+        // JSON got cut off - try to fix by closing open structures
+        clean=clean.slice(arrStart);
+        // Remove last incomplete object
+        const lastComplete=clean.lastIndexOf("},");
+        if(lastComplete!==-1) clean=clean.slice(0,lastComplete+1)+"]";
+        else throw new Error("Response cut off ho gaya. Questions kam karo ya dobara try karo.");
+      } else {
+        clean=clean.slice(arrStart,arrEnd+1);
+      }
       const questions=JSON.parse(clean);
+      if(!questions.length) throw new Error("AI ne koi question nahi banaya. Dobara try karo.");
       const dpp={
         id:"AI_"+uid(),
         title:topic+" – DPP (AI)",
