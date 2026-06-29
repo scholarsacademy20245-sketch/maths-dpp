@@ -1400,6 +1400,9 @@ function AiDppGenerator({onSave,onCancel}){
   const [topic,setTopic]=useState("");
   const [batch,setBatch]=useState("");
   const [qCount,setQCount]=useState("10");
+  const [level,setLevel]=useState("medium");
+  const [qTypes,setQTypes]=useState(["mcq","truefalse","subjective"]);
+  const [instructions,setInstructions]=useState("");
   const [loading,setLoading]=useState(false);
   const [preview,setPreview]=useState(null);
   const [err,setErr]=useState("");
@@ -1408,15 +1411,19 @@ function AiDppGenerator({onSave,onCancel}){
     if(!topic.trim()||!batch){setErr("Topic aur class dono zaruri hain!");return;}
     setErr("");setLoading(true);setPreview(null);
     try{
+      const levelMap={easy:"Easy (basic concepts, direct formulas, NCERT level)",medium:"Medium (application based, moderate difficulty, board exam level)",hard:"Hard (HOTS, challenging, competition/olympiad level)"};
+      const typeLabel=qTypes.length===3?"Mix of MCQ, True/False, and Subjective":"Only create these types: "+qTypes.join(", ");
       const prompt=`You are a Maths teacher creating a DPP (Daily Practice Problem) for Indian school students.
 
 Topic: ${topic}
 Class: ${batch==="class10"?"Class 10":"Class 8"}
 Number of questions: ${qCount}
+Difficulty Level: ${levelMap[level]}
+Question Types: ${typeLabel}
+${instructions.trim()?"Special Instructions from teacher: "+instructions.trim():""}
 
-Create exactly ${qCount} questions. Mix of MCQ (4 options), True/False, and Subjective types.
 For MCQ: provide 4 options and correct answer as "A", "B", "C", or "D"
-For True/False: answer as "True" or "False"
+For True/False: answer as "True" or "False"  
 For Subjective: provide the correct answer/solution
 
 Return ONLY a valid JSON array, no explanation, no markdown:
@@ -1529,9 +1536,41 @@ Return ONLY a valid JSON array, no explanation, no markdown:
             ))}
           </div>
 
+          <span style={labelS}>Difficulty Level</span>
+          <div style={{display:"flex",gap:8,marginBottom:16}}>
+            {[["easy","🟢 Easy"],["medium","🟡 Medium"],["hard","🔴 Hard"]].map(([val,label])=>(
+              <button key={val} onClick={()=>setLevel(val)}
+                style={{flex:1,padding:"10px 4px",borderRadius:10,border:"none",cursor:"pointer",fontWeight:700,fontSize:12,
+                  background:level===val?"linear-gradient(135deg,#4f46e5,#7c3aed)":"var(--surface2)",
+                  color:level===val?"#fff":"var(--muted)",transition:"all .2s"}}>
+                {label}
+              </button>
+            ))}
+          </div>
+
+          <span style={labelS}>Question Types</span>
+          <div style={{display:"flex",gap:8,marginBottom:16,flexWrap:"wrap"}}>
+            {[["mcq","MCQ"],["truefalse","True/False"],["subjective","Subjective"]].map(([val,label])=>(
+              <button key={val} onClick={()=>setQTypes(prev=>prev.includes(val)?prev.filter(x=>x!==val):[...prev,val])}
+                style={{padding:"8px 14px",borderRadius:10,border:"none",cursor:"pointer",fontWeight:700,fontSize:12,
+                  background:qTypes.includes(val)?"linear-gradient(135deg,#0891b2,#0e7490)":"var(--surface2)",
+                  color:qTypes.includes(val)?"#fff":"var(--muted)",transition:"all .2s"}}>
+                {qTypes.includes(val)?"✓ ":""}{label}
+              </button>
+            ))}
+          </div>
+
+          <span style={labelS}>Special Instructions (Optional)</span>
+          <textarea
+            placeholder="e.g. RBSE ke PYQ style mein banao, diagram wale questions, easy language use karo..."
+            value={instructions} onChange={e=>setInstructions(e.target.value)}
+            rows={3}
+            style={{...inputS,resize:"vertical",fontFamily:"inherit",lineHeight:1.5,marginBottom:16}}
+          />
+
           {err&&<div style={{background:"rgba(248,113,113,.1)",border:"1px solid rgba(248,113,113,.3)",borderRadius:10,padding:"10px 14px",color:"var(--red)",fontSize:13,marginBottom:12}}>❌ {err}</div>}
 
-          <button onClick={generate} disabled={loading} className="btn-glow" style={{...btn("linear-gradient(135deg,#7c3aed,#4f46e5)"),width:"100%",padding:"15px",fontSize:16,marginTop:10,opacity:loading?0.8:1,fontFamily:"'Space Grotesk',sans-serif"}}>
+          <button onClick={generate} disabled={loading||qTypes.length===0} className="btn-glow" style={{...btn("linear-gradient(135deg,#7c3aed,#4f46e5)"),width:"100%",padding:"15px",fontSize:16,marginTop:10,opacity:loading?0.8:1,fontFamily:"'Space Grotesk',sans-serif"}}>
             {loading?(
               <span className="dot-loading" style={{display:"inline-flex",alignItems:"center",gap:4}}>
                 AI soch raha hai <span/><span/><span/>
