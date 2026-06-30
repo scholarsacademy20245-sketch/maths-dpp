@@ -1311,7 +1311,7 @@ function TeacherPanel({onBack}){
 
         {/* Tab Bar */}
         <div className="fade-up" style={{display:"flex",gap:6,marginBottom:18,background:"var(--surface)",borderRadius:16,padding:5,border:"1px solid var(--border)"}}>
-          {[["dpps","📋 DPPs"],["results","📊 Sabka Result"]].map(([key,label])=>(
+          {[["dpps","📋 DPPs"],["results","📊 Sabka Result"],["leaderboard","🏆 Leaderboard"]].map(([key,label])=>(
             <button key={key} onClick={()=>setTab(key)}
               style={{flex:1,padding:"10px",borderRadius:10,border:"none",cursor:"pointer",fontWeight:700,fontSize:13,
                 background:tab===key?"linear-gradient(135deg,#4f46e5,#7c3aed)":"none",
