@@ -68,7 +68,6 @@ body{
   background-attachment: fixed;
 }
 
-/* Base Form Control Refactoring */
 input, textarea, select {
   font-family: inherit;
   width: 100%;
@@ -89,7 +88,6 @@ input:focus, textarea:focus, select:focus {
 
 h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; }
 
-/* Custom Dashboard Core Containers */
 .glass-panel {
   background: rgba(15, 21, 38, 0.75);
   backdrop-filter: blur(20px);
@@ -142,6 +140,7 @@ h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; }
   display: flex; align-items: center; gap: 14px; padding: 16px;
   background: var(--surface); border: 2px solid var(--border);
   border-radius: 12px; cursor: pointer; transition: all 0.2s ease;
+  width: 100%;
 }
 .option-node:hover { background: var(--surface2); border-color: var(--muted); }
 .option-node.active {
@@ -184,7 +183,6 @@ function emptyOpts(){ return ["","","",""]; }
 function emptyQ(){ return {text:"",type:"mcq",options:emptyOpts(),answer:"",marks:""}; }
 function emptyDpp(){ return {title:"",batch:"",chapter:"",questions:[]}; }
 
-// ── Smart Dynamic Formula Parser ──
 function MathText({ text }) {
   const nodeRef = useRef(null);
   useEffect(() => {
@@ -200,7 +198,6 @@ function MathText({ text }) {
   return <span ref={nodeRef} />;
 }
 
-// Score Evaluation Calculation
 function calcScore(dpp, answers){
   let got=0, total=0;
   if(!dpp||!dpp.questions) return {got:0,total:0,pct:0};
@@ -214,7 +211,6 @@ function calcScore(dpp, answers){
   return {got, total, pct: total>0?Math.round((got/total)*100):0};
 }
 
-// Database Sync Hooks
 function useDpps(){
   const [dpps,setDpps]=useState({});
   useEffect(()=>{
@@ -234,7 +230,6 @@ function useAllSubmissions(){
   return subs;
 }
 
-// ── CORE MASTER ENGINE ──
 function App(){
   const [mode,setMode]=useState(null);
   const [auth,setAuth]=useState(false);
@@ -243,11 +238,10 @@ function App(){
 
   return (
     <div>
-      {/* Top Corporate Navigation Framework */}
       <nav style={{background:'rgba(15,21,36,0.8)', backdropFilter:'blur(20px)', borderBottom:'1px solid var(--border)', position:'sticky', top:0, zIndex:100, padding:'16px 24px'}}>
         <div style={{maxWidth:'1100px', margin:'0 auto', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-          <div style={{display:'flex', alignItems:'center', gap:'14px', cursor:'pointer'}} onClick={()=>{setMode(null);setAuth(false);}}>
-            <div style={{background:'var(--accent)', width:'40px', height:'40px', borderRadius:'12px', display:'flex', alignItems:'center', justifyContainer:'center', justifyContent:'center'}}>
+          <div style={{display:'flex', alignItems:'center', gap:'14px', cursor:'pointer'} } onClick={()=>{setMode(null);setAuth(false);}}>
+            <div style={{background:'var(--accent)', width:'40px', height:'40px', borderRadius:'12px', display:'flex', alignItems:'center', justifyContent:'center'}}>
               <i className="fa-solid fa-graduation-cap" style={{color:'white', fontSize:'18px'}}></i>
             </div>
             <div>
@@ -273,7 +267,6 @@ function App(){
   );
 }
 
-// ── LANDING INTERFACE ──
 function Landing({onSelect}){
   return(
     <div style={{textAlign:"center", maxWidth:800, margin:"40px auto 0"}}>
@@ -306,7 +299,6 @@ function Landing({onSelect}){
   );
 }
 
-// ── VERIFICATION HUB ──
 function PinScreen({pin,setPin,error,onSubmit}){
   return(
     <div style={{maxWidth:380, margin:"80px auto 0"}}>
@@ -322,7 +314,6 @@ function PinScreen({pin,setPin,error,onSubmit}){
   );
 }
 
-// ── STUDENT HOME SUITE ──
 function StudentHome(){
   const [classSelected, setClassSelected] = useState(null);
   const savedName = localStorage.getItem("student_name") || "";
@@ -356,13 +347,12 @@ function StudentHome(){
         <button onClick={()=>{localStorage.removeItem("student_name"); setName(""); setNameSet(false);}} className="sec-btn"><i className="fa-solid fa-user-gear"></i> Reset Profile</button>
       </div>
 
-      {/* Tabs Dynamic Controllers */}
       <div style={{display:'flex', gap:10, background:'var(--surface)', border:'1px solid var(--border)', borderRadius:14, padding:6, marginBottom:28}}>
         <button onClick={()=>setTab("dpps")} style={{flex:1, padding:'12px', border:'none', borderRadius:10, fontWeight:600, fontSize:14, cursor:'pointer', background:tab==="dpps"?'var(--surface2)':'transparent', color:tab==="dpps"?'white':'var(--muted)', transition:'all 0.2s'}}><i className="fa-solid fa-cubes" style={{marginRight:8}}></i> Allocated Modules</button>
         <button onClick={()=>setTab("leaderboard")} style={{flex:1, padding:'12px', border:'none', borderRadius:10, fontWeight:600, fontSize:14, cursor:'pointer', background:tab==="leaderboard"?'var(--surface2)':'transparent', color:tab==="leaderboard"?'white':'var(--muted)', transition:'all 0.2s'}}><i className="fa-solid fa-ranking-star" style={{marginRight:8}}></i> Metric Standards</button>
       </div>
 
-      {tab Pac="dpps" && (
+      {tab === "dpps" && (
         <>
           {!classSelected ? (
             <div>
@@ -397,7 +387,6 @@ function StudentHome(){
   );
 }
 
-// ── SUB-COMPONENT: REFACTORED DPP CONTAINER LIST ──
 function DppList({classKey, name, onSelect}){
   const dpps = useDpps();
   const [openChapter, setOpenChapter] = useState(null);
@@ -457,7 +446,6 @@ function DppList({classKey, name, onSelect}){
   );
 }
 
-// ── LEADERBOARD MATRIX SUMMARY ──
 function Leaderboard(){
   const dpps = useDpps();
   const allSubs = useAllSubmissions();
@@ -485,7 +473,7 @@ function Leaderboard(){
   return (
     <div>
       <div style={{display:'flex', gap:6, background:'var(--surface)', border:'1px solid var(--border)', borderRadius:12, padding:5, marginBottom:20, maxWidth:300}}>
-        [["all","Global"],["class10","Class 10"],["class8","Class 8"]].map(([k,l]) => (
+        {[["all","Global"],["class10","Class 10"],["class8","Class 8"]].map(([k,l]) => (
           <button key={k} onClick={()=>setFilterClass(k)} style={{flex:1, border:'none', padding:'8px 14px', borderRadius:8, fontSize:13, fontWeight:600, cursor:'pointer', background:filterClass===k?'var(--surface2)':'transparent', color:filterClass===k?'white':'var(--muted)', transition:'all 0.2s'}}>{l}</button>
         ))}
       </div>
@@ -512,7 +500,6 @@ function Leaderboard(){
   );
 }
 
-// ── PROBLEM TESTING BLOCK SUITE (WORKFLOW ATTEMPT) ──
 function DppAttempt({dpp, name, onBack}){
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
@@ -572,7 +559,7 @@ function DppAttempt({dpp, name, onBack}){
           
           {q.image && <img src={q.image} style={{maxWidth:'100%', maxHeight:240, borderRadius:12, marginBottom:18, border:'1px solid var(--border)'}}/>}
           
-          {q.type Pall="mcq" && (
+          {q.type === "mcq" && (
             <div style={{display:'grid', gridTemplateColumns:'1fr', gap:10}}>
               {MCQ_OPTS.map((opt, oi) => q.options[oi] && (
                 <div key={opt} onClick={()=>setAnswers({...answers, [i]:opt})} className={`option-node ${answers[i]===opt?'active':''}`}>
@@ -610,7 +597,6 @@ function DppAttempt({dpp, name, onBack}){
   );
 }
 
-// ── TEACHER PANEL MODULES HUB ──
 function TeacherPanel({onBack}){
   const [view, setView] = useState("list");
   const [tab, setTab] = useState("dpps");
@@ -638,7 +624,7 @@ function TeacherPanel({onBack}){
   return (
     <div className="fade-up">
       <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:28, flexWrap:'wrap', gap:14}}>
-        <h3 style={{fontSize:22}}><i className="fa-solid fa-server" style={{color:'var(--accent2)', marginRight:10}}></i> Instructor Command Terminal</h3>
+        <h3><i className="fa-solid fa-server" style={{color:'var(--accent2)', marginRight:10}}></i> Instructor Command Terminal</h3>
         <div style={{display:'flex', gap:12}}>
           <button onClick={()=>setView("ai")} className="sec-btn" style={{color:'var(--cyan)', borderColor:'rgba(6,182,212,0.3)', background:'rgba(6,182,212,0.05)'}}><i className="fa-solid fa-bolt"></i> AI Generation Engine</button>
           <button onClick={()=>{setEditDpp(null); setView("create");}} className="premium-btn"><i className="fa-solid fa-plus"></i> Build Framework</button>
@@ -655,7 +641,7 @@ function TeacherPanel({onBack}){
         <button onClick={()=>setTab("results")} style={{flex:1, padding:'12px', border:'none', borderRadius:10, fontWeight:600, fontSize:14, cursor:'pointer', background:tab === "results"?'var(--surface2)':'transparent', color:tab === "results"?'white':'var(--muted)', transition:'all 0.2s'}}>Database Metrics logs</button>
       </div>
 
-      {tab Pac==="dpps" && (
+      {tab === "dpps" && (
         <div style={{display:'flex', flexDirection:'column', gap:12}}>
           {Object.values(dpps).map(d => (
             <div key={d.id} onClick={()=>{setDetailId(d.id); setView("detail");}} className="glass-panel interactive-row">
@@ -669,7 +655,7 @@ function TeacherPanel({onBack}){
         </div>
       )}
 
-      {tab==="results" && (
+      {tab Pac==="results" && (
         <div style={{display:'flex', flexDirection:'column', gap:12}}>
           {resultsArr.map((r, i) => (
             <div key={i} className="glass-panel interactive-row" style={{cursor:'default'}}>
@@ -699,7 +685,6 @@ function StatBox({icon, val, title}){
   );
 }
 
-// ── AI MODULE PARAMETERS SELECTOR ──
 function AiDppGenerator({onSave, onCancel}){
   const [topic, setTopic] = useState("");
   const [batch, setBatch] = useState("");
@@ -760,7 +745,6 @@ function AiDppGenerator({onSave, onCancel}){
   );
 }
 
-// ── MANUAL SCHEDULER DESIGNER FORM ──
 function DppForm({initial, onSave, onCancel}){
   const [dpp, setDpp] = useState(initial || {...emptyDpp(), id:uid()});
   
@@ -796,7 +780,6 @@ function DppForm({initial, onSave, onCancel}){
   );
 }
 
-// ── SCHEDULER INDIVIDUAL DETAIL WRAPPER ──
 function DppDetail({dpp, onBack, onEdit, onDelete}){
   return (
     <div style={{maxWidth:600, margin:'0 auto'}} className="scale-in">
