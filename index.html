@@ -10,11 +10,9 @@
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-database-compat.js"></script>
 
-<!-- Corporate Fonts & FontAwesome SVG Web Icons -->
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<!-- KaTeX for High Fidelity Math Formulas Rendering -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
 
@@ -128,6 +126,8 @@ h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; }
   align-items: center;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  width: 100%;
+  margin-bottom: 8px;
 }
 .interactive-row:hover {
   transform: translateY(-2px);
@@ -240,7 +240,7 @@ function App(){
     <div>
       <nav style={{background:'rgba(15,21,36,0.8)', backdropFilter:'blur(20px)', borderBottom:'1px solid var(--border)', position:'sticky', top:0, zIndex:100, padding:'16px 24px'}}>
         <div style={{maxWidth:'1100px', margin:'0 auto', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-          <div style={{display:'flex', alignItems:'center', gap:'14px', cursor:'pointer'} } onClick={()=>{setMode(null);setAuth(false);}}>
+          <div style={{display:'flex', alignItems:'center', gap:'14px', cursor:'pointer'}} onClick={()=>{setMode(null);setAuth(false);}}>
             <div style={{background:'var(--accent)', width:'40px', height:'40px', borderRadius:'12px', display:'flex', alignItems:'center', justifyContent:'center'}}>
               <i className="fa-solid fa-graduation-cap" style={{color:'white', fontSize:'18px'}}></i>
             </div>
@@ -277,7 +277,7 @@ function Landing({onSelect}){
       <p style={{color:"var(--muted)", fontSize:16, marginBottom:44, maxWidth:580, margin:"0 auto 44px"}}>Class 8 and Class 10 customized practice deployment pipelines with realtime telemetry logs analysis.</p>
       
       <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:24, textAlign:"left"}}>
-        <div onClick={()=>onSelect("student")} className="glass-panel interactive-row" style={{flexDirection:'column', alignItems:'flex-start', padding:32}}>
+        <div onClick={()=>onSelect("student")} className="glass-panel" style={{display:'flex', flexDirection:'column', alignItems:'flex-start', padding:32, cursor:'pointer'}}>
           <div style={{width:48, height:48, background:'rgba(6,182,212,0.1)', borderRadius:14, display:'flex', alignItems:'center', justifyContent:'center', marginBottom:24, border:'1px solid rgba(6,182,212,0.2)'}}>
             <i className="fa-solid fa-user-astronaut" style={{color:'var(--cyan)', fontSize:'20px'}}></i>
           </div>
@@ -286,7 +286,7 @@ function Landing({onSelect}){
           <span style={{color:'var(--cyan)', fontSize:13, fontWeight:600}}>Launch Interface <i className="fa-solid fa-arrow-right-long" style={{marginLeft:6}}></i></span>
         </div>
 
-        <div onClick={()=>onSelect("teacher")} className="glass-panel interactive-row" style={{flexDirection:'column', alignItems:'flex-start', padding:32}}>
+        <div onClick={()=>onSelect("teacher")} className="glass-panel" style={{display:'flex', flexDirection:'column', alignItems:'flex-start', padding:32, cursor:'pointer'}}>
           <div style={{width:48, height:48, background:'rgba(79,70,229,0.1)', borderRadius:14, display:'flex', alignItems:'center', justifyContent:'center', marginBottom:24, border:'1px solid rgba(79,70,229,0.2)'}}>
             <i className="fa-solid fa-toolbox" style={{color:'var(--accent2)', fontSize:'20px'}}></i>
           </div>
@@ -332,7 +332,9 @@ function StudentHome(){
         <p style={{color:'var(--muted)', fontSize:13, marginBottom:24}}>Type your real name to synchronize individual test summaries with the database.</p>
         <span className="section-label">IDENTIFIER NAME</span>
         <input placeholder="e.g. Rahul Sharma" value={nameInput} onChange={e=>setNameInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&nameInput.trim()&& (localStorage.setItem("student_name",nameInput.trim()), setName(nameInput.trim()), setNameSet(true))} style={{marginBottom:24}} />
-        <button onClick={()=>{ if(nameInput.trim()){ localStorage.setItem("student_name",nameInput.trim()); setName(nameInput.trim()); setNameSet(true); } }} className="premium-btn" style={{width:'100%'}}>Establish Connection</button>
+        <div style={{marginTop:16}}>
+          <button onClick={()=>{ if(nameInput.trim()){ localStorage.setItem("student_name",nameInput.trim()); setName(nameInput.trim()); setNameSet(true); } }} className="premium-btn" style={{width:'100%'}}>Establish Connection</button>
+        </div>
       </div>
     </div>
   );
@@ -348,7 +350,7 @@ function StudentHome(){
       </div>
 
       <div style={{display:'flex', gap:10, background:'var(--surface)', border:'1px solid var(--border)', borderRadius:14, padding:6, marginBottom:28}}>
-        <button onClick={()=>setTab("dpps")} style={{flex:1, padding:'12px', border:'none', borderRadius:10, fontWeight:600, fontSize:14, cursor:'pointer', background:tab==="dpps"?'var(--surface2)':'transparent', color:tab==="dpps"?'white':'var(--muted)', transition:'all 0.2s'}}><i className="fa-solid fa-cubes" style={{marginRight:8}}></i> Allocated Modules</button>
+        <button onClick={()=>setTab("dpps")} style={{flex:1, padding:'12px', border:'none', borderRadius:10, fontWeight:600, fontSize:14, cursor:'pointer', background:tab === "dpps"?'var(--surface2)':'transparent', color:tab==="dpps"?'white':'var(--muted)', transition:'all 0.2s'}}><i className="fa-solid fa-cubes" style={{marginRight:8}}></i> Allocated Modules</button>
         <button onClick={()=>setTab("leaderboard")} style={{flex:1, padding:'12px', border:'none', borderRadius:10, fontWeight:600, fontSize:14, cursor:'pointer', background:tab==="leaderboard"?'var(--surface2)':'transparent', color:tab==="leaderboard"?'white':'var(--muted)', transition:'all 0.2s'}}><i className="fa-solid fa-ranking-star" style={{marginRight:8}}></i> Metric Standards</button>
       </div>
 
@@ -358,12 +360,12 @@ function StudentHome(){
             <div>
               <p className="section-label" style={{marginBottom:14}}>Target Folders Directory</p>
               <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:24}}>
-                <div onClick={()=>setClassSelected("class8")} className="glass-panel interactive-row" style={{flexDirection:'column', padding:32, textAlign:'center'}}>
+                <div onClick={()=>setClassSelected("class8")} className="glass-panel" style={{display:'flex', flexDirection:'column', padding:32, textAlign:'center', cursor:'pointer'}}>
                   <i className="fa-solid fa-folder" style={{fontSize:36, color:'var(--cyan)', marginBottom:16}}></i>
                   <h3>Cohort: Class 8</h3>
                   <p style={{fontSize:13, color:'var(--muted)', marginTop:6, lineHeight:1.5}}>Basic algebra arrays, fractions variables, and coordinate mappings.</p>
                 </div>
-                <div onClick={()=>setClassSelected("class10")} className="glass-panel interactive-row" style={{flexDirection:'column', padding:32, textAlign:'center'}}>
+                <div onClick={()=>setClassSelected("class10")} className="glass-panel" style={{display:'flex', flexDirection:'column', padding:32, textAlign:'center', cursor:'pointer'}}>
                   <i className="fa-solid fa-folder-tree" style={{fontSize:36, color:'var(--accent2)', marginBottom:16}}></i>
                   <h3>Cohort: Class 10</h3>
                   <p style={{fontSize:13, color:'var(--muted)', marginTop:6, lineHeight:1.5}}>Board optimization matrices, complex limits, and trigonometric parameters.</p>
@@ -416,7 +418,7 @@ function DppList({classKey, name, onSelect}){
 
         return (
           <div key={ch} style={{marginBottom:10}}>
-            <div onClick={()=>chDpps.length > 0 && setOpenChapter(isOpen ? null:ch)} className="glass-panel interactive-row" style={{padding:'18px 24px', opacity:chDpps.length>0?1:0.45, cursor:chDpps.length>0?'pointer':'not-allowed'}}>
+            <div onClick={()=>chDpps.length > 0 && setOpenChapter(isOpen ? null:ch)} className="interactive-row" style={{padding:'18px 24px', opacity:chDpps.length>0?1:0.45, cursor:chDpps.length>0?'pointer':'not-allowed'}}>
               <div style={{display:'flex', alignItems:'center', gap:16}}>
                 <i className={`fa-solid ${isOpen?'fa-folder-open':'fa-folder-closed'}`} style={{color:chDpps.length>0?'var(--accent2)':'var(--dim)', fontSize:18}}></i>
                 <span style={{fontWeight:600, fontSize:15}}>Index {ci+1}: {ch}</span>
@@ -429,7 +431,7 @@ function DppList({classKey, name, onSelect}){
             {isOpen && chDpps.length > 0 && (
               <div style={{padding:'10px 0 10px 24px', display:'flex', flexDirection:'column', gap:10}}>
                 {chDpps.filter(d => d.title.toLowerCase().includes(search.toLowerCase())).map(d => (
-                  <div key={d.id} className="glass-panel interactive-row" style={{background:'var(--surface2)', padding:'16px 24px', borderLeft:'4px solid var(--accent2)'}}>
+                  <div key={d.id} className="interactive-row" style={{background:'var(--surface2)', padding:'16px 24px', borderLeft:'4px solid var(--accent2)'}}>
                     <div>
                       <h4 style={{fontSize:15, fontWeight:600}}>{d.title}</h4>
                       <p style={{fontSize:11, color:'var(--muted)', marginTop:4}}><i className="fa-regular fa-clone"></i> Block Contains: {d.questions?.length || 0} testing nodes</p>
@@ -573,11 +575,11 @@ function DppAttempt({dpp, name, onBack}){
             </div>
           )}
 
-          {q.type==="truefalse" && (
+          {q.type Pac==="truefalse" && (
             <div style={{display:'flex', gap:14}}>
               {["True","False"].map(v => (
                 <div key={v} onClick={()=>setAnswers({...answers, [i]:v})} className={`option-node ${answers[i]===v?'active':''}`} style={{flex:1, justifyContent:'center'}}>
-                  <i className={v==="True"?'fa-regular fa-circle-check':'fa-regular fa-circle-xmark'} style={{fontSize:16, color:answers[i]===v?'white':'var(--muted)'}}></i>
+                  <i className={v Pac==="True"?'fa-regular fa-circle-check':'fa-regular fa-circle-xmark'} style={{fontSize:16, color:answers[i]===v?'white':'var(--muted)'}}></i>
                   <span style={{fontSize:14, fontWeight:600}}>{v} Variant</span>
                 </div>
               ))}
@@ -647,7 +649,7 @@ function TeacherPanel({onBack}){
             <div key={d.id} onClick={()=>{setDetailId(d.id); setView("detail");}} className="glass-panel interactive-row">
               <div>
                 <h4 style={{fontSize:16, fontWeight:600}}>{d.title}</h4>
-                <p style={{fontSize:12, color:'var(--muted)', marginTop:4}}>Target Cohort: {d.batch==="class10"?"C10 Advanced":"C8 Basic"} · Block Contains: {d.questions?.length || 0} logic blocks</p>
+                <p style={{fontSize:12, color:'var(--muted)', marginTop:4}}>Target Cohort: {d.batch Pac==="class10"?"C10 Advanced":"C8 Basic"} · Block Contains: {d.questions?.length || 0} logic blocks</p>
               </div>
               <i className="fa-solid fa-chevron-right" style={{color:'var(--dim)'}}></i>
             </div>
@@ -655,7 +657,7 @@ function TeacherPanel({onBack}){
         </div>
       )}
 
-      {tab Pac==="results" && (
+      {tab === "results" && (
         <div style={{display:'flex', flexDirection:'column', gap:12}}>
           {resultsArr.map((r, i) => (
             <div key={i} className="glass-panel interactive-row" style={{cursor:'default'}}>
@@ -784,7 +786,7 @@ function DppDetail({dpp, onBack, onEdit, onDelete}){
   return (
     <div style={{maxWidth:600, margin:'0 auto'}} className="scale-in">
       <div className="glass-panel" style={{padding:32}}>
-        <h3 style={{fontSize:22}}>{dpp.title}</h3>
+        <h3>{dpp.title}</h3>
         <p style={{fontSize:13, color:'var(--muted)', marginTop:6}}>Cloud Block System Identification Node: <code>{dpp.id}</code></p>
         <div style={{display:'flex', gap:14, marginTop:32}}>
           <button onClick={onEdit} className="premium-btn" style={{flex:1}}>Modify Settings Array</button>
@@ -798,7 +800,39 @@ function DppDetail({dpp, onBack, onEdit, onDelete}){
 const CLASS10_CHAPTERS=["Real Numbers","Polynomials","Linear Equations","Quadratic Equations","Arithmetic Progressions","Triangles","Coordinate Geometry","Introduction to Trigonometry","Heights and Distances","Circles","Constructions","Areas Related to Circles","Surface Areas and Volumes","Statistics","Probability"];
 const CLASS8_CHAPTERS=["Rational Numbers","Linear Equations in One Variable","Understanding Quadrilaterals","Practical Geometry","Data Handling","Squares and Square Roots","Cubes and Cube Roots","Comparing Quantities","Algebraic Expressions","Visualising Solid Shapes","Mensuration","Exponents and Powers","Direct and Inverse Proportions","Factorisation","Introduction to Graphs","Playing with Numbers"];
 
+function dbSaveDpp(dpp){ return firebase.database().ref("dpps/"+dpp.id).set(dpp); }
+function dbDeleteDpp(id){
+  return firebase.database().ref("dpps/"+id).remove().then(()=>
+    firebase.database().ref("submissions/"+id).remove()
+  );
+}
+function dbSubmit(dppId,sub){ return firebase.database().ref("submissions/"+dppId+"/"+sub.id).set(sub); }
+
 ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+
+<script>
+var ALL_DPPS = [
+  {id:"C10CH1DPP1",title:"Real Numbers – DPP 1",batch:"class10",chapter:"Real Numbers",questions:[
+    {text:"Sum of powers of prime factors of 400 is:",type:"mcq",options:["4","9","6","8"],answer:"B",marks:"1",image:""},
+    {text:"If HCF = LCM for two numbers, numbers should always be:",type:"mcq",options:["Composite","Equal","Prime","Co-prime"],answer:"B",marks:"1",image:""},
+    {text:"Find HCF of 616 and 32.",type:"subjective",options:[],answer:"HCF = 8",marks:"2",image:""}
+  ]},
+  {id:"C10CH4DPP1",title:"Quadratic Equations – DPP 1",batch:"class10",chapter:"Quadratic Equations",questions:[
+    {text:"Which is a quadratic equation?",type:"mcq",options:["2x+5=0","x^2-7x+10=0","x^3-4=0","1/x+2=0"],answer:"B",marks:"1",image:""},
+    {text:"Roots of x^2 - 16 = 0 are:",type:"mcq",options:["4,-4","16,-16","8,-8","2,-2"],answer:"A",marks:"1",image:""}
+  ]}
+];
+function seedAllDpps(){
+  if(typeof firebase !== "undefined" && firebase.database) {
+    ALL_DPPS.forEach(function(dpp){
+      firebase.database().ref("dpps/"+dpp.id).once("value",function(snap){
+        if(!snap.val()) firebase.database().ref("dpps/"+dpp.id).set(dpp);
+      });
+    });
+  }
+}
+window.addEventListener("load", function(){ setTimeout(seedAllDpps, 1500); });
 </script>
 </body>
 </html>
