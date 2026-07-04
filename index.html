@@ -398,13 +398,6 @@ const TEACHER_PIN = "7210";
 
 const MCQ_OPTS = ["A","B","C","D"];
 function uid(){ return Math.random().toString(36).slice(2,9); }
-function formatTime(ms){
-  const totalSec=Math.max(0,Math.floor(ms/1000));
-  const m=Math.floor(totalSec/60);
-  const s=totalSec%60;
-  if(m>0) return m+" min "+s+" sec";
-  return s+" sec";
-}
 function emptyOpts(){ return ["","","",""]; }
 function emptyQ(){ return {text:"",type:"mcq",options:emptyOpts(),answer:"",marks:""}; }
 function emptyDpp(){ return {title:"",batch:"",chapter:"",questions:[]}; }
@@ -1006,21 +999,91 @@ function DppAttempt({dpp,name,onBack}){
   const [result,setResult]=useState(null);
   const [sharing,setSharing]=useState(false);
   const [copied,setCopied]=useState(false);
-  const [timeTakenMs,setTimeTakenMs]=useState(0);
   const scoreCardRef=useRef(null);
+
+  // ── Timer State ──
+  const [totalElapsed,setTotalElapsed]=useState(0); // seconds
+  const [qTimes,setQTimes]=useState({}); // {qIndex: seconds}
+  const [activeQ,setActiveQ]=useState(null); // which question is currently being viewed
   const startTimeRef=useRef(Date.now());
+  const qStartRef=useRef({}); // {qIndex: timestamp}
+  const totalTimerRef=useRef(null);
+  const qTimerRef=useRef(null);
+
+  // Start overall timer on mount
+  React.useEffect(()=>{
+    startTimeRef.current=Date.now();
+    totalTimerRef.current=setInterval(()=>{
+      setTotalElapsed(Math.floor((Date.now()-startTimeRef.current)/1000));
+    },1000);
+    return ()=>{
+      clearInterval(totalTimerRef.current);
+      clearInterval(qTimerRef.current);
+    };
+  },[]);
+
+  // Track per-question time using IntersectionObserver
+  React.useEffect(()=>{
+    if(submitted) return;
+    const observers=[];
+    dpp.questions.forEach((_,i)=>{
+      const el=document.getElementById(`question-card-${i}`);
+      if(!el) return;
+      const obs=new IntersectionObserver((entries)=>{
+        entries.forEach(entry=>{
+          if(entry.isIntersecting){
+            // Question came into view
+            qStartRef.current[i]=Date.now();
+            setActiveQ(i);
+          } else {
+            // Question left view — save time spent
+            if(qStartRef.current[i]){
+              const spent=Math.floor((Date.now()-qStartRef.current[i])/1000);
+              setQTimes(prev=>({...prev,[i]:(prev[i]||0)+spent}));
+              qStartRef.current[i]=null;
+            }
+          }
+        });
+      },{threshold:0.5});
+      obs.observe(el);
+      observers.push(obs);
+    });
+    return ()=>observers.forEach(o=>o.disconnect());
+  },[submitted]);
+
+  function formatTime(secs){
+    if(secs<60) return `${secs}s`;
+    const m=Math.floor(secs/60);
+    const s=secs%60;
+    return s>0?`${m}m ${s}s`:`${m}m`;
+  }
 
   const answered=Object.keys(answers).length;
   const total=dpp.questions.length;
   const progress=Math.round((answered/total)*100);
 
   async function submit(){
+    // Freeze all pending question timers
+    const finalQTimes={...qTimes};
+    dpp.questions.forEach((_,i)=>{
+      if(qStartRef.current[i]){
+        const spent=Math.floor((Date.now()-qStartRef.current[i])/1000);
+        finalQTimes[i]=(finalQTimes[i]||0)+spent;
+        qStartRef.current[i]=null;
+      }
+    });
+    clearInterval(totalTimerRef.current);
+    const finalTotal=Math.floor((Date.now()-startTimeRef.current)/1000);
+
     setSubmitting(true);
-    const elapsed=Date.now()-startTimeRef.current;
-    const sub={id:uid(),dppId:dpp.id,studentName:name,answers,submittedAt:Date.now(),timeTakenMs:elapsed};
+    const sub={
+      id:uid(),dppId:dpp.id,studentName:name,answers,
+      submittedAt:Date.now(),
+      totalTimeTaken:finalTotal,
+      questionTimes:finalQTimes
+    };
     await dbSubmit(dpp.id,sub);
-    setResult(calcScore(dpp,answers));
-    setTimeTakenMs(elapsed);
+    setResult({...calcScore(dpp,answers),totalTimeTaken:finalTotal,questionTimes:finalQTimes});
     setSubmitted(true);setSubmitting(false);
   }
 
@@ -1044,7 +1107,8 @@ function DppAttempt({dpp,name,onBack}){
         "✅ Sahi: "+correctCount+"\n"+
         "❌ Galat: "+wrongCount+"\n"+
         "⏭ Chhoda: "+skipCount+"\n"+
-        "⏱️ Time: "+formatTime(timeTakenMs)+"\n\n"+
+        (result.totalTimeTaken>0?"⏱ Time: "+(Math.floor(result.totalTimeTaken/60)>0?Math.floor(result.totalTimeTaken/60)+" min "+result.totalTimeTaken%60+" sec":result.totalTimeTaken+" sec")+"\n":"")+
+        "\n"
         msg+"\n\n"+
         "_Powered by Sameer Sir DPP Portal_ 🚀";
     }
@@ -1117,10 +1181,6 @@ function DppAttempt({dpp,name,onBack}){
                 <p style={{color:"var(--accent2)",fontWeight:900,fontSize:26,fontFamily:"'Space Grotesk',sans-serif"}}>{result.pct}%</p>
               </div>
             )}
-            <div style={{display:"inline-flex",alignItems:"center",gap:6,background:"rgba(56,189,248,.12)",border:"1px solid rgba(56,189,248,.3)",borderRadius:99,padding:"6px 16px",marginBottom:14}}>
-              <span style={{fontSize:14}}>⏱️</span>
-              <span style={{fontSize:13,color:"var(--accent3)",fontWeight:700}}>Time Liya: {formatTime(timeTakenMs)}</span>
-            </div>
             <div style={{display:"flex",gap:10,justifyContent:"center",marginTop:8,marginBottom:10,flexWrap:"wrap"}}>
               {[{icon:"✅",label:"Sahi",val:correctCount,color:"var(--green)"},{icon:"❌",label:"Galat",val:wrongCount,color:"var(--red)"},{icon:"⏭",label:"Chhoda",val:skipCount,color:"var(--muted)"}].map(s=>(
                 <div key={s.label} style={{background:"var(--surface2)",border:"1px solid var(--border)",borderRadius:12,padding:"8px 18px",textAlign:"center"}}>
@@ -1131,6 +1191,18 @@ function DppAttempt({dpp,name,onBack}){
               ))}
             </div>
             <p style={{color:"var(--muted)",fontSize:13,marginTop:4}}>{msg}</p>
+            {/* Total Time Taken */}
+            {result.totalTimeTaken>0&&(
+              <div style={{display:"inline-flex",alignItems:"center",gap:8,background:"rgba(248,113,113,.08)",border:"1px solid rgba(248,113,113,.2)",borderRadius:12,padding:"8px 18px",margin:"10px 0 4px"}}>
+                <span style={{fontSize:18}}>⏱</span>
+                <div>
+                  <p style={{color:"#f87171",fontWeight:900,fontSize:16,fontFamily:"'Space Grotesk',sans-serif"}}>
+                    {Math.floor(result.totalTimeTaken/60)>0?`${Math.floor(result.totalTimeTaken/60)} min ${result.totalTimeTaken%60} sec`:`${result.totalTimeTaken} sec`}
+                  </p>
+                  <p style={{color:"rgba(248,113,113,.6)",fontSize:10,fontWeight:700}}>TOTAL TIME LIYA</p>
+                </div>
+              </div>
+            )}
             <p style={{color:"var(--dim)",fontSize:10,marginTop:8}}>{new Date().toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"})}</p>
           </div>
 
@@ -1166,10 +1238,17 @@ function DppAttempt({dpp,name,onBack}){
               return(
                 <div key={i} style={{border:"1.5px solid",borderColor:isCorrect?"#16a34a44":isWrong?"#ef444444":"var(--border)",
                   borderRadius:12,padding:"12px 14px",marginBottom:8,background:isCorrect?"#14532d12":isWrong?"#7f1d1d12":"var(--surface2)"}}>
-                  <p style={{fontWeight:700,color:"var(--text)",marginBottom:6,fontSize:13}}>
-                    {isCorrect?"✅":isWrong?"❌":"📝"} Q{i+1}. {q.text}
-                    {q.marks&&<span style={{color:"var(--dim)",fontWeight:400,fontSize:11}}> [{q.marks}M]</span>}
-                  </p>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6,gap:8}}>
+                    <p style={{fontWeight:700,color:"var(--text)",fontSize:13,flex:1}}>
+                      {isCorrect?"✅":isWrong?"❌":"📝"} Q{i+1}. {q.text}
+                      {q.marks&&<span style={{color:"var(--dim)",fontWeight:400,fontSize:11}}> [{q.marks}M]</span>}
+                    </p>
+                    {result.questionTimes&&result.questionTimes[i]>0&&(
+                      <span style={{flexShrink:0,background:"rgba(248,113,113,.08)",border:"1px solid rgba(248,113,113,.18)",borderRadius:8,padding:"3px 8px",fontSize:10,color:"#f87171",fontWeight:700,whiteSpace:"nowrap"}}>
+                        ⏱ {result.questionTimes[i]<60?`${result.questionTimes[i]}s`:`${Math.floor(result.questionTimes[i]/60)}m ${result.questionTimes[i]%60}s`}
+                      </span>
+                    )}
+                  </div>
                   {q.image&&<img src={q.image} alt="" style={{maxWidth:"100%",maxHeight:160,borderRadius:8,marginBottom:6,display:"block"}}/>}
                   <p style={{fontSize:12,color:"var(--accent2)"}}>Aapka Jawab: <strong style={{color:isCorrect?"var(--green)":isWrong?"var(--red)":"var(--text)"}}>{studentAns||"—"}</strong></p>
                   {isWrong&&(
@@ -1198,9 +1277,18 @@ function DppAttempt({dpp,name,onBack}){
               <h2 style={{color:"var(--text)",fontWeight:800,fontSize:17}}>{dpp.title}</h2>
               <p style={{color:"var(--muted)",fontSize:12,marginTop:2}}>👤 {name} · {total} Questions</p>
             </div>
-            <div style={{background:"var(--surface2)",border:"1px solid #312e81",borderRadius:12,padding:"8px 14px",textAlign:"center"}}>
-              <p style={{color:"var(--accent2)",fontWeight:900,fontSize:16}}>{answered}/{total}</p>
-              <p style={{color:"var(--dim)",fontSize:10,fontWeight:600}}>ANSWERED</p>
+            <div style={{display:"flex",gap:8}}>
+              {/* Live Timer */}
+              <div style={{background:"rgba(248,113,113,.1)",border:"1px solid rgba(248,113,113,.3)",borderRadius:12,padding:"8px 14px",textAlign:"center",minWidth:72}}>
+                <p style={{color:"#f87171",fontWeight:900,fontSize:15,fontFamily:"'Space Grotesk',sans-serif",letterSpacing:.5}}>
+                  {Math.floor(totalElapsed/60).toString().padStart(2,"0")}:{(totalElapsed%60).toString().padStart(2,"0")}
+                </p>
+                <p style={{color:"rgba(248,113,113,.6)",fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:.5}}>⏱ Time</p>
+              </div>
+              <div style={{background:"var(--surface2)",border:"1px solid #312e81",borderRadius:12,padding:"8px 14px",textAlign:"center"}}>
+                <p style={{color:"var(--accent2)",fontWeight:900,fontSize:16}}>{answered}/{total}</p>
+                <p style={{color:"var(--dim)",fontSize:10,fontWeight:600}}>ANSWERED</p>
+              </div>
             </div>
           </div>
           {/* Progress Bar */}
@@ -1213,7 +1301,7 @@ function DppAttempt({dpp,name,onBack}){
         </div>
 
         {dpp.questions.map((q,i)=>(
-          <div key={i} className="fade-up" style={{...card,borderColor:answers[i]?"#4f46e5":"var(--border)",marginBottom:10}}>
+          <div key={i} id={`question-card-${i}`} className="fade-up" style={{...card,borderColor:answers[i]?"#4f46e5":"var(--border)",marginBottom:10}}>
             <p style={{fontWeight:800,color:"var(--text)",marginBottom:12,fontSize:14,lineHeight:1.5}}>
               <span style={{color:"var(--accent2)",marginRight:6}}>Q{i+1}.</span>{q.text}
               {q.marks&&<span style={{color:"var(--dim)",fontWeight:400,fontSize:11}}> [{q.marks}M]</span>}
@@ -1389,8 +1477,23 @@ function TeacherPanel({onBack}){
                     <div style={{textAlign:"right"}}>
                       <p style={{fontWeight:900,color:"var(--accent2)",fontSize:18}}>{r.pct}%</p>
                       <p style={{color:"var(--dim)",fontSize:11}}>{r.got}/{r.total}M</p>
+                      {r.totalTimeTaken>0&&(
+                        <p style={{color:"#f87171",fontSize:10,fontWeight:700,marginTop:2}}>
+                          ⏱ {Math.floor(r.totalTimeTaken/60)>0?`${Math.floor(r.totalTimeTaken/60)}m ${r.totalTimeTaken%60}s`:`${r.totalTimeTaken}s`}
+                        </p>
+                      )}
                     </div>
                   </div>
+                  {/* Per-Question Time Chips */}
+                  {r.questionTimes&&Object.keys(r.questionTimes).length>0&&(
+                    <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:8}}>
+                      {Object.entries(r.questionTimes).sort((a,b)=>Number(a[0])-Number(b[0])).map(([qi,t])=>(
+                        <span key={qi} style={{background:"rgba(248,113,113,.08)",border:"1px solid rgba(248,113,113,.18)",borderRadius:7,padding:"2px 7px",fontSize:10,color:"#f87171",fontWeight:700}}>
+                          Q{Number(qi)+1}: {t<60?`${t}s`:`${Math.floor(t/60)}m${t%60}s`}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                   {/* Progress Bar */}
                   <div style={{display:"flex",alignItems:"center",gap:8}}>
                     <div style={{flex:1,height:6,background:"var(--border)",borderRadius:99,overflow:"hidden"}}>
