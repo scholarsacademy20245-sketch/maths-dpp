@@ -30,22 +30,22 @@
     else { ref.on('value', snap => cb(snap)); }
   };
 </script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Poppins:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#07071a;
-  --surface:#0f0e2a;
-  --surface2:#181636;
-  --border:#2a2750;
-  --accent:#6366f1;
-  --accent2:#a78bfa;
-  --accent3:#38bdf8;
-  --green:#22d3a5;
-  --red:#f87171;
-  --gold:#f59e0b;
-  --text:#e8e6ff;
-  --muted:#7c78a8;
-  --dim:#3d3a6e;
+  --bg:#f6f6fd;
+  --surface:#ffffff;
+  --surface2:#f3f2fb;
+  --border:#e6e3f8;
+  --accent:#5b3df6;
+  --accent2:#7b4dff;
+  --accent3:#0ea5e9;
+  --green:#16a34a;
+  --red:#ef4444;
+  --gold:#f5a300;
+  --text:#1e1b2e;
+  --muted:#6b6b85;
+  --dim:#9997b8;
   --ease-spring:cubic-bezier(.34,1.56,.64,1);
   --ease-out:cubic-bezier(.22,1,.36,1);
   --ease-in-out:cubic-bezier(.65,0,.35,1);
@@ -167,10 +167,10 @@ input:focus,textarea:focus,select:focus{
 
 /* ── Glass card ── */
 .glass{
-  background:rgba(15,14,42,.75);
+  background:rgba(255,255,255,.75);
   backdrop-filter:blur(20px) saturate(1.2);
   -webkit-backdrop-filter:blur(20px) saturate(1.2);
-  border:1px solid rgba(99,102,241,.15);
+  border:1px solid rgba(91,61,246,.15);
   border-radius:22px;
 }
 
@@ -229,9 +229,9 @@ input:focus,textarea:focus,select:focus{
 }
 
 /* ── Difficulty ── */
-.diff-easy{background:rgba(34,211,165,.1);color:#2dd4bf;border:1px solid rgba(34,211,165,.25)}
-.diff-med{background:rgba(245,158,11,.1);color:#fbbf24;border:1px solid rgba(245,158,11,.25)}
-.diff-hard{background:rgba(248,113,113,.1);color:#fca5a5;border:1px solid rgba(248,113,113,.25)}
+.diff-easy{background:rgba(22,163,74,.1);color:#15803d;border:1px solid rgba(22,163,74,.25)}
+.diff-med{background:rgba(245,158,11,.12);color:#b45309;border:1px solid rgba(245,158,11,.3)}
+.diff-hard{background:rgba(239,68,68,.1);color:#dc2626;border:1px solid rgba(239,68,68,.25)}
 
 /* ── DPP accent card ── */
 .dpp-accent-card{position:relative}
@@ -239,7 +239,7 @@ input:focus,textarea:focus,select:focus{
   content:'';
   position:absolute;left:0;top:12%;bottom:12%;
   width:3px;
-  background:linear-gradient(180deg,#6366f1,#a78bfa,#38bdf8);
+  background:linear-gradient(180deg,#5b3df6,#7b4dff,#38bdf8);
   border-radius:99px;
   transition:top .3s,bottom .3s,opacity .3s;
 }
@@ -286,7 +286,7 @@ input:focus,textarea:focus,select:focus{
 .prog-bar-wrap{height:7px;background:var(--border);border-radius:99px;overflow:hidden}
 .prog-bar-fill{
   height:100%;border-radius:99px;
-  background:linear-gradient(90deg,#4f46e5,#7c3aed,#a78bfa);
+  background:linear-gradient(90deg,#5b3df6,#7b4dff,#7b4dff);
   background-size:200% 100%;
   animation:shimmer 2s linear infinite;
   transition:width .8s var(--ease-out);
@@ -305,7 +305,7 @@ input:focus,textarea:focus,select:focus{
 
 /* ── Tab indicator ── */
 .tab-active{
-  background:linear-gradient(135deg,#4f46e5,#7c3aed)!important;
+  background:linear-gradient(135deg,#5b3df6,#7b4dff)!important;
   color:#fff!important;
   box-shadow:0 4px 16px rgba(99,102,241,.4)!important;
   transform:scale(1.02);
@@ -320,7 +320,7 @@ input:focus,textarea:focus,select:focus{
 .mcq-option:active{transform:scale(.98)}
 .mcq-option.selected{
   background:rgba(99,102,241,.18)!important;
-  border-color:#6366f1!important;
+  border-color:#5b3df6!important;
   box-shadow:0 4px 14px rgba(99,102,241,.2);
 }
 
@@ -328,15 +328,15 @@ input:focus,textarea:focus,select:focus{
 .card-entrance{animation:cardEntrance .4s var(--ease-out) both}
 
 /* ── Heading font ── */
-h1,h2,h3,.display{font-family:'Space Grotesk',system-ui,sans-serif;letter-spacing:-.3px}
+h1,h2,h3,.display{font-family:'Poppins',system-ui,sans-serif;letter-spacing:-.3px}
 
 /* ── Nav bar glass ── */
 .nav-glass{
   position:sticky;top:0;z-index:100;
-  background:rgba(7,7,26,.85);
+  background:rgba(255,255,255,.9);
   backdrop-filter:blur(24px) saturate(1.4);
   -webkit-backdrop-filter:blur(24px) saturate(1.4);
-  border-bottom:1px solid rgba(99,102,241,.12);
+  border-bottom:1px solid rgba(91,61,246,.12);
   animation:navSlide .4s var(--ease-out) both;
 }
 
@@ -496,7 +496,7 @@ function App(){
 // ── LANDING ───────────────────────────────────────────────────────────────
 function Landing({onSelect}){
   return(
-    <div style={{minHeight:"100vh",background:"radial-gradient(ellipse at 55% 0%,#1a1060 0%,#08071a 55%)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px 16px",position:"relative",overflow:"hidden"}}>
+    <div style={{minHeight:"100vh",background:"radial-gradient(ellipse at 55% 0%,#efeafe 0%,#ffffff 55%)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px 16px",position:"relative",overflow:"hidden"}}>
       {/* Ambient blobs */}
       <div style={{position:"absolute",width:500,height:500,borderRadius:"50%",background:"radial-gradient(circle,rgba(99,102,241,.1) 0%,transparent 65%)",top:-120,right:-100,pointerEvents:"none"}}/>
       <div style={{position:"absolute",width:350,height:350,borderRadius:"50%",background:"radial-gradient(circle,rgba(167,139,250,.07) 0%,transparent 65%)",bottom:-80,left:-80,pointerEvents:"none"}}/>
@@ -504,17 +504,17 @@ function Landing({onSelect}){
       <div className="fade-up" style={{textAlign:"center",maxWidth:420,width:"100%",position:"relative"}}>
         {/* Logo */}
         <div style={{position:"relative",display:"inline-block",marginBottom:22}}>
-          <div style={{width:90,height:90,background:"linear-gradient(135deg,#6366f1,#a78bfa)",borderRadius:26,display:"flex",alignItems:"center",justifyContent:"center",fontSize:42,animation:"floatGlow 3.5s ease-in-out infinite"}}>📐</div>
+          <div style={{width:90,height:90,background:"linear-gradient(135deg,#5b3df6,#7b4dff)",borderRadius:26,display:"flex",alignItems:"center",justifyContent:"center",fontSize:42,animation:"floatGlow 3.5s ease-in-out infinite"}}>📐</div>
           <div className="live-dot" style={{position:"absolute",bottom:5,right:5,width:10,height:10,boxShadow:"0 0 10px var(--green),0 0 20px rgba(34,211,165,.4)"}}/>
         </div>
-        <h1 style={{fontSize:34,fontWeight:900,color:"#fff",letterSpacing:-1.5,lineHeight:1.1,fontFamily:"'Space Grotesk',sans-serif"}}>Sameer Sir</h1>
+        <h1 style={{fontSize:34,fontWeight:900,color:"var(--text)",letterSpacing:-1.5,lineHeight:1.1,fontFamily:"'Poppins',sans-serif"}}>Sameer Sir</h1>
         <p style={{color:"var(--accent2)",fontSize:14,marginTop:6,marginBottom:4,fontWeight:600,letterSpacing:.5}}>Maths DPP Portal</p>
         <div style={{display:"inline-flex",alignItems:"center",gap:6,background:"rgba(34,211,165,.08)",border:"1px solid rgba(34,211,165,.2)",borderRadius:99,padding:"5px 14px",marginBottom:36}}>
           <span className="live-dot"/>
           <span style={{color:"var(--green)",fontSize:12,fontWeight:600}}>Live · Firebase Connected</span>
         </div>
         <div className="stagger" style={{display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap"}}>
-          <RoleCard icon="🎓" title="Student Corner" sub="DPP attempt karo" grad="linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%)" onClick={()=>onSelect("student")}/>
+          <RoleCard icon="🎓" title="Student Corner" sub="DPP attempt karo" grad="linear-gradient(135deg,#5b3df6 0%,#7b4dff 100%)" onClick={()=>onSelect("student")}/>
           <RoleCard icon="👨‍🏫" title="Teacher Panel" sub="DPP manage karo" grad="linear-gradient(135deg,#0891b2 0%,#0e7490 100%)" onClick={()=>onSelect("teacher")}/>
         </div>
         <p style={{color:"var(--dim)",fontSize:12,marginTop:28,letterSpacing:.3}}>Class 8 & Class 10 · Daily Practice Problems</p>
@@ -540,17 +540,17 @@ function RoleCard({icon,title,sub,grad,onClick}){
 // ── PIN ───────────────────────────────────────────────────────────────────
 function PinScreen({pin,setPin,error,onSubmit,onBack}){
   return(
-    <div style={{minHeight:"100vh",background:"radial-gradient(ellipse at 50% 0%,#1a1060,#08071a)",display:"flex",alignItems:"center",justifyContent:"center",padding:16}}>
+    <div style={{minHeight:"100vh",background:"radial-gradient(ellipse at 50% 0%,#efeafe,#ffffff)",display:"flex",alignItems:"center",justifyContent:"center",padding:16}}>
       <div className="pop-in" style={{...card,maxWidth:320,width:"100%",textAlign:"center",padding:"32px 28px",boxShadow:"0 24px 64px rgba(0,0,0,.5),0 0 0 1px rgba(99,102,241,.15)"}}>
         <button onClick={onBack} style={{background:"rgba(99,102,241,.1)",border:"1px solid rgba(99,102,241,.2)",color:"var(--accent2)",fontSize:12,cursor:"pointer",fontWeight:600,padding:"6px 14px",borderRadius:99,marginBottom:20,transition:"all .2s"}}>← Wapas</button>
-        <div style={{width:64,height:64,background:"linear-gradient(135deg,#4f46e5,#7c3aed)",borderRadius:18,display:"flex",alignItems:"center",justifyContent:"center",fontSize:30,margin:"0 auto 16px",boxShadow:"0 8px 24px rgba(99,102,241,.4)"}}>🔐</div>
+        <div style={{width:64,height:64,background:"linear-gradient(135deg,#5b3df6,#7b4dff)",borderRadius:18,display:"flex",alignItems:"center",justifyContent:"center",fontSize:30,margin:"0 auto 16px",boxShadow:"0 8px 24px rgba(99,102,241,.4)"}}>🔐</div>
         <h2 style={{color:"var(--text)",marginBottom:6,fontWeight:800,fontSize:20}}>Teacher Login</h2>
         <p style={{color:"var(--muted)",fontSize:13,marginBottom:20}}>Apna PIN enter karein</p>
         <input type="password" placeholder="• • • •" value={pin}
           onChange={e=>setPin(e.target.value)} onKeyDown={e=>e.key==="Enter"&&onSubmit()}
           style={{...inputS,textAlign:"center",letterSpacing:10,fontSize:24,marginBottom:10,border:error?"1.5px solid var(--red)":"1.5px solid var(--border)"}}/>
         {error&&<div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,color:"var(--red)",fontSize:13,marginBottom:10,background:"rgba(248,113,113,.08)",padding:"8px",borderRadius:10}}>❌ Galat PIN! Dobara try karein.</div>}
-        <button onClick={onSubmit} className="btn-glow" style={{...btn("linear-gradient(135deg,#4f46e5,#7c3aed)"),width:"100%",padding:"14px",fontSize:15,marginTop:4,borderRadius:14}}>Login करें →</button>
+        <button onClick={onSubmit} className="btn-glow" style={{...btn("linear-gradient(135deg,#5b3df6,#7b4dff)"),width:"100%",padding:"14px",fontSize:15,marginTop:4,borderRadius:14}}>Login करें →</button>
       </div>
     </div>
   );
@@ -581,19 +581,19 @@ function StudentHome({onBack}){
   if(activeDpp) return <DppAttempt dpp={activeDpp} name={name} onBack={()=>setActiveDpp(null)}/>;
 
   if(!nameSet) return(
-    <div style={{minHeight:"100vh",background:"radial-gradient(ellipse at 50% 0%,#1a1060,#08071a)",display:"flex",alignItems:"center",justifyContent:"center",padding:16}}>
+    <div style={{minHeight:"100vh",background:"radial-gradient(ellipse at 50% 0%,#efeafe,#ffffff)",display:"flex",alignItems:"center",justifyContent:"center",padding:16}}>
       <div className="pop-in" style={{...card,maxWidth:360,width:"100%",boxShadow:"0 24px 64px rgba(0,0,0,.5)"}}>
         <button onClick={onBack} style={{background:"rgba(99,102,241,.1)",border:"1px solid rgba(99,102,241,.2)",color:"var(--accent2)",fontSize:12,cursor:"pointer",fontWeight:600,padding:"6px 14px",borderRadius:99,marginBottom:20,transition:"all .2s"}}>← Home</button>
         <div style={{textAlign:"center",marginBottom:22}}>
-          <div style={{width:72,height:72,background:"linear-gradient(135deg,#6366f1,#a78bfa)",borderRadius:22,display:"flex",alignItems:"center",justifyContent:"center",fontSize:36,margin:"0 auto 14px",boxShadow:"0 8px 28px rgba(99,102,241,.4)"}}>🎓</div>
-          <h2 style={{color:"var(--text)",fontWeight:800,fontSize:22,fontFamily:"'Space Grotesk',sans-serif"}}>Apna Naam Batao!</h2>
+          <div style={{width:72,height:72,background:"linear-gradient(135deg,#5b3df6,#7b4dff)",borderRadius:22,display:"flex",alignItems:"center",justifyContent:"center",fontSize:36,margin:"0 auto 14px",boxShadow:"0 8px 28px rgba(99,102,241,.4)"}}>🎓</div>
+          <h2 style={{color:"var(--text)",fontWeight:800,fontSize:22,fontFamily:"'Poppins',sans-serif"}}>Apna Naam Batao!</h2>
           <p style={{color:"var(--muted)",fontSize:13,marginTop:5}}>Ek baar daalo, hamesha yaad rahega</p>
         </div>
         <span style={labelS}>Aapka Naam</span>
         <input placeholder="Naam likhein…" value={nameInput} onChange={e=>setNameInput(e.target.value)}
           onKeyDown={e=>e.key==="Enter"&&confirmName(nameInput)} style={inputS} autoFocus/>
         <button onClick={()=>confirmName(nameInput)} className="btn-glow"
-          style={{...btn("linear-gradient(135deg,#4f46e5,#7c3aed)"),width:"100%",padding:"14px",fontSize:15,marginTop:14,opacity:nameInput.trim()?1:0.5,borderRadius:14}}>
+          style={{...btn("linear-gradient(135deg,#5b3df6,#7b4dff)"),width:"100%",padding:"14px",fontSize:15,marginTop:14,opacity:nameInput.trim()?1:0.5,borderRadius:14}}>
           Shuru Karein 🚀
         </button>
       </div>
@@ -601,25 +601,25 @@ function StudentHome({onBack}){
   );
 
   return(
-    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#0f0c29,#302b63,#24243e)",padding:"20px 16px"}}>
+    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#f6f6fd,#eeeafd,#ffffff)",padding:"20px 16px"}}>
       <div style={{maxWidth:600,margin:"0 auto"}}>
         {/* Header */}
         <div className="fade-up" style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
           <button onClick={onBack} style={{background:"var(--surface)",border:"none",color:"var(--accent2)",fontSize:13,cursor:"pointer",fontWeight:600,padding:"8px 14px",borderRadius:10}}>← Home</button>
           <div>
-            <h2 style={{color:"#fff",fontWeight:800,fontSize:19,fontFamily:"'Space Grotesk',sans-serif"}}>🎓 Student Corner</h2>
+            <h2 style={{color:"var(--text)",fontWeight:800,fontSize:19,fontFamily:"'Poppins',sans-serif"}}>🎓 Student Corner</h2>
           </div>
         </div>
 
         {/* Greeting Card */}
         <div className="fade-up greeting-card" style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16}}>
           <div style={{flex:1}}>
-            <p style={{color:"var(--text)",fontWeight:700,fontSize:17,fontFamily:"'Space Grotesk',sans-serif"}}>Namaste, <span style={{color:"var(--accent2)"}}>{name}! 👋</span></p>
+            <p style={{color:"var(--text)",fontWeight:700,fontSize:17,fontFamily:"'Poppins',sans-serif"}}>Namaste, <span style={{color:"var(--accent2)"}}>{name}! 👋</span></p>
             <p style={{color:"var(--muted)",fontSize:12,marginTop:3}}>Aaj bhi practice karo, aage badhte raho!</p>
           </div>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
             <button onClick={changeName} title="Naam badlo" style={{background:"rgba(99,102,241,.1)",border:"1px solid rgba(99,102,241,.2)",color:"var(--accent2)",fontSize:11,cursor:"pointer",fontWeight:600,padding:"5px 10px",borderRadius:99,transition:"all .2s"}}>✏️ Naam</button>
-            <div style={{width:44,height:44,borderRadius:14,background:"linear-gradient(135deg,#6366f1,#a78bfa)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0,boxShadow:"0 4px 14px rgba(99,102,241,.4)"}}>
+            <div style={{width:44,height:44,borderRadius:14,background:"linear-gradient(135deg,#5b3df6,#7b4dff)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0,boxShadow:"0 4px 14px rgba(99,102,241,.4)"}}>
               {name.charAt(0).toUpperCase()}
             </div>
           </div>
@@ -630,7 +630,7 @@ function StudentHome({onBack}){
           {[["dpps","📚 DPPs"],["leaderboard","🏆 Leaderboard"]].map(([key,label])=>(
             <button key={key} onClick={()=>{setTab(key);setClassSelected(null);}}
               style={{flex:1,padding:"10px",borderRadius:10,border:"none",cursor:"pointer",fontWeight:700,fontSize:13,
-                background:tab===key?"linear-gradient(135deg,#4f46e5,#7c3aed)":"none",
+                background:tab===key?"linear-gradient(135deg,#5b3df6,#7b4dff)":"none",
                 color:tab===key?"#fff":"var(--muted)",transition:"all .2s"}}>
               {label}
             </button>
@@ -645,7 +645,7 @@ function StudentHome({onBack}){
                 <p style={{color:"var(--accent2)",fontWeight:700,fontSize:11,textTransform:"uppercase",letterSpacing:1,marginBottom:12}}>Apni Class Chunein</p>
                 <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
                   <ClassCard num="8" color="linear-gradient(135deg,#0891b2,#0e7490)" onClick={()=>setClassSelected("class8")}/>
-                  <ClassCard num="10" color="linear-gradient(135deg,#7c3aed,#4f46e5)" onClick={()=>setClassSelected("class10")}/>
+                  <ClassCard num="10" color="linear-gradient(135deg,#7b4dff,#5b3df6)" onClick={()=>setClassSelected("class10")}/>
                 </div>
               </div>
             )}
@@ -767,13 +767,13 @@ function DppList({classKey,name,onSelect}){
                 border:`1px solid ${isOpen?"rgba(99,102,241,.35)":"var(--border)"}`,
                 transition:"all .2s",boxShadow:isOpen?"0 4px 16px rgba(99,102,241,.12)":"none"}}>
               <div style={{display:"flex",alignItems:"center",gap:10}}>
-                <div style={{width:36,height:36,borderRadius:10,background:chDpps.length>0?"linear-gradient(135deg,#6366f1,#a78bfa)":"var(--surface2)",
+                <div style={{width:36,height:36,borderRadius:10,background:chDpps.length>0?"linear-gradient(135deg,#5b3df6,#7b4dff)":"var(--surface2)",
                   display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,flexShrink:0,
                   boxShadow:chDpps.length>0?"0 4px 10px rgba(99,102,241,.3)":"none"}}>
                   {chDpps.length>0?"📂":"📁"}
                 </div>
                 <div>
-                  <p style={{fontWeight:700,color:chDpps.length>0?"var(--text)":"var(--muted)",fontSize:14,fontFamily:"'Space Grotesk',sans-serif"}}>
+                  <p style={{fontWeight:700,color:chDpps.length>0?"var(--text)":"var(--muted)",fontSize:14,fontFamily:"'Poppins',sans-serif"}}>
                     Ch {ci+1}. {ch}
                   </p>
                   <p style={{color:"var(--muted)",fontSize:11,marginTop:1}}>{chDpps.length>0?`${chDpps.length} DPP available`:"Jald aayega"}</p>
@@ -842,7 +842,7 @@ function DppCard({dpp,onSelect}){
         transition:"all .25s var(--ease-out)",
       }}>
       <div style={{flex:1,minWidth:0}}>
-        <p style={{fontWeight:700,color:"var(--text)",fontSize:15,marginBottom:8,lineHeight:1.35,fontFamily:"'Space Grotesk',sans-serif"}}>{dpp.title}</p>
+        <p style={{fontWeight:700,color:"var(--text)",fontSize:15,marginBottom:8,lineHeight:1.35,fontFamily:"'Poppins',sans-serif"}}>{dpp.title}</p>
         <div style={{display:"flex",gap:6,flexWrap:"wrap",alignItems:"center"}}>
           <span className="badge" style={{background:"rgba(99,102,241,.12)",color:"var(--accent2)",border:"1px solid rgba(99,102,241,.18)"}}>{qs.length} Qs</span>
           <span className="badge" style={{background:"rgba(34,211,165,.08)",color:"var(--green)",border:"1px solid rgba(34,211,165,.2)"}}>
@@ -852,12 +852,12 @@ function DppCard({dpp,onSelect}){
         </div>
       </div>
       <div className="btn-glow" style={{
-        background:"linear-gradient(135deg,#4f46e5,#7c3aed)",
+        background:"linear-gradient(135deg,#5b3df6,#7b4dff)",
         borderRadius:12,padding:"10px 16px",color:"#fff",
         fontWeight:700,fontSize:13,whiteSpace:"nowrap",marginLeft:12,
         boxShadow:hov?"0 6px 20px rgba(99,102,241,.5)":"0 4px 12px rgba(99,102,241,.3)",
         flexShrink:0,transition:"box-shadow .25s",
-        fontFamily:"'Space Grotesk',sans-serif",
+        fontFamily:"'Poppins',sans-serif",
       }}>Attempt →</div>
     </div>
   );
@@ -919,7 +919,7 @@ function Leaderboard(){
             <button key={k} onClick={()=>setFilterClass(k)}
               className="btn-glow"
               style={{flex:1,padding:"9px 4px",borderRadius:12,border:"none",cursor:"pointer",fontWeight:700,fontSize:12,
-                background:filterClass===k?"linear-gradient(135deg,#4f46e5,#7c3aed)":"transparent",
+                background:filterClass===k?"linear-gradient(135deg,#5b3df6,#7b4dff)":"transparent",
                 color:filterClass===k?"#fff":"var(--muted)",transition:"all .25s",
                 boxShadow:filterClass===k?"0 4px 12px rgba(99,102,241,.3)":"none"}}>
               {l}
@@ -965,7 +965,7 @@ function Leaderboard(){
             <p style={{color:"var(--accent2)",fontWeight:700,fontSize:11,textTransform:"uppercase",letterSpacing:1,marginBottom:12}}>Full Rankings</p>
             {board.map((s,i)=>(
               <div key={s.name} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 10px",borderRadius:12,marginBottom:6,
-                background:i<3?"var(--surface2)":"transparent",border:i<3?"1px solid #2d2a5e":"1px solid transparent"}}>
+                background:i<3?"var(--surface2)":"transparent",border:i<3?"1px solid #e6e3f8":"1px solid transparent"}}>
                 <div style={{width:32,height:32,borderRadius:10,background:i<3?`${colors[i]}22`:"var(--surface2)",
                   display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,
                   color:i<3?colors[i]:"var(--dim)",fontSize:i<3?18:14,flexShrink:0}}>
@@ -975,7 +975,7 @@ function Leaderboard(){
                   <p style={{fontWeight:700,color:"var(--text)",fontSize:14,marginBottom:4,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{s.name}</p>
                   {/* Progress Bar */}
                   <div style={{height:6,background:"var(--border)",borderRadius:99,overflow:"hidden"}}>
-                    <div style={{height:"100%",width:`${s.avgPct}%`,background:i===0?"linear-gradient(90deg,#f59e0b,#fbbf24)":i===1?"linear-gradient(90deg,#94a3b8,#cbd5e1)":i===2?"linear-gradient(90deg,#cd7c2f,#d97706)":"linear-gradient(90deg,#4f46e5,#7c3aed)",borderRadius:99,transition:"width 1s ease"}}/>
+                    <div style={{height:"100%",width:`${s.avgPct}%`,background:i===0?"linear-gradient(90deg,#f59e0b,#fbbf24)":i===1?"linear-gradient(90deg,#94a3b8,#cbd5e1)":i===2?"linear-gradient(90deg,#cd7c2f,#d97706)":"linear-gradient(90deg,#5b3df6,#7b4dff)",borderRadius:99,transition:"width 1s ease"}}/>
                   </div>
                 </div>
                 <div style={{textAlign:"right",flexShrink:0}}>
@@ -1153,7 +1153,7 @@ function DppAttempt({dpp,name,onBack}){
     }
 
     return(
-      <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#0f0c29,#302b63,#24243e)",padding:"22px 16px"}}>
+      <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#f6f6fd,#eeeafd,#ffffff)",padding:"22px 16px"}}>
         <div className="fade-up" style={{maxWidth:600,margin:"0 auto"}}>
 
           {/* Shareable Score Card */}
@@ -1168,17 +1168,17 @@ function DppAttempt({dpp,name,onBack}){
             <p style={{color:"var(--muted)",fontSize:13,marginBottom:4}}>{dpp.title}</p>
             <p style={{color:"var(--accent2)",fontSize:13,fontWeight:700,marginBottom:16}}>👤 {name}</p>
             {result.total>0&&(
-              <div style={{background:"linear-gradient(135deg,#312e81,#1e1b4b)",border:"2px solid #4f46e5",borderRadius:20,padding:"22px",marginBottom:16,display:"inline-block",minWidth:220,boxShadow:"0 8px 32px rgba(99,102,241,.35)"}}>
+              <div style={{background:"linear-gradient(135deg,#efeafe,#e4ddfd)",border:"2px solid #5b3df6",borderRadius:20,padding:"22px",marginBottom:16,display:"inline-block",minWidth:220,boxShadow:"0 8px 32px rgba(99,102,241,.35)"}}>
                 <p style={{color:"var(--muted)",fontSize:11,fontWeight:700,textTransform:"uppercase",letterSpacing:1.2,marginBottom:10}}>Your Score</p>
                 <div style={{display:"flex",alignItems:"baseline",justifyContent:"center",gap:4}}>
-                  <span style={{fontSize:48,fontWeight:900,color:"var(--accent2)",fontFamily:"'Space Grotesk',sans-serif"}}>{result.got}</span>
-                  <span style={{fontSize:22,color:"var(--dim)",fontFamily:"'Space Grotesk',sans-serif"}}>/</span>
-                  <span style={{fontSize:48,fontWeight:900,color:"var(--text)",fontFamily:"'Space Grotesk',sans-serif"}}>{result.total}</span>
+                  <span style={{fontSize:48,fontWeight:900,color:"var(--accent2)",fontFamily:"'Poppins',sans-serif"}}>{result.got}</span>
+                  <span style={{fontSize:22,color:"var(--dim)",fontFamily:"'Poppins',sans-serif"}}>/</span>
+                  <span style={{fontSize:48,fontWeight:900,color:"var(--text)",fontFamily:"'Poppins',sans-serif"}}>{result.total}</span>
                 </div>
                 <div style={{height:8,background:"rgba(255,255,255,.08)",borderRadius:99,margin:"14px 0 8px",overflow:"hidden"}}>
-                  <div style={{height:"100%",width:`${result.pct}%`,background:"linear-gradient(90deg,#6366f1,#a78bfa)",borderRadius:99,transition:"width 1.4s var(--ease-out)"}}/>
+                  <div style={{height:"100%",width:`${result.pct}%`,background:"linear-gradient(90deg,#5b3df6,#7b4dff)",borderRadius:99,transition:"width 1.4s var(--ease-out)"}}/>
                 </div>
-                <p style={{color:"var(--accent2)",fontWeight:900,fontSize:26,fontFamily:"'Space Grotesk',sans-serif"}}>{result.pct}%</p>
+                <p style={{color:"var(--accent2)",fontWeight:900,fontSize:26,fontFamily:"'Poppins',sans-serif"}}>{result.pct}%</p>
               </div>
             )}
             <div style={{display:"flex",gap:10,justifyContent:"center",marginTop:8,marginBottom:10,flexWrap:"wrap"}}>
@@ -1196,7 +1196,7 @@ function DppAttempt({dpp,name,onBack}){
               <div style={{display:"inline-flex",alignItems:"center",gap:8,background:"rgba(248,113,113,.08)",border:"1px solid rgba(248,113,113,.2)",borderRadius:12,padding:"8px 18px",margin:"10px 0 4px"}}>
                 <span style={{fontSize:18}}>⏱</span>
                 <div>
-                  <p style={{color:"#f87171",fontWeight:900,fontSize:16,fontFamily:"'Space Grotesk',sans-serif"}}>
+                  <p style={{color:"#ef4444",fontWeight:900,fontSize:16,fontFamily:"'Poppins',sans-serif"}}>
                     {Math.floor(result.totalTimeTaken/60)>0?`${Math.floor(result.totalTimeTaken/60)} min ${result.totalTimeTaken%60} sec`:`${result.totalTimeTaken} sec`}
                   </p>
                   <p style={{color:"rgba(248,113,113,.6)",fontSize:10,fontWeight:700}}>TOTAL TIME LIYA</p>
@@ -1218,7 +1218,7 @@ function DppAttempt({dpp,name,onBack}){
                   <span style={{fontSize:20}}>📲</span> Share Karo (Apps)
                 </button>
               )}
-              <button onClick={copyResult} className="btn-glow ripple" style={{...btn(copied?"linear-gradient(135deg,#16a34a,#15803d)":"linear-gradient(135deg,#7c3aed,#4f46e5)"),width:"100%",padding:"14px",fontSize:15,borderRadius:14,display:"flex",alignItems:"center",justifyContent:"center",gap:10,transition:"all .3s"}}>
+              <button onClick={copyResult} className="btn-glow ripple" style={{...btn(copied?"linear-gradient(135deg,#16a34a,#15803d)":"linear-gradient(135deg,#7b4dff,#5b3df6)"),width:"100%",padding:"14px",fontSize:15,borderRadius:14,display:"flex",alignItems:"center",justifyContent:"center",gap:10,transition:"all .3s"}}>
                 <span style={{fontSize:20}}>{copied?"✅":"📋"}</span>{copied?"Copied! Ab paste karo":"Text Copy Karo"}
               </button>
               <button onClick={downloadCard} disabled={sharing} className="btn-glow ripple" style={{...btn("linear-gradient(135deg,#b45309,#d97706)"),width:"100%",padding:"14px",fontSize:15,borderRadius:14,display:"flex",alignItems:"center",justifyContent:"center",gap:10,opacity:sharing?0.7:1}}>
@@ -1244,7 +1244,7 @@ function DppAttempt({dpp,name,onBack}){
                       {q.marks&&<span style={{color:"var(--dim)",fontWeight:400,fontSize:11}}> [{q.marks}M]</span>}
                     </p>
                     {result.questionTimes&&result.questionTimes[i]>0&&(
-                      <span style={{flexShrink:0,background:"rgba(248,113,113,.08)",border:"1px solid rgba(248,113,113,.18)",borderRadius:8,padding:"3px 8px",fontSize:10,color:"#f87171",fontWeight:700,whiteSpace:"nowrap"}}>
+                      <span style={{flexShrink:0,background:"rgba(248,113,113,.08)",border:"1px solid rgba(248,113,113,.18)",borderRadius:8,padding:"3px 8px",fontSize:10,color:"#ef4444",fontWeight:700,whiteSpace:"nowrap"}}>
                         ⏱ {result.questionTimes[i]<60?`${result.questionTimes[i]}s`:`${Math.floor(result.questionTimes[i]/60)}m ${result.questionTimes[i]%60}s`}
                       </span>
                     )}
@@ -1260,14 +1260,14 @@ function DppAttempt({dpp,name,onBack}){
               );
             })}
           </div>
-          <button onClick={onBack} style={{...btn("linear-gradient(135deg,#4f46e5,#7c3aed)"),width:"100%",padding:"13px",fontSize:15,marginBottom:28}}>← Wapas Jao</button>
+          <button onClick={onBack} style={{...btn("linear-gradient(135deg,#5b3df6,#7b4dff)"),width:"100%",padding:"13px",fontSize:15,marginBottom:28}}>← Wapas Jao</button>
         </div>
       </div>
     );
   }
 
   return(
-    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#0f0c29,#302b63,#24243e)",padding:"20px 16px"}}>
+    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#f6f6fd,#eeeafd,#ffffff)",padding:"20px 16px"}}>
       <div style={{maxWidth:640,margin:"0 auto"}}>
         {/* Header + Progress */}
         <div className="fade-up" style={{...card,marginBottom:14}}>
@@ -1280,12 +1280,12 @@ function DppAttempt({dpp,name,onBack}){
             <div style={{display:"flex",gap:8}}>
               {/* Live Timer */}
               <div style={{background:"rgba(248,113,113,.1)",border:"1px solid rgba(248,113,113,.3)",borderRadius:12,padding:"8px 14px",textAlign:"center",minWidth:72}}>
-                <p style={{color:"#f87171",fontWeight:900,fontSize:15,fontFamily:"'Space Grotesk',sans-serif",letterSpacing:.5}}>
+                <p style={{color:"#ef4444",fontWeight:900,fontSize:15,fontFamily:"'Poppins',sans-serif",letterSpacing:.5}}>
                   {Math.floor(totalElapsed/60).toString().padStart(2,"0")}:{(totalElapsed%60).toString().padStart(2,"0")}
                 </p>
                 <p style={{color:"rgba(248,113,113,.6)",fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:.5}}>⏱ Time</p>
               </div>
-              <div style={{background:"var(--surface2)",border:"1px solid #312e81",borderRadius:12,padding:"8px 14px",textAlign:"center"}}>
+              <div style={{background:"var(--surface2)",border:"1px solid #ddd4fb",borderRadius:12,padding:"8px 14px",textAlign:"center"}}>
                 <p style={{color:"var(--accent2)",fontWeight:900,fontSize:16}}>{answered}/{total}</p>
                 <p style={{color:"var(--dim)",fontSize:10,fontWeight:600}}>ANSWERED</p>
               </div>
@@ -1294,14 +1294,14 @@ function DppAttempt({dpp,name,onBack}){
           {/* Progress Bar */}
           <div style={{display:"flex",alignItems:"center",gap:10}}>
             <div style={{flex:1,height:8,background:"var(--border)",borderRadius:99,overflow:"hidden"}}>
-              <div style={{height:"100%",width:`${progress}%`,background:"linear-gradient(90deg,#4f46e5,#a78bfa)",borderRadius:99,transition:"width 0.4s ease"}}/>
+              <div style={{height:"100%",width:`${progress}%`,background:"linear-gradient(90deg,#5b3df6,#7b4dff)",borderRadius:99,transition:"width 0.4s ease"}}/>
             </div>
             <span style={{color:"var(--accent2)",fontWeight:700,fontSize:13,minWidth:36}}>{progress}%</span>
           </div>
         </div>
 
         {dpp.questions.map((q,i)=>(
-          <div key={i} id={`question-card-${i}`} className="fade-up" style={{...card,borderColor:answers[i]?"#4f46e5":"var(--border)",marginBottom:10}}>
+          <div key={i} id={`question-card-${i}`} className="fade-up" style={{...card,borderColor:answers[i]?"#5b3df6":"var(--border)",marginBottom:10}}>
             <p style={{fontWeight:800,color:"var(--text)",marginBottom:12,fontSize:14,lineHeight:1.5}}>
               <span style={{color:"var(--accent2)",marginRight:6}}>Q{i+1}.</span>{q.text}
               {q.marks&&<span style={{color:"var(--dim)",fontWeight:400,fontSize:11}}> [{q.marks}M]</span>}
@@ -1313,21 +1313,21 @@ function DppAttempt({dpp,name,onBack}){
                   <label key={opt} className={`mcq-option${answers[i]===opt?" selected":""}`}
                     style={{display:"flex",alignItems:"center",gap:12,
                       background:answers[i]===opt?"rgba(99,102,241,.18)":"var(--surface2)",
-                      border:`2px solid ${answers[i]===opt?"#6366f1":"var(--border)"}`,
+                      border:`2px solid ${answers[i]===opt?"#5b3df6":"var(--border)"}`,
                       borderRadius:13,padding:"11px 16px",
                       boxShadow:answers[i]===opt?"0 4px 14px rgba(99,102,241,.22)":"none",
                     }}>
                     <div style={{
                       width:22,height:22,borderRadius:"50%",flexShrink:0,
-                      border:`2px solid ${answers[i]===opt?"#6366f1":"var(--dim)"}`,
-                      background:answers[i]===opt?"#6366f1":"transparent",
+                      border:`2px solid ${answers[i]===opt?"#5b3df6":"var(--dim)"}`,
+                      background:answers[i]===opt?"#5b3df6":"transparent",
                       display:"flex",alignItems:"center",justifyContent:"center",
                       transition:"all .2s var(--ease-spring)",
                     }}>
                       {answers[i]===opt&&<div style={{width:8,height:8,borderRadius:"50%",background:"#fff",animation:"checkPop .3s var(--ease-spring)"}}/>}
                     </div>
                     <input type="radio" name={`q${i}`} value={opt} checked={answers[i]===opt} onChange={()=>setAnswers(a=>({...a,[i]:opt}))} style={{display:"none"}}/>
-                    <span style={{color:"var(--accent2)",fontWeight:800,minWidth:22,fontFamily:"'Space Grotesk',sans-serif"}}>{opt}</span>
+                    <span style={{color:"var(--accent2)",fontWeight:800,minWidth:22,fontFamily:"'Poppins',sans-serif"}}>{opt}</span>
                     <span style={{color:"var(--text)",fontSize:13,lineHeight:1.4}}>{q.options[oi]}</span>
                   </label>
                 ))}
@@ -1337,9 +1337,9 @@ function DppAttempt({dpp,name,onBack}){
               <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
                 {["True","False"].map(v=>(
                   <label key={v} style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer",
-                    background:answers[i]===v?"var(--border)":"var(--surface2)",border:`2px solid ${answers[i]===v?"#6366f1":"var(--border)"}`,
+                    background:answers[i]===v?"var(--border)":"var(--surface2)",border:`2px solid ${answers[i]===v?"#5b3df6":"var(--border)"}`,
                     borderRadius:11,padding:"10px 22px",fontWeight:answers[i]===v?700:400,transition:"all .15s"}}>
-                    <input type="radio" name={`q${i}`} value={v} checked={answers[i]===v} onChange={()=>setAnswers(a=>({...a,[i]:v}))} style={{accentColor:"#6366f1"}}/>
+                    <input type="radio" name={`q${i}`} value={v} checked={answers[i]===v} onChange={()=>setAnswers(a=>({...a,[i]:v}))} style={{accentColor:"#5b3df6"}}/>
                     <span style={{color:"var(--text)"}}>{v==="True"?"✅ True":"❌ False"}</span>
                   </label>
                 ))}
@@ -1350,7 +1350,7 @@ function DppAttempt({dpp,name,onBack}){
             )}
           </div>
         ))}
-        <button onClick={submit} disabled={submitting} className="btn-glow" style={{...btn("linear-gradient(135deg,#4f46e5,#7c3aed)"),marginTop:4,marginBottom:30,width:"100%",fontSize:15,padding:"16px",opacity:submitting?0.85:1,boxShadow:"0 8px 32px rgba(99,102,241,.4)",borderRadius:16,letterSpacing:.3,fontFamily:"'Space Grotesk',sans-serif",fontWeight:700}}>
+        <button onClick={submit} disabled={submitting} className="btn-glow" style={{...btn("linear-gradient(135deg,#5b3df6,#7b4dff)"),marginTop:4,marginBottom:30,width:"100%",fontSize:15,padding:"16px",opacity:submitting?0.85:1,boxShadow:"0 8px 32px rgba(99,102,241,.4)",borderRadius:16,letterSpacing:.3,fontFamily:"'Poppins',sans-serif",fontWeight:700}}>
           {submitting?(
             <span className="dot-loading" style={{display:"inline-flex",alignItems:"center",gap:2}}>
               Submit ho raha hai <span/><span/><span/>
@@ -1392,16 +1392,16 @@ function TeacherPanel({onBack}){
   allResults.sort((a,b)=>b.submittedAt-a.submittedAt);
 
   return(
-    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#0f0c29,#302b63,#24243e)",padding:"20px 16px"}}>
+    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#f6f6fd,#eeeafd,#ffffff)",padding:"20px 16px"}}>
       <div style={{maxWidth:700,margin:"0 auto"}}>
         <div className="fade-up" style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
           <div>
             <button onClick={onBack} style={{background:"none",border:"none",color:"var(--accent2)",fontSize:13,cursor:"pointer",fontWeight:600,marginBottom:4,display:"block"}}>← Logout</button>
-            <h2 style={{color:"#fff",fontSize:21,fontWeight:900}}>👨‍🏫 Teacher Panel</h2>
+            <h2 style={{color:"var(--text)",fontSize:21,fontWeight:900}}>👨‍🏫 Teacher Panel</h2>
           </div>
           {tab==="dpps"&&<div style={{display:"flex",gap:8}}>
-            <button onClick={()=>setView("ai")} style={{...btn("linear-gradient(135deg,#7c3aed,#a78bfa)",{padding:"11px 14px",fontSize:13})}}>🤖 AI DPP</button>
-            <button onClick={()=>{setEditDpp(null);setView("create");}} style={{...btn("linear-gradient(135deg,#4f46e5,#7c3aed)",{padding:"11px 14px",fontSize:13})}}>+ New DPP</button>
+            <button onClick={()=>setView("ai")} style={{...btn("linear-gradient(135deg,#7b4dff,#7b4dff)",{padding:"11px 14px",fontSize:13})}}>🤖 AI DPP</button>
+            <button onClick={()=>{setEditDpp(null);setView("create");}} style={{...btn("linear-gradient(135deg,#5b3df6,#7b4dff)",{padding:"11px 14px",fontSize:13})}}>+ New DPP</button>
           </div>}
         </div>
 
@@ -1418,7 +1418,7 @@ function TeacherPanel({onBack}){
           {[["dpps","📋 DPPs"],["results","📊 Sabka Result"],["leaderboard","🏆 Leaderboard"]].map(([key,label])=>(
             <button key={key} onClick={()=>setTab(key)}
               style={{flex:1,padding:"10px",borderRadius:10,border:"none",cursor:"pointer",fontWeight:700,fontSize:13,
-                background:tab===key?"linear-gradient(135deg,#4f46e5,#7c3aed)":"none",
+                background:tab===key?"linear-gradient(135deg,#5b3df6,#7b4dff)":"none",
                 color:tab===key?"#fff":"var(--muted)",transition:"all .2s"}}>
               {label}
             </button>
@@ -1437,7 +1437,7 @@ function TeacherPanel({onBack}){
                 <div key={d.id} onClick={()=>{setDetailId(d.id);setView("detail");}}
                   style={{background:"var(--surface)",border:"1px solid var(--border)",borderRadius:14,padding:"14px 16px",marginBottom:8,cursor:"pointer",
                     display:"flex",justifyContent:"space-between",alignItems:"center"}}
-                  onMouseEnter={e=>{e.currentTarget.style.borderColor="#6366f1";e.currentTarget.style.background="var(--border)";}}
+                  onMouseEnter={e=>{e.currentTarget.style.borderColor="#5b3df6";e.currentTarget.style.background="var(--border)";}}
                   onMouseLeave={e=>{e.currentTarget.style.borderColor="var(--border)";e.currentTarget.style.background="var(--surface)";}}>
                   <div>
                     <p style={{fontWeight:800,color:"var(--text)",marginBottom:5}}>{d.title}</p>
@@ -1478,7 +1478,7 @@ function TeacherPanel({onBack}){
                       <p style={{fontWeight:900,color:"var(--accent2)",fontSize:18}}>{r.pct}%</p>
                       <p style={{color:"var(--dim)",fontSize:11}}>{r.got}/{r.total}M</p>
                       {r.totalTimeTaken>0&&(
-                        <p style={{color:"#f87171",fontSize:10,fontWeight:700,marginTop:2}}>
+                        <p style={{color:"#ef4444",fontSize:10,fontWeight:700,marginTop:2}}>
                           ⏱ {Math.floor(r.totalTimeTaken/60)>0?`${Math.floor(r.totalTimeTaken/60)}m ${r.totalTimeTaken%60}s`:`${r.totalTimeTaken}s`}
                         </p>
                       )}
@@ -1488,7 +1488,7 @@ function TeacherPanel({onBack}){
                   {r.questionTimes&&Object.keys(r.questionTimes).length>0&&(
                     <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:8}}>
                       {Object.entries(r.questionTimes).sort((a,b)=>Number(a[0])-Number(b[0])).map(([qi,t])=>(
-                        <span key={qi} style={{background:"rgba(248,113,113,.08)",border:"1px solid rgba(248,113,113,.18)",borderRadius:7,padding:"2px 7px",fontSize:10,color:"#f87171",fontWeight:700}}>
+                        <span key={qi} style={{background:"rgba(248,113,113,.08)",border:"1px solid rgba(248,113,113,.18)",borderRadius:7,padding:"2px 7px",fontSize:10,color:"#ef4444",fontWeight:700}}>
                           Q{Number(qi)+1}: {t<60?`${t}s`:`${Math.floor(t/60)}m${t%60}s`}
                         </span>
                       ))}
@@ -1498,7 +1498,7 @@ function TeacherPanel({onBack}){
                   <div style={{display:"flex",alignItems:"center",gap:8}}>
                     <div style={{flex:1,height:6,background:"var(--border)",borderRadius:99,overflow:"hidden"}}>
                       <div style={{height:"100%",width:`${r.pct}%`,borderRadius:99,
-                        background:r.pct>=80?"linear-gradient(90deg,#16a34a,#4ade80)":r.pct>=50?"linear-gradient(90deg,#d97706,#fbbf24)":"linear-gradient(90deg,#dc2626,#f87171)",
+                        background:r.pct>=80?"linear-gradient(90deg,#16a34a,#4ade80)":r.pct>=50?"linear-gradient(90deg,#d97706,#fbbf24)":"linear-gradient(90deg,#dc2626,#ef4444)",
                         transition:"width 0.8s ease"}}/>
                     </div>
                     <span style={{color:"var(--dim)",fontSize:10,minWidth:32}}>{new Date(r.submittedAt).toLocaleDateString("en-IN")}</span>
@@ -1591,7 +1591,7 @@ Return ONLY a valid JSON array, no explanation, no markdown:
   }
 
   if(preview) return(
-    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#0f0c29,#302b63,#24243e)",padding:"20px 16px"}}>
+    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#f6f6fd,#eeeafd,#ffffff)",padding:"20px 16px"}}>
       <div style={{maxWidth:680,margin:"0 auto"}}>
         <div className="fade-up" style={{...card,marginBottom:14}}>
           <button onClick={()=>setPreview(null)} style={{background:"none",border:"none",color:"var(--accent2)",fontSize:13,cursor:"pointer",fontWeight:600,marginBottom:10,display:"block"}}>← Wapas Edit Karo</button>
@@ -1636,12 +1636,12 @@ Return ONLY a valid JSON array, no explanation, no markdown:
   );
 
   return(
-    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#0f0c29,#302b63,#24243e)",padding:"20px 16px"}}>
+    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#f6f6fd,#eeeafd,#ffffff)",padding:"20px 16px"}}>
       <div style={{maxWidth:500,margin:"0 auto"}}>
         <div className="fade-up" style={{...card,marginBottom:14}}>
           <button onClick={onCancel} style={{background:"none",border:"none",color:"var(--accent2)",fontSize:13,cursor:"pointer",fontWeight:600,marginBottom:14,display:"block"}}>← Wapas</button>
           <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:20}}>
-            <div style={{width:52,height:52,background:"linear-gradient(135deg,#7c3aed,#a78bfa)",borderRadius:16,display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,flexShrink:0}}>🤖</div>
+            <div style={{width:52,height:52,background:"linear-gradient(135deg,#7b4dff,#7b4dff)",borderRadius:16,display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,flexShrink:0}}>🤖</div>
             <div>
               <h2 style={{color:"var(--text)",fontWeight:900,fontSize:20}}>AI DPP Generator</h2>
               <p style={{color:"var(--muted)",fontSize:12,marginTop:2}}>Topic do, AI questions banayega!</p>
@@ -1664,7 +1664,7 @@ Return ONLY a valid JSON array, no explanation, no markdown:
             {["5","8","10","15"].map(n=>(
               <button key={n} onClick={()=>setQCount(n)}
                 style={{flex:1,padding:"10px",borderRadius:10,border:"none",cursor:"pointer",fontWeight:700,fontSize:14,
-                  background:qCount===n?"linear-gradient(135deg,#4f46e5,#7c3aed)":"var(--surface2)",
+                  background:qCount===n?"linear-gradient(135deg,#5b3df6,#7b4dff)":"var(--surface2)",
                   color:qCount===n?"#fff":"var(--muted)",transition:"all .2s"}}>
                 {n}
               </button>
@@ -1676,7 +1676,7 @@ Return ONLY a valid JSON array, no explanation, no markdown:
             {[["easy","🟢 Easy"],["medium","🟡 Medium"],["hard","🔴 Hard"]].map(([val,label])=>(
               <button key={val} onClick={()=>setLevel(val)}
                 style={{flex:1,padding:"10px 4px",borderRadius:10,border:"none",cursor:"pointer",fontWeight:700,fontSize:12,
-                  background:level===val?"linear-gradient(135deg,#4f46e5,#7c3aed)":"var(--surface2)",
+                  background:level===val?"linear-gradient(135deg,#5b3df6,#7b4dff)":"var(--surface2)",
                   color:level===val?"#fff":"var(--muted)",transition:"all .2s"}}>
                 {label}
               </button>
@@ -1705,7 +1705,7 @@ Return ONLY a valid JSON array, no explanation, no markdown:
 
           {err&&<div style={{background:"rgba(248,113,113,.1)",border:"1px solid rgba(248,113,113,.3)",borderRadius:10,padding:"10px 14px",color:"var(--red)",fontSize:13,marginBottom:12}}>❌ {err}</div>}
 
-          <button onClick={generate} disabled={loading||qTypes.length===0} className="btn-glow" style={{...btn("linear-gradient(135deg,#7c3aed,#4f46e5)"),width:"100%",padding:"15px",fontSize:16,marginTop:10,opacity:loading?0.8:1,fontFamily:"'Space Grotesk',sans-serif"}}>
+          <button onClick={generate} disabled={loading||qTypes.length===0} className="btn-glow" style={{...btn("linear-gradient(135deg,#7b4dff,#5b3df6)"),width:"100%",padding:"15px",fontSize:16,marginTop:10,opacity:loading?0.8:1,fontFamily:"'Poppins',sans-serif"}}>
             {loading?(
               <span className="dot-loading" style={{display:"inline-flex",alignItems:"center",gap:4}}>
                 AI soch raha hai <span/><span/><span/>
@@ -1735,7 +1735,7 @@ function DppDetail({dpp,onBack,onEdit,onDelete}){
   const subList=Object.values(subs);
   const avgPct=subList.length>0?Math.round(subList.reduce((acc,s)=>acc+calcScore(dpp,s.answers).pct,0)/subList.length):null;
   return(
-    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#0f0c29,#302b63,#24243e)",padding:"20px 16px"}}>
+    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#f6f6fd,#eeeafd,#ffffff)",padding:"20px 16px"}}>
       <div style={{maxWidth:680,margin:"0 auto"}}>
         <div className="fade-up" style={{...card,marginBottom:12}}>
           <button onClick={onBack} style={{background:"none",border:"none",color:"var(--accent2)",fontSize:13,cursor:"pointer",fontWeight:600,marginBottom:10,display:"block"}}>← Back</button>
@@ -1757,7 +1757,7 @@ function DppDetail({dpp,onBack,onEdit,onDelete}){
                 <span style={{color:"var(--accent2)",fontWeight:700,fontSize:12}}>{avgPct}%</span>
               </div>
               <div style={{height:8,background:"var(--border)",borderRadius:99,overflow:"hidden"}}>
-                <div style={{height:"100%",width:`${avgPct}%`,background:"linear-gradient(90deg,#4f46e5,#a78bfa)",borderRadius:99}}/>
+                <div style={{height:"100%",width:`${avgPct}%`,background:"linear-gradient(90deg,#5b3df6,#7b4dff)",borderRadius:99}}/>
               </div>
             </div>
           )}
@@ -1927,7 +1927,7 @@ function DppForm({initial,onSave,onCancel}){
     setSaving(true); await onSave(dpp); setSaving(false);
   }
   return(
-    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#0f0c29,#302b63,#24243e)",padding:"20px 16px"}}>
+    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#f6f6fd,#eeeafd,#ffffff)",padding:"20px 16px"}}>
       <div style={{maxWidth:680,margin:"0 auto"}}>
         <div className="fade-up" style={{...card,marginBottom:12}}>
           <button onClick={onCancel} style={{background:"none",border:"none",color:"var(--accent2)",fontSize:13,cursor:"pointer",fontWeight:600,marginBottom:12,display:"block"}}>← Back</button>
@@ -1951,10 +1951,10 @@ function DppForm({initial,onSave,onCancel}){
         </div>
         <div className="fade-up" style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
           <h3 style={{color:"var(--text)",fontWeight:800}}>Questions ({dpp.questions.length})</h3>
-          <button onClick={addQ} style={{...btn("linear-gradient(135deg,#4f46e5,#7c3aed)",{padding:"8px 16px"})}}>+ Add Q</button>
+          <button onClick={addQ} style={{...btn("linear-gradient(135deg,#5b3df6,#7b4dff)",{padding:"8px 16px"})}}>+ Add Q</button>
         </div>
         {dpp.questions.length===0&&(
-          <div style={{textAlign:"center",padding:"28px",color:"var(--dim)",background:"var(--surface)",borderRadius:14,border:"1.5px dashed #312e81",marginBottom:12}}>
+          <div style={{textAlign:"center",padding:"28px",color:"var(--dim)",background:"var(--surface)",borderRadius:14,border:"1.5px dashed #ddd4fb",marginBottom:12}}>
             <p style={{fontSize:30,marginBottom:6}}>📝</p>
             <p style={{color:"var(--muted)"}}>+ Add Q dabao</p>
           </div>
@@ -2007,7 +2007,7 @@ function QuestionEditor({q,index,onChange,onRemove}){
             <span style={{fontSize:12,fontWeight:700,color:"var(--muted)"}}>Correct:</span>
             {MCQ_OPTS.map(v=>(
               <label key={v} style={{cursor:"pointer",fontWeight:q.answer===v?800:400,color:q.answer===v?"var(--accent2)":"var(--muted)",display:"flex",alignItems:"center",gap:3,fontSize:13}}>
-                <input type="radio" name={`ans${index}`} value={v} checked={q.answer===v} onChange={()=>onChange({answer:v})} style={{accentColor:"#6366f1"}}/>{v}
+                <input type="radio" name={`ans${index}`} value={v} checked={q.answer===v} onChange={()=>onChange({answer:v})} style={{accentColor:"#5b3df6"}}/>{v}
               </label>
             ))}
           </div>
@@ -2018,7 +2018,7 @@ function QuestionEditor({q,index,onChange,onRemove}){
           <span style={{fontSize:12,fontWeight:700,color:"var(--muted)"}}>Correct:</span>
           {["True","False"].map(v=>(
             <label key={v} style={{cursor:"pointer",fontWeight:q.answer===v?800:400,color:q.answer===v?"var(--accent2)":"var(--muted)",display:"flex",alignItems:"center",gap:3,fontSize:13}}>
-              <input type="radio" name={`tf${index}`} value={v} checked={q.answer===v} onChange={()=>onChange({answer:v})} style={{accentColor:"#6366f1"}}/>{v}
+              <input type="radio" name={`tf${index}`} value={v} checked={q.answer===v} onChange={()=>onChange({answer:v})} style={{accentColor:"#5b3df6"}}/>{v}
             </label>
           ))}
         </div>
@@ -2038,7 +2038,7 @@ function SubmissionCard({sub,dpp,sc}){
     <div style={{border:"1px solid var(--border)",borderRadius:11,marginBottom:7,overflow:"hidden"}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"11px 13px",cursor:"pointer",background:"var(--surface2)"}} onClick={()=>setOpen(o=>!o)}>
         <div style={{display:"flex",alignItems:"center",gap:9}}>
-          <div style={{width:34,height:34,background:"linear-gradient(135deg,#4f46e5,#7c3aed)",borderRadius:9,display:"flex",alignItems:"center",justifyContent:"center",fontSize:15}}>🎓</div>
+          <div style={{width:34,height:34,background:"linear-gradient(135deg,#5b3df6,#7b4dff)",borderRadius:9,display:"flex",alignItems:"center",justifyContent:"center",fontSize:15}}>🎓</div>
           <div>
             <span style={{fontWeight:700,color:"var(--text)",fontSize:13}}>{sub.studentName}</span>
             {sc.total>0&&<span style={{marginLeft:7,fontSize:11,color:"var(--accent2)",fontWeight:600}}>{sc.got}/{sc.total}M ({sc.pct}%)</span>}
@@ -2048,7 +2048,7 @@ function SubmissionCard({sub,dpp,sc}){
       </div>
       {/* Mini progress */}
       <div style={{height:3,background:"var(--border)"}}>
-        <div style={{height:"100%",width:`${sc.pct}%`,background:"linear-gradient(90deg,#4f46e5,#a78bfa)"}}/>
+        <div style={{height:"100%",width:`${sc.pct}%`,background:"linear-gradient(90deg,#5b3df6,#7b4dff)"}}/>
       </div>
       {open&&(
         <div style={{padding:"11px 13px",background:"var(--surface)"}}>
@@ -2056,7 +2056,7 @@ function SubmissionCard({sub,dpp,sc}){
             const ans=sub.answers[i];
             const correct=q.type!=="subjective"&&q.answer&&(ans||"").toUpperCase()===q.answer.toUpperCase();
             return(
-              <div key={i} style={{marginBottom:7,paddingBottom:7,borderBottom:i<dpp.questions.length-1?"1px solid #2d2a5e":"none"}}>
+              <div key={i} style={{marginBottom:7,paddingBottom:7,borderBottom:i<dpp.questions.length-1?"1px solid #e6e3f8":"none"}}>
                 <p style={{margin:0,fontWeight:600,color:"var(--text)",fontSize:12}}>Q{i+1}. {q.text}</p>
                 <p style={{margin:"3px 0 0",fontSize:11,color:"var(--muted)"}}>
                   Answer: <strong style={{color:"var(--accent2)"}}>{ans||"—"}</strong>
