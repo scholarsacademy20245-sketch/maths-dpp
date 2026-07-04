@@ -398,6 +398,13 @@ const TEACHER_PIN = "7210";
 
 const MCQ_OPTS = ["A","B","C","D"];
 function uid(){ return Math.random().toString(36).slice(2,9); }
+function formatTime(ms){
+  const totalSec=Math.max(0,Math.floor(ms/1000));
+  const m=Math.floor(totalSec/60);
+  const s=totalSec%60;
+  if(m>0) return m+" min "+s+" sec";
+  return s+" sec";
+}
 function emptyOpts(){ return ["","","",""]; }
 function emptyQ(){ return {text:"",type:"mcq",options:emptyOpts(),answer:"",marks:""}; }
 function emptyDpp(){ return {title:"",batch:"",chapter:"",questions:[]}; }
@@ -999,7 +1006,9 @@ function DppAttempt({dpp,name,onBack}){
   const [result,setResult]=useState(null);
   const [sharing,setSharing]=useState(false);
   const [copied,setCopied]=useState(false);
+  const [timeTakenMs,setTimeTakenMs]=useState(0);
   const scoreCardRef=useRef(null);
+  const startTimeRef=useRef(Date.now());
 
   const answered=Object.keys(answers).length;
   const total=dpp.questions.length;
@@ -1007,9 +1016,11 @@ function DppAttempt({dpp,name,onBack}){
 
   async function submit(){
     setSubmitting(true);
-    const sub={id:uid(),dppId:dpp.id,studentName:name,answers,submittedAt:Date.now()};
+    const elapsed=Date.now()-startTimeRef.current;
+    const sub={id:uid(),dppId:dpp.id,studentName:name,answers,submittedAt:Date.now(),timeTakenMs:elapsed};
     await dbSubmit(dpp.id,sub);
     setResult(calcScore(dpp,answers));
+    setTimeTakenMs(elapsed);
     setSubmitted(true);setSubmitting(false);
   }
 
@@ -1032,7 +1043,8 @@ function DppAttempt({dpp,name,onBack}){
         "━━━━━━━━━━━━━━━\n\n"+
         "✅ Sahi: "+correctCount+"\n"+
         "❌ Galat: "+wrongCount+"\n"+
-        "⏭ Chhoda: "+skipCount+"\n\n"+
+        "⏭ Chhoda: "+skipCount+"\n"+
+        "⏱️ Time: "+formatTime(timeTakenMs)+"\n\n"+
         msg+"\n\n"+
         "_Powered by Sameer Sir DPP Portal_ 🚀";
     }
@@ -1105,6 +1117,10 @@ function DppAttempt({dpp,name,onBack}){
                 <p style={{color:"var(--accent2)",fontWeight:900,fontSize:26,fontFamily:"'Space Grotesk',sans-serif"}}>{result.pct}%</p>
               </div>
             )}
+            <div style={{display:"inline-flex",alignItems:"center",gap:6,background:"rgba(56,189,248,.12)",border:"1px solid rgba(56,189,248,.3)",borderRadius:99,padding:"6px 16px",marginBottom:14}}>
+              <span style={{fontSize:14}}>⏱️</span>
+              <span style={{fontSize:13,color:"var(--accent3)",fontWeight:700}}>Time Liya: {formatTime(timeTakenMs)}</span>
+            </div>
             <div style={{display:"flex",gap:10,justifyContent:"center",marginTop:8,marginBottom:10,flexWrap:"wrap"}}>
               {[{icon:"✅",label:"Sahi",val:correctCount,color:"var(--green)"},{icon:"❌",label:"Galat",val:wrongCount,color:"var(--red)"},{icon:"⏭",label:"Chhoda",val:skipCount,color:"var(--muted)"}].map(s=>(
                 <div key={s.label} style={{background:"var(--surface2)",border:"1px solid var(--border)",borderRadius:12,padding:"8px 18px",textAlign:"center"}}>
