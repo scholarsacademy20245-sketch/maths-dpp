@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Maths DPP – Sameer Sir Portal</title>
+<title>Sameer Sir – Advanced Maths DPP Portal</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-database-compat.js"></script>
 
-<!-- Premium Fonts & Icons -->
+<!-- Corporate Fonts & FontAwesome SVG Web Icons -->
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<!-- KaTeX for Premium Math Formula Rendering -->
+<!-- KaTeX for High Fidelity Math Formulas Rendering -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
 
@@ -42,12 +42,12 @@
 
 <style>
 :root{
-  --bg: #070a13;
-  --surface: #0f1524;
-  --surface2: #172034;
-  --border: #22314d;
+  --bg: #070913;
+  --surface: #0f1526;
+  --surface2: #162035;
+  --border: #233352;
   --accent: #4f46e5;
-  --accent-hover: #6366f1;
+  --accent-glow: rgba(79, 70, 229, 0.35);
   --accent2: #818cf8;
   --cyan: #06b6d4;
   --green: #10b981;
@@ -55,7 +55,6 @@
   --gold: #f59e0b;
   --text: #f3f4f6;
   --muted: #9ca3af;
-  --dim: #4b5563;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{
@@ -64,62 +63,112 @@ body{
   min-height:100vh;
   color:var(--text);
   background-image:
-    radial-gradient(circle at 80% 0%, rgba(79,70,229,0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 0%, rgba(79,70,229,0.18) 0%, transparent 50%),
     radial-gradient(circle at 10% 90%, rgba(6,182,212,0.08) 0%, transparent 50%);
   background-attachment: fixed;
 }
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-thumb{background:rgba(79,70,229,0.4);border-radius:99px}
 
+/* Base Form Control Refactoring */
 input, textarea, select {
   font-family: inherit;
-  transition: all 0.2s ease;
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 14px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 input:focus, textarea:focus, select:focus {
   outline: none;
-  border-color: var(--accent-hover)!important;
-  box-shadow: 0 0 0 4px rgba(79,70,229,0.25)!important;
+  border-color: var(--accent2)!important;
+  box-shadow: 0 0 0 4px var(--accent-glow)!important;
+  background: var(--surface2);
 }
 
 h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; }
 
-.glass-card {
-  background: rgba(15, 21, 36, 0.7);
+/* Custom Dashboard Core Containers */
+.glass-panel {
+  background: rgba(15, 21, 38, 0.75);
   backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 24px;
 }
-.btn-premium {
+
+.premium-btn {
   background: linear-gradient(135deg, var(--accent) 0%, #6366f1 100%);
   color: white; border: none; border-radius: 12px;
-  padding: 12px 24px; font-weight: 600; cursor: pointer;
-  transition: all 0.25s; box-shadow: 0 4px 14px rgba(79,70,229,0.3);
+  padding: 14px 28px; font-weight: 600; cursor: pointer;
+  transition: all 0.25s ease; box-shadow: 0 4px 14px var(--accent-glow);
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-size: 14px;
 }
-.btn-premium:hover {
-  transform: translateY(-2px); box-shadow: 0 6px 20px rgba(79,70,229,0.5);
+.premium-btn:hover {
+  transform: translateY(-2px); box-shadow: 0 6px 20px rgba(79,70,229,0.55);
 }
-.btn-sec {
+.premium-btn:active { transform: translateY(0); }
+
+.sec-btn {
   background: var(--surface2); color: var(--text);
   border: 1px solid var(--border); border-radius: 12px;
   padding: 12px 24px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  display: inline-flex; align-items: center; gap: 8px; font-size: 13px;
 }
-.btn-sec:hover { background: rgba(23,32,52,0.8); border-color: var(--muted); }
+.sec-btn:hover { background: rgba(22,32,53,0.8); border-color: var(--muted); }
 
-.card-interactive {
-  transition: all 0.25s cubic-bezier(.22,1,.36,1);
+.interactive-row {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
-.card-interactive:hover {
-  transform: translateY(-3px); border-color: var(--accent2)!important;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.4)!important;
+.interactive-row:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent2);
+  background: var(--surface2);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
 }
-.badge-custom {
+
+.option-node {
+  display: flex; align-items: center; gap: 14px; padding: 16px;
+  background: var(--surface); border: 2px solid var(--border);
+  border-radius: 12px; cursor: pointer; transition: all 0.2s ease;
+}
+.option-node:hover { background: var(--surface2); border-color: var(--muted); }
+.option-node.active {
+  border-color: var(--accent2); background: rgba(79,70,229,0.12);
+  box-shadow: 0 4px 12px var(--accent-glow);
+}
+
+.badge-label {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 4px 12px; border-radius: 99px; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px;
 }
-.diff-easy { background: rgba(16,185,129,0.1); color: #34d399; border: 1px solid rgba(16,185,129,0.2); }
-.diff-med { background: rgba(245,158,11,0.1); color: #fbbf24; border: 1px solid rgba(245,158,11,0.2); }
-.diff-hard { background: rgba(244,63,94,0.1); color: #fb7185; border: 1px solid rgba(244,63,94,0.2); }
+.badge-easy { background: rgba(16,185,129,0.1); color: #34d399; border: 1px solid rgba(16,185,129,0.2); }
+.badge-med { background: rgba(245,158,11,0.1); color: #fbbf24; border: 1px solid rgba(245,158,11,0.2); }
+.badge-hard { background: rgba(244,63,94,0.1); color: #fb7185; border: 1px solid rgba(244,63,94,0.2); }
+
+.stat-grid-box {
+  background: linear-gradient(135deg, var(--surface) 0%, rgba(22,32,53,0.5) 100%);
+  border: 1px solid var(--border); border-radius: 14px; padding: 18px;
+  text-align: center; transition: all 0.2s;
+}
+.stat-grid-box:hover { border-color: var(--accent2); transform: translateY(-2px); }
+
+.section-label {
+  display: block; font-size: 11px; font-weight: 700; color: var(--accent2);
+  text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 8px;
+}
 </style>
 </head>
 <body>
@@ -127,24 +176,31 @@ h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; }
 
 <script type="text/babel">
 const { useState, useEffect, useRef } = React;
+const TEACHER_PIN = "7210";
+const MCQ_OPTS = ["A","B","C","D"];
 
-// Smart KaTeX Equation Component
+function uid(){ return Math.random().toString(36).slice(2,9); }
+function emptyOpts(){ return ["","","",""]; }
+function emptyQ(){ return {text:"",type:"mcq",options:emptyOpts(),answer:"",marks:""}; }
+function emptyDpp(){ return {title:"",batch:"",chapter:"",questions:[]}; }
+
+// ── Smart Dynamic Formula Parser ──
 function MathText({ text }) {
-  const spanRef = useRef(null);
+  const nodeRef = useRef(null);
   useEffect(() => {
-    if (spanRef.current) {
+    if (nodeRef.current) {
       const hasMath = text.includes("$") || text.includes("^") || text.includes("_") || text.includes("\\");
       if (hasMath) {
         let cleanText = text.replace(/\$/g, "");
-        try { katex.render(cleanText, spanRef.current, { throwOnError: false }); } 
-        catch (e) { spanRef.current.textContent = text; }
-      } else { spanRef.current.textContent = text; }
+        try { katex.render(cleanText, nodeRef.current, { throwOnError: false }); } 
+        catch (e) { nodeRef.current.textContent = text; }
+      } else { nodeRef.current.textContent = text; }
     }
   }, [text]);
-  return <span ref={spanRef} />;
+  return <span ref={nodeRef} />;
 }
 
-// Score Calculation
+// Score Evaluation Calculation
 function calcScore(dpp, answers){
   let got=0, total=0;
   if(!dpp||!dpp.questions) return {got:0,total:0,pct:0};
@@ -158,7 +214,7 @@ function calcScore(dpp, answers){
   return {got, total, pct: total>0?Math.round((got/total)*100):0};
 }
 
-// Custom Dynamic Hooks for Realtime Updates
+// Database Sync Hooks
 function useDpps(){
   const [dpps,setDpps]=useState({});
   useEffect(()=>{
@@ -178,7 +234,7 @@ function useAllSubmissions(){
   return subs;
 }
 
-// ── APP MASTER CONTAINER ──
+// ── CORE MASTER ENGINE ──
 function App(){
   const [mode,setMode]=useState(null);
   const [auth,setAuth]=useState(false);
@@ -187,21 +243,21 @@ function App(){
 
   return (
     <div>
-      {/* Top Professional Header */}
-      <nav style={{background:'rgba(15,21,36,0.85)', backdropFilter:'blur(16px)', borderBottom:'1px solid var(--border)', position:'sticky', top:0, zIndex:100, padding:'16px 24px'}}>
-        <div style={{maxWidth:'1100px', margin:'0 auto', display:'flex', justifyContent:'space-between', alignHeight:'center', alignItems:'center'}}>
-          <div style={{display:'flex', alignItems:'center', gap:'12px', cursor:'pointer'}} onClick={()=>{setMode(null);setAuth(false);}}>
-            <div style={{background:'var(--accent)', width:'38px', height:'38px', borderRadius:'10px', display:'flex', alignItems:'center', justifyContent:'center'}}>
-              <i className="fa-solid fa-square-root-variable" style={{color:'white', fontSize:'18px'}}></i>
+      {/* Top Corporate Navigation Framework */}
+      <nav style={{background:'rgba(15,21,36,0.8)', backdropFilter:'blur(20px)', borderBottom:'1px solid var(--border)', position:'sticky', top:0, zIndex:100, padding:'16px 24px'}}>
+        <div style={{maxWidth:'1100px', margin:'0 auto', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+          <div style={{display:'flex', alignItems:'center', gap:'14px', cursor:'pointer'}} onClick={()=>{setMode(null);setAuth(false);}}>
+            <div style={{background:'var(--accent)', width:'40px', height:'40px', borderRadius:'12px', display:'flex', alignItems:'center', justifyContainer:'center', justifyContent:'center'}}>
+              <i className="fa-solid fa-graduation-cap" style={{color:'white', fontSize:'18px'}}></i>
             </div>
             <div>
-              <h2 style={{fontSize:'18px', fontWeight:700, letterSpacing:'-0.5px'}}>Sameer Sir Classes</h2>
-              <p style={{fontSize:'11px', color:'var(--muted)'}}>Digital Evaluation System</p>
+              <h2 style={{fontSize:'18px', fontWeight:700, letterSpacing:'-0.5px', lineHeight:1.1}}>Sameer Sir Portal</h2>
+              <p style={{fontSize:'11px', color:'var(--muted)', marginTop:'2px'}}>Performance Diagnostic Suite</p>
             </div>
           </div>
           {mode && (
-            <button onClick={()=>{setMode(null); setAuth(false);}} className="btn-sec" style={{padding:'6px 14px', fontSize:'12px'}}>
-              <i className="fa-solid fa-arrow-left-long" style={{marginRight:6}}></i> Back to Home
+            <button onClick={()=>{setMode(null); setAuth(false);}} className="sec-btn">
+              <i className="fa-solid fa-house"></i> Main Menu
             </button>
           )}
         </div>
@@ -220,51 +276,53 @@ function App(){
 // ── LANDING INTERFACE ──
 function Landing({onSelect}){
   return(
-    <div style={{textAlign:"center", maxWidth:750, margin:"40px auto 0"}} className="fade-up">
-      <div style={{display:"inline-flex", alignItems:'center', gap:8, padding:"6px 16px", background:"rgba(79,70,229,0.1)", border:"1px solid rgba(79,70,229,0.2)", borderRadius:"99px", color:"var(--accent2)", fontSize:"13px", fontWeight:600, marginBottom:"24px"}}>
-        <span style={{width:8, height:8, background:'var(--green)', borderRadius:'50%', display:'inline-block'}}></span> Portal Active & Connected
+    <div style={{textAlign:"center", maxWidth:800, margin:"40px auto 0"}}>
+      <div style={{display:"inline-flex", alignItems:'center', gap:8, padding:"6px 16px", background:"rgba(79,70,229,0.08)", border:"1px solid rgba(79,70,229,0.2)", borderRadius:"99px", color:"var(--accent2)", fontSize:"12px", fontWeight:600, marginBottom:"24px"}}>
+        <span style={{width:8, height:8, background:'var(--green)', borderRadius:'50%', display:'inline-block'}}></span> System Core: Online Sync
       </div>
-      <h1 style={{fontSize:44, fontWeight:800, marginBottom:16, letterSpacing:'-1px'}}>Advanced Daily Practice Problems</h1>
-      <p style={{color:"var(--muted)", fontSize:16, marginBottom:40, maxWidth:550, margin:"0 auto 40px"}}>An interactive digital suite designed for Class 8 and Class 10 mathematics optimization, analytics, and trackable results metric modules.</p>
+      <h1 style={{fontSize:46, fontWeight:800, marginBottom:16, letterSpacing:'-1px'}}>Interactive Problem Modules</h1>
+      <p style={{color:"var(--muted)", fontSize:16, marginBottom:44, maxWidth:580, margin:"0 auto 44px"}}>Class 8 and Class 10 customized practice deployment pipelines with realtime telemetry logs analysis.</p>
       
       <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:24, textAlign:"left"}}>
-        <div onClick={()=>onSelect("student")} className="glass-card card-interactive" style={{cursor:"pointer"}}>
-          <div style={{width:46, height:46, background:'rgba(6,182,212,0.1)', borderRadius:12, display:'flex', alignItems:'center', justifyContent:'center', marginBottom:20, border:'1px solid rgba(6,182,212,0.2)'}}>
-            <i className="fa-solid fa-user-graduate" style={{color:'var(--cyan)', fontSize:'18px'}}></i>
+        <div onClick={()=>onSelect("student")} className="glass-panel interactive-row" style={{flexDirection:'column', alignItems:'flex-start', padding:32}}>
+          <div style={{width:48, height:48, background:'rgba(6,182,212,0.1)', borderRadius:14, display:'flex', alignItems:'center', justifyContent:'center', marginBottom:24, border:'1px solid rgba(6,182,212,0.2)'}}>
+            <i className="fa-solid fa-user-astronaut" style={{color:'var(--cyan)', fontSize:'20px'}}></i>
           </div>
-          <h3 style={{fontSize:20, marginBottom:8}}>Student Dashboard</h3>
-          <p style={{color:"var(--muted)", fontSize:13, lineHeight:1.5}}>Apne assignments/DPPs solve karein, instantly performance breakdown check karein aur leaderboard score dekhein.</p>
+          <h3 style={{fontSize:22, marginBottom:10}}>Student Workspace</h3>
+          <p style={{color:"var(--muted)", fontSize:13, lineHeight:1.6, marginBottom:20}}>Resolve allocated math vectors sheets, obtain precise evaluation summaries, and monitor analytics metrics.</p>
+          <span style={{color:'var(--cyan)', fontSize:13, fontWeight:600}}>Launch Interface <i className="fa-solid fa-arrow-right-long" style={{marginLeft:6}}></i></span>
         </div>
 
-        <div onClick={()=>onSelect("teacher")} className="glass-card card-interactive" style={{cursor:"pointer"}}>
-          <div style={{width:46, height:46, background:'rgba(79,70,229,0.1)', borderRadius:12, display:'flex', alignItems:'center', justifyContent:'center', marginBottom:20, border:'1px solid rgba(79,70,229,0.2)'}}>
-            <i className="fa-solid fa-chalkboard-user" style={{color:'var(--accent2)', fontSize:'18px'}}></i>
+        <div onClick={()=>onSelect("teacher")} className="glass-panel interactive-row" style={{flexDirection:'column', alignItems:'flex-start', padding:32}}>
+          <div style={{width:48, height:48, background:'rgba(79,70,229,0.1)', borderRadius:14, display:'flex', alignItems:'center', justifyContent:'center', marginBottom:24, border:'1px solid rgba(79,70,229,0.2)'}}>
+            <i className="fa-solid fa-toolbox" style={{color:'var(--accent2)', fontSize:'20px'}}></i>
           </div>
-          <h3 style={{fontSize:20, marginBottom:8}}>Teacher Terminal</h3>
-          <p style={{color:"var(--muted)", fontSize:13, lineHeight:1.5}}>Naye worksheets banayein, live student matrix check karein aur powerful state-of-the-art AI tool se sheets generate karein.</p>
+          <h3 style={{fontSize:22, marginBottom:10}}>Instructor Terminal</h3>
+          <p style={{color:"var(--muted)", fontSize:13, lineHeight:1.6, marginBottom:20}}>Configure testing frameworks variables, evaluate user matrices logs, or generate target parameters using the AI module engine.</p>
+          <span style={{color:'var(--accent2)', fontSize:13, fontWeight:600}}>Access Console <i className="fa-solid fa-arrow-right-long" style={{marginLeft:6}}></i></span>
         </div>
       </div>
     </div>
   );
 }
 
-// ── PIN SCREEN ──
+// ── VERIFICATION HUB ──
 function PinScreen({pin,setPin,error,onSubmit}){
   return(
-    <div style={{maxWidth:360, margin:"60px auto 0"}} className="scale-in">
-      <div className="glass-card" style={{textAlign:'center'}}>
-        <i className="fa-solid fa-lock-open" style={{fontSize:32, color:'var(--accent2)', marginBottom:16}}></i>
-        <h3 style={{marginBottom:4}}>Security Clearance</h3>
-        <p style={{fontSize:13, color:'var(--muted)', marginBottom:24}}>Enter portal authorization key</p>
-        <input type="password" placeholder="••••" value={pin} onChange={e=>setPin(e.target.value)} onKeyDown={e=>e.key==="Enter"&&onSubmit()} style={{...inputS, textAlign:"center", letterSpacing:10, fontSize:22, marginBottom:16}}/>
-        {error && <p style={{color:'var(--red)', fontSize:13, marginBottom:16}}><i className="fa-solid fa-triangle-exclamation"></i> Invalid terminal key!</p>}
-        <button onClick={onSubmit} className="btn-premium" style={{width:'100%'}}>Verify Key</button>
+    <div style={{maxWidth:380, margin:"80px auto 0"}}>
+      <div className="glass-panel" style={{textAlign:'center', padding:32}}>
+        <i className="fa-solid fa-fingerprint" style={{fontSize:40, color:'var(--accent2)', marginBottom:16}}></i>
+        <h3 style={{fontSize:20, marginBottom:6}}>Security Authorization</h3>
+        <p style={{fontSize:13, color:'var(--muted)', marginBottom:28}}>Input console bypass credential matrix</p>
+        <input type="password" placeholder="••••" value={pin} onChange={e=>setPin(e.target.value)} onKeyDown={e=>e.key==="Enter"&&onSubmit()} style={{textAlign:"center", letterSpacing:12, fontSize:24, marginBottom:20}}/>
+        {error && <p style={{color:'var(--red)', fontSize:13, marginBottom:16}}><i className="fa-solid fa-triangle-exclamation"></i> Security signature mismatch!</p>}
+        <button onClick={onSubmit} className="premium-btn" style={{width:'100%', padding:16}}>Unlock Terminal</button>
       </div>
     </div>
   );
 }
 
-// ── STUDENT HOME ──
+// ── STUDENT HOME SUITE ──
 function StudentHome(){
   const [classSelected, setClassSelected] = useState(null);
   const savedName = localStorage.getItem("student_name") || "";
@@ -277,56 +335,56 @@ function StudentHome(){
   if(activeDpp) return <DppAttempt dpp={activeDpp} name={name} onBack={()=>setActiveDpp(null)}/>;
 
   if(!nameSet) return (
-    <div style={{maxWidth:380, margin:"60px auto 0"}} className="scale-in">
-      <div className="glass-card">
-        <h3 style={{marginBottom:6}}><i className="fa-regular fa-id-card" style={{marginRight:8, color:'var(--accent2)'}}></i> Setup Profile</h3>
-        <p style={{color:'var(--muted)', fontSize:13, marginBottom:20}}>Apna real full name enter karein taaki report system tracks update ho sakein.</p>
-        <span className="input-label" style={{fontSize:11, fontWeight:700, color:'var(--accent2)', display:'block', marginBottom:8}}>STUDENT NAME</span>
-        <input placeholder="Type your name here..." value={nameInput} onChange={e=>setNameInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&nameInput.trim()&& (localStorage.setItem("student_name",nameInput.trim()), setName(nameInput.trim()), setNameSet(true))} style={{...inputS, marginBottom:20}} />
-        <button onClick={()=>{ if(nameInput.trim()){ localStorage.setItem("student_name",nameInput.trim()); setName(nameInput.trim()); setNameSet(true); } }} className="btn-premium" style={{width:'100%'}}>Enter Platform</button>
+    <div style={{maxWidth:400, margin:"60px auto 0"}}>
+      <div className="glass-panel" style={{padding:32}}>
+        <h3 style={{fontSize:20, marginBottom:8}}><i className="fa-solid fa-address-card" style={{marginRight:8, color:'var(--accent2)'}}></i> Register Session</h3>
+        <p style={{color:'var(--muted)', fontSize:13, marginBottom:24}}>Type your real name to synchronize individual test summaries with the database.</p>
+        <span className="section-label">IDENTIFIER NAME</span>
+        <input placeholder="e.g. Rahul Sharma" value={nameInput} onChange={e=>setNameInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&nameInput.trim()&& (localStorage.setItem("student_name",nameInput.trim()), setName(nameInput.trim()), setNameSet(true))} style={{marginBottom:24}} />
+        <button onClick={()=>{ if(nameInput.trim()){ localStorage.setItem("student_name",nameInput.trim()); setName(nameInput.trim()); setNameSet(true); } }} className="premium-btn" style={{width:'100%'}}>Establish Connection</button>
       </div>
     </div>
   );
 
   return (
-    <div style={{maxWidth:750, margin:'0 auto'}} className="fade-up">
-      <div className="glass-card" style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:24, background:'linear-gradient(135deg, rgba(79,70,229,0.12) 0%, rgba(15,21,36,0.7) 100%)'}}>
+    <div style={{maxWidth:800, margin:'0 auto'}}>
+      <div className="glass-panel" style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:28, background:'linear-gradient(135deg, rgba(79,70,229,0.12) 0%, rgba(15,21,36,0.75) 100%)'}}>
         <div>
-          <h2 style={{fontSize:22, fontWeight:700}}>Namaste, {name}! <span style={{fontSize:18}}>🎯</span></h2>
-          <p style={{fontSize:13, color:'var(--muted)', marginTop:3}}>Apne active chapters chunein aur test matrix track karein.</p>
+          <h2 style={{fontSize:24, fontWeight:700}}>Profile Logged: {name}</h2>
+          <p style={{fontSize:13, color:'var(--muted)', marginTop:4}}>Select allocated data folders and begin executing active tasks equations.</p>
         </div>
-        <button onClick={()=>{localStorage.removeItem("student_name"); setName(""); setNameSet(false);}} className="btn-sec" style={{padding:'6px 12px', fontSize:12}}><i className="fa-solid fa-user-gear"></i> Reset Account</button>
+        <button onClick={()=>{localStorage.removeItem("student_name"); setName(""); setNameSet(false);}} className="sec-btn"><i className="fa-solid fa-user-gear"></i> Reset Profile</button>
       </div>
 
-      {/* Tabs Layout */}
-      <div style={{display:'flex', gap:10, background:'var(--surface)', borderRadius:12, padding:6, border:'1px solid var(--border)', marginBottom:24}}>
-        <button onClick={()=>setTab("dpps")} style={{flex:1, padding:'10px', border:'none', borderRadius:8, fontWeight:600, fontSize:13, cursor:'pointer', background:tab==="dpps"?'var(--surface2)':'transparent', color:tab==="dpps"?'white':'var(--muted)'}}><i className="fa-solid fa-layer-group" style={{marginRight:6}}></i> Available Modules</button>
-        <button onClick={()=>setTab("leaderboard")} style={{flex:1, padding:'10px', border:'none', borderRadius:8, fontWeight:600, fontSize:13, cursor:'pointer', background:tab==="leaderboard"?'var(--surface2)':'transparent', color:tab==="leaderboard"?'white':'var(--muted)'}}><i className="fa-solid fa-chart-line" style={{marginRight:6}}></i> Rank Analytics</button>
+      {/* Tabs Dynamic Controllers */}
+      <div style={{display:'flex', gap:10, background:'var(--surface)', border:'1px solid var(--border)', borderRadius:14, padding:6, marginBottom:28}}>
+        <button onClick={()=>setTab("dpps")} style={{flex:1, padding:'12px', border:'none', borderRadius:10, fontWeight:600, fontSize:14, cursor:'pointer', background:tab==="dpps"?'var(--surface2)':'transparent', color:tab==="dpps"?'white':'var(--muted)', transition:'all 0.2s'}}><i className="fa-solid fa-cubes" style={{marginRight:8}}></i> Allocated Modules</button>
+        <button onClick={()=>setTab("leaderboard")} style={{flex:1, padding:'12px', border:'none', borderRadius:10, fontWeight:600, fontSize:14, cursor:'pointer', background:tab==="leaderboard"?'var(--surface2)':'transparent', color:tab==="leaderboard"?'white':'var(--muted)', transition:'all 0.2s'}}><i className="fa-solid fa-ranking-star" style={{marginRight:8}}></i> Metric Standards</button>
       </div>
 
-      {tab==="dpps" && (
+      {tab Pac="dpps" && (
         <>
           {!classSelected ? (
             <div>
-              <p style={{fontSize:11, fontWeight:700, color:'var(--accent2)', textTransform:'uppercase', letterSpacing:0.5, marginBottom:12}}>Select Classroom Folder</p>
-              <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:20}}>
-                <div onClick={()=>setClassSelected("class8")} className="glass-card card-interactive" style={{cursor:'pointer', textAlign:'center', padding:'30px 20px'}}>
-                  <i className="fa-solid fa-folder" style={{fontSize:32, color:'var(--cyan)', marginBottom:12}}></i>
-                  <h3>Class 8 Mathematics</h3>
-                  <p style={{fontSize:12, color:'var(--muted)', marginTop:4}}>Basic algebra, numbers matrix & geometry rules.</p>
+              <p className="section-label" style={{marginBottom:14}}>Target Folders Directory</p>
+              <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:24}}>
+                <div onClick={()=>setClassSelected("class8")} className="glass-panel interactive-row" style={{flexDirection:'column', padding:32, textAlign:'center'}}>
+                  <i className="fa-solid fa-folder" style={{fontSize:36, color:'var(--cyan)', marginBottom:16}}></i>
+                  <h3>Cohort: Class 8</h3>
+                  <p style={{fontSize:13, color:'var(--muted)', marginTop:6, lineHeight:1.5}}>Basic algebra arrays, fractions variables, and coordinate mappings.</p>
                 </div>
-                <div onClick={()=>setClassSelected("class10")} className="glass-card card-interactive" style={{cursor:'pointer', textAlign:'center', padding:'30px 20px'}}>
-                  <i className="fa-solid fa-folder-closed" style={{fontSize:32, color:'var(--accent2)', marginBottom:12}}></i>
-                  <h3>Class 10 Core Board</h3>
-                  <p style={{fontSize:12, color:'var(--muted)', marginTop:4}}>Advanced trigonometry, equations & calculus logs.</p>
+                <div onClick={()=>setClassSelected("class10")} className="glass-panel interactive-row" style={{flexDirection:'column', padding:32, textAlign:'center'}}>
+                  <i className="fa-solid fa-folder-tree" style={{fontSize:36, color:'var(--accent2)', marginBottom:16}}></i>
+                  <h3>Cohort: Class 10</h3>
+                  <p style={{fontSize:13, color:'var(--muted)', marginTop:6, lineHeight:1.5}}>Board optimization matrices, complex limits, and trigonometric parameters.</p>
                 </div>
               </div>
             </div>
           ) : (
             <div>
-              <div style={{display:'flex', alignItems:'center', gap:14, marginBottom:20}}>
-                <button onClick={()=>setClassSelected(null)} className="btn-sec" style={{padding:'6px 12px', fontSize:12}}><i className="fa-solid fa-chevron-left"></i> Change Class</button>
-                <h3>{classSelected==="class10" ? "Class 10 Advanced Modules":"Class 8 Primary Modules"}</h3>
+              <div style={{display:'flex', alignItems:'center', gap:16, marginBottom:24}}>
+                <button onClick={()=>setClassSelected(null)} className="sec-btn"><i className="fa-solid fa-chevron-left"></i> Folders</button>
+                <h3 style={{fontSize:20}}>{classSelected==="class10" ? "Class 10 Advanced Modules System":"Class 8 Standard Vector Arrays"}</h3>
               </div>
               <DppList classKey={classSelected} name={name} onSelect={setActiveDpp}/>
             </div>
@@ -339,7 +397,7 @@ function StudentHome(){
   );
 }
 
-// ── SUB-COMPONENTS: DPP LIST ENGINE ──
+// ── SUB-COMPONENT: REFACTORED DPP CONTAINER LIST ──
 function DppList({classKey, name, onSelect}){
   const dpps = useDpps();
   const [openChapter, setOpenChapter] = useState(null);
@@ -356,10 +414,10 @@ function DppList({classKey, name, onSelect}){
   });
 
   return (
-    <div className="fade-up">
-      <div style={{position:'relative', marginBottom:20}}>
-        <i className="fa-solid fa-magnifying-glass" style={{position:'absolute', left:16, top:16, color:'var(--muted)'}}></i>
-        <input placeholder="Filter practice sheets by title parameter..." value={search} onChange={e=>setSearch(e.target.value)} style={{...inputS, paddingLeft:44}} />
+    <div>
+      <div style={{position:'relative', marginBottom:24}}>
+        <i className="fa-solid fa-search" style={{position:'absolute', left:18, top:18, color:'var(--muted)'}}></i>
+        <input placeholder="Query active configurations by string tag parameters..." value={search} onChange={e=>setSearch(e.target.value)} style={{paddingLeft:48}} />
       </div>
 
       {chapters.map((ch, ci) => {
@@ -368,26 +426,26 @@ function DppList({classKey, name, onSelect}){
         if(search && !chDpps.some(d=>d.title.toLowerCase().includes(search.toLowerCase()))) return null;
 
         return (
-          <div key={ch} style={{marginBottom:8}}>
-            <div onClick={()=>chDpps.length > 0 && setOpenChapter(isOpen ? null:ch)} className="glass-card card-interactive" style={{padding:'16px 20px', display:'flex', justifyContent:'space-between', alignItems:'center', cursor:chDpps.length>0?'pointer':'not-allowed', opacity:chDpps.length>0?1:0.4}}>
-              <div style={{display:'flex', alignItems:'center', gap:14}}>
-                <i className={`fa-solid ${isOpen?'fa-folder-open':'fa-folder'}`} style={{color:chDpps.length>0?'var(--accent2)':'var(--dim)', fontSize:16}}></i>
-                <span style={{fontWeight:600, fontSize:14}}>Ch {ci+1}. {ch}</span>
+          <div key={ch} style={{marginBottom:10}}>
+            <div onClick={()=>chDpps.length > 0 && setOpenChapter(isOpen ? null:ch)} className="glass-panel interactive-row" style={{padding:'18px 24px', opacity:chDpps.length>0?1:0.45, cursor:chDpps.length>0?'pointer':'not-allowed'}}>
+              <div style={{display:'flex', alignItems:'center', gap:16}}>
+                <i className={`fa-solid ${isOpen?'fa-folder-open':'fa-folder-closed'}`} style={{color:chDpps.length>0?'var(--accent2)':'var(--dim)', fontSize:18}}></i>
+                <span style={{fontWeight:600, fontSize:15}}>Index {ci+1}: {ch}</span>
               </div>
-              <div style={{display:'flex', alignItems:'center', gap:12}}>
-                <span className="badge-custom diff-easy" style={{padding:'2px 8px', fontSize:10}}>{chDpps.length} Active</span>
-                {chDpps.length > 0 && <i className="fa-solid fa-chevron-right" style={{color:'var(--muted)', transform:isOpen?'rotate(90deg)':'none', transition:'transform 0.2s'}}></i>}
+              <div style={{display:'flex', alignItems:'center', gap:14}}>
+                <span className="badge-label badge-med" style={{fontSize:10, padding:'2px 10px'}}>{chDpps.length} Loaded</span>
+                {chDpps.length > 0 && <i className="fa-solid fa-angle-right" style={{color:'var(--muted)', transform:isOpen?'rotate(90deg)':'none', transition:'transform 0.2s'}}></i>}
               </div>
             </div>
             {isOpen && chDpps.length > 0 && (
-              <div style={{padding:'8px 0 8px 20px', display:'flex', flexDirection:'column', gap:8}}>
+              <div style={{padding:'10px 0 10px 24px', display:'flex', flexDirection:'column', gap:10}}>
                 {chDpps.filter(d => d.title.toLowerCase().includes(search.toLowerCase())).map(d => (
-                  <div key={d.id} className="glass-card card-interactive" style={{padding:'14px 20px', display:'flex', justifyContent:'space-between', alignItems:'center', background:'var(--surface2)'}}>
+                  <div key={d.id} className="glass-panel interactive-row" style={{background:'var(--surface2)', padding:'16px 24px', borderLeft:'4px solid var(--accent2)'}}>
                     <div>
-                      <h4 style={{fontSize:14, fontWeight:600}}>{d.title}</h4>
-                      <p style={{fontSize:11, color:'var(--muted)', marginTop:4}}><i className="fa-regular fa-circle-question"></i> {d.questions?.length || 0} Questions loaded</p>
+                      <h4 style={{fontSize:15, fontWeight:600}}>{d.title}</h4>
+                      <p style={{fontSize:11, color:'var(--muted)', marginTop:4}}><i className="fa-regular fa-clone"></i> Block Contains: {d.questions?.length || 0} testing nodes</p>
                     </div>
-                    <button onClick={()=>onSelect(d)} className="btn-premium" style={{padding:'8px 16px', fontSize:12}}>Solve Sheet <i className="fa-solid fa-arrow-right" style={{marginLeft:4}}></i></button>
+                    <button onClick={()=>onSelect(d)} className="premium-btn" style={{padding:'10px 18px', fontSize:13}}>Initialize Matrix <i className="fa-solid fa-arrow-right" style={{marginLeft:6}}></i></button>
                   </div>
                 ))}
               </div>
@@ -399,7 +457,7 @@ function DppList({classKey, name, onSelect}){
   );
 }
 
-// ── LEADERBOARD COMPONENT ──
+// ── LEADERBOARD MATRIX SUMMARY ──
 function Leaderboard(){
   const dpps = useDpps();
   const allSubs = useAllSubmissions();
@@ -425,26 +483,26 @@ function Leaderboard(){
     .sort((a,b)=>b.pct-a.pct);
 
   return (
-    <div className="fade-up">
-      <div style={{display:'flex', gap:6, background:'var(--surface)', border:'1px solid var(--border)', borderRadius:10, padding:4, marginBottom:16, maxWidth:280}}>
-        [["all","Global Track"],["class10","Class 10"],["class8","Class 8"]].map(([k,l]) => (
-          <button key={k} onClick={()=>setFilterClass(k)} style={{flex:1, border:'none', padding:'6px 12px', borderRadius:6, fontSize:12, fontWeight:600, cursor:'pointer', background:filterClass===k?'var(--surface2)':'transparent', color:filterClass===k?'white':'var(--muted)'}}>{l}</button>
+    <div>
+      <div style={{display:'flex', gap:6, background:'var(--surface)', border:'1px solid var(--border)', borderRadius:12, padding:5, marginBottom:20, maxWidth:300}}>
+        [["all","Global"],["class10","Class 10"],["class8","Class 8"]].map(([k,l]) => (
+          <button key={k} onClick={()=>setFilterClass(k)} style={{flex:1, border:'none', padding:'8px 14px', borderRadius:8, fontSize:13, fontWeight:600, cursor:'pointer', background:filterClass===k?'var(--surface2)':'transparent', color:filterClass===k?'white':'var(--muted)', transition:'all 0.2s'}}>{l}</button>
         ))}
       </div>
 
-      <div className="glass-card">
-        {board.length === 0 ? <p style={{color:'var(--muted)', textAlign:'center', fontSize:13}}>No global metrics verified yet.</p>:(
-          <div style={{display:'flex', flexDirection:'column', gap:12}}>
+      <div className="glass-panel" style={{padding:'16px 24px'}}>
+        {board.length === 0 ? <p style={{color:'var(--muted)', textAlign:'center', padding:20, fontSize:14}}>No historical sync records match parameters.</p>:(
+          <div style={{display:'flex', flexDirection:'column', gap:4}}>
             {board.map((s, i) => (
-              <div key={s.name} style={{display:'flex', alignItems:'center', gap:14, paddingBottom:12, borderBottom:i!==board.length-1?'1px solid var(--border)':'none'}}>
-                <div style={{width:32, height:32, borderRadius:8, background:i===0?'rgba(245,158,11,0.15)':i===1?'rgba(148,163,184,0.15)':'rgba(15,21,36,1)', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:800, color:i===0?'var(--gold)':i===1?'#cbd5e1':'var(--muted)'}}>
+              <div key={s.name} style={{display:'flex', alignItems:'center', gap:16, padding:'14px 0', borderBottom:i!==board.length-1?'1px solid var(--border)':'none'}}>
+                <div style={{width:36, height:36, borderRadius:10, background:i===0?'rgba(245,158,11,0.15)':i===1?'rgba(148,163,184,0.15)':'var(--surface2)', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:800, color:i===0?'var(--gold)':i===1?'#cbd5e1':'var(--muted)', fontSize:15}}>
                   #{i+1}
                 </div>
                 <div style={{flex:1}}>
-                  <h4 style={{fontSize:14, fontWeight:600}}>{s.name}</h4>
-                  <p style={{fontSize:11, color:'var(--muted)', marginTop:2}}>{s.count} modules integrated · Accumulation: {s.got}/{s.max} Marks</p>
+                  <h4 style={{fontSize:15, fontWeight:600}}>{s.name}</h4>
+                  <p style={{fontSize:11, color:'var(--muted)', marginTop:2}}>{s.count} validation sheets · Cumulative parameters: {s.got}/{s.max} Marks integrated</p>
                 </div>
-                <span style={{fontSize:16, fontWeight:700, color:'var(--accent2)'}}>{s.pct}%</span>
+                <span style={{fontSize:18, fontWeight:800, color:'var(--accent2)'}}>{s.pct}%</span>
               </div>
             ))}
           </div>
@@ -454,7 +512,7 @@ function Leaderboard(){
   );
 }
 
-// ── DPP ATTEMPT AREA ──
+// ── PROBLEM TESTING BLOCK SUITE (WORKFLOW ATTEMPT) ──
 function DppAttempt({dpp, name, onBack}){
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
@@ -465,7 +523,7 @@ function DppAttempt({dpp, name, onBack}){
   const total = dpp.questions?.length || 0;
   const progress = total > 0 ? Math.round((answered/total)*100) : 0;
 
-  async function processSubmission(){
+  async function pushSubmissions(){
     setSubmitting(true);
     const sub = {id:uid(), dppId:dpp.id, studentName:name, answers, submittedAt:Date.now()};
     await dbSubmit(dpp.id, sub);
@@ -475,82 +533,84 @@ function DppAttempt({dpp, name, onBack}){
 
   if(submitted && result) {
     return (
-      <div style={{maxWidth:600, margin:'0 auto'}} className="scale-in">
-        <div className="glass-card" style={{textAlign:'center'}}>
-          <div style={{width:64, height:64, background:'rgba(16,185,129,0.1)', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 16px', border:'1px solid rgba(16,185,129,0.2)'}}>
-            <i className="fa-solid fa-square-check" style={{color:'var(--green)', fontSize:28}}></i>
+      <div style={{maxWidth:650, margin:'0 auto'}}>
+        <div className="glass-panel" style={{textAlign:'center', padding:40}}>
+          <div style={{width:72, height:72, background:'rgba(16,185,129,0.1)', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 20px', border:'1px solid rgba(16,185,129,0.2)'}}>
+            <i className="fa-solid fa-check-double" style={{color:'var(--green)', fontSize:32}}></i>
           </div>
-          <h2>Assignment Completed</h2>
-          <p style={{color:'var(--muted)', fontSize:13, marginTop:4}}>{dpp.title}</p>
+          <h2>Evaluation Matrix Finished</h2>
+          <p style={{color:'var(--muted)', fontSize:14, marginTop:6}}>{dpp.title}</p>
           
-          <div style={{background:'var(--surface2)', border:'1px solid var(--border)', borderRadius:16, padding:24, margin:'24px 0'}}>
-            <p style={{fontSize:11, fontWeight:700, color:'var(--muted)', letterSpacing:1}}>ACCURACY RATE</p>
-            <h1 style={{fontSize:48, fontWeight:800, color:'var(--accent2)', margin:'8px 0'}}>{result.pct}%</h1>
-            <p style={{fontSize:13, color:'var(--text)'}}>Acquired Score: <strong>{result.got}</strong> / {result.total} Total Marks</p>
+          <div style={{background:'var(--surface2)', border:'1px solid var(--border)', borderRadius:16, padding:30, margin:'32px 0'}}>
+            <span className="section-label">ACCURACY QUOTIENT</span>
+            <h1 style={{fontSize:54, fontWeight:800, color:'var(--accent2)', margin:'10px 0'}}>{result.pct}%</h1>
+            <p style={{fontSize:14, color:'var(--text)'}}>Acquired Score Index: <strong style={{color:'var(--green)'}}>{result.got}</strong> / {result.total} Total Variables</p>
           </div>
-          <button onClick={onBack} className="btn-premium" style={{width:'100%'}}>Return to Base Hub</button>
+          <button onClick={onBack} className="premium-btn" style={{width:'100%', padding:16}}>Disconnect from Session</button>
         </div>
       </div>
     );
   }
 
   return (
-    <div style={{maxWidth:700, margin:'0 auto'}} className="fade-up">
-      <div className="glass-card" style={{marginBottom:16}}>
-        <h3 style={{fontSize:18}}>{dpp.title}</h3>
-        <p style={{fontSize:12, color:'var(--muted)', marginTop:4}}>Candidate Trace: {name} · Total variables: {total}</p>
-        <div style={{display:'flex', alignItems:'center', gap:14, marginTop:16}}>
-          <div className="prog-bar-wrap" style={{flex:1}}><div className="prog-bar-fill" style={{width:`${progress}%`}}/></div>
-          <span style={{fontSize:12, fontWeight:700, color:'var(--accent2)'}}>{progress}% Finished</span>
+    <div style={{maxWidth:750, margin:'0 auto'}}>
+      <div className="glass-panel" style={{marginBottom:20}}>
+        <h3 style={{fontSize:20}}>{dpp.title}</h3>
+        <p style={{fontSize:12, color:'var(--muted)', marginTop:4}}>Target Key: {name} · Total array elements: {total}</p>
+        <div style={{display:'flex', alignItems:'center', gap:16, marginTop:20}}>
+          <div style={{flex:1, height:10, background:'var(--surface2)', borderRadius:99, overflow:'hidden'}}><div style={{height:'100%', background:'linear-gradient(90deg, var(--accent), var(--cyan))', transition:'width 0.3s', width:`${progress}%`}}/></div>
+          <span style={{fontSize:13, fontWeight:700, color:'var(--accent2)'}}>{progress}% Completed</span>
         </div>
       </div>
 
       {dpp.questions?.map((q, i) => (
-        <div key={i} className="glass-card" style={{marginBottom:12, borderColor:answers[i]?'var(--accent)':'var(--border)'}}>
-          <h4 style={{fontSize:14, fontWeight:600, lineHeight:1.5, marginBottom:16}}>
-            <span style={{color:'var(--accent2)', marginRight:8}}>Problem {i+1}.</span>
+        <div key={i} className="glass-panel" style={{marginBottom:16, borderLeft:answers[i]?'4px solid var(--accent2)':'1.5px solid var(--border)'}}>
+          <h4 style={{fontSize:15, fontWeight:600, lineHeight:1.6, marginBottom:18}}>
+            <span style={{color:'var(--accent2)', marginRight:10, fontSize:13, background:'var(--surface2)', padding:'4px 8px', borderRadius:6}}>Node {i+1}</span>
             <MathText text={q.text}/>
           </h4>
           
-          {q.image && <img src={q.image} style={{maxWidth:'100%', maxHeight:220, borderRadius:8, marginBottom:16, border:'1px solid var(--border)'}}/>}
+          {q.image && <img src={q.image} style={{maxWidth:'100%', maxHeight:240, borderRadius:12, marginBottom:18, border:'1px solid var(--border)'}}/>}
           
-          {q.type==="mcq" && (
-            <div style={{display:'flex', flexDirection:'column', gap:8}}>
+          {q.type Pall="mcq" && (
+            <div style={{display:'grid', gridTemplateColumns:'1fr', gap:10}}>
               {MCQ_OPTS.map((opt, oi) => q.options[oi] && (
-                <label key={opt} className={`mcq-option option-card ${answers[i]===opt?'selected':''}`} style={{display:'flex', alignItems:'center', gap:12, padding:14, background:'var(--surface)', border:'1px solid var(--border)', borderRadius:10, cursor:'pointer'}}>
-                  <input type="radio" name={`q${i}`} value={opt} checked={answers[i]===opt} onChange={()=>setAnswers({...answers, [i]:opt})} style={{accentColor:'var(--accent)'}}/>
-                  <span style={{fontWeight:700, color:'var(--accent2)'}}>{opt})</span>
+                <div key={opt} onClick={()=>setAnswers({...answers, [i]:opt})} className={`option-node ${answers[i]===opt?'active':''}`}>
+                  <div style={{width:20, height:20, borderRadius:'50%', border:'2px solid var(--border)', display:'flex', alignItems:'center', justifyContent:'center', background:answers[i]===opt?'var(--accent)':'transparent'}}>
+                    {answers[i]===opt && <div style={{width:8, height:8, background:'white', borderRadius:'50%'}}/>}
+                  </div>
+                  <span style={{fontWeight:700, color:'var(--accent2)', minWidth:16}}>{opt})</span>
                   <span style={{fontSize:13}}><MathText text={q.options[oi]}/></span>
-                </label>
+                </div>
               ))}
             </div>
-          ))}
+          )}
 
           {q.type==="truefalse" && (
-            <div style={{display:'flex', gap:12}}>
+            <div style={{display:'flex', gap:14}}>
               {["True","False"].map(v => (
-                <label key={v} className={`mcq-option option-card ${answers[i]===v?'selected':''}`} style={{flex:1, display:'flex', alignItems:'center', gap:10, padding:12, background:'var(--surface)', border:'1px solid var(--border)', borderRadius:10, cursor:'pointer'}}>
-                  <input type="radio" name={`q${i}`} value={v} checked={answers[i]===v} onChange={()=>setAnswers({...answers, [i]:v})} style={{accentColor:'var(--accent)'}}/>
-                  <span style={{fontSize:13}}>{v}</span>
-                </label>
+                <div key={v} onClick={()=>setAnswers({...answers, [i]:v})} className={`option-node ${answers[i]===v?'active':''}`} style={{flex:1, justifyContent:'center'}}>
+                  <i className={v==="True"?'fa-regular fa-circle-check':'fa-regular fa-circle-xmark'} style={{fontSize:16, color:answers[i]===v?'white':'var(--muted)'}}></i>
+                  <span style={{fontSize:14, fontWeight:600}}>{v} Variant</span>
+                </div>
               ))}
             </div>
           )}
 
           {q.type==="subjective" && (
-            <textarea placeholder="Write descriptive pipeline response step by step..." value={answers[i]||""} onChange={e=>setAnswers({...answers, [i]:e.target.value})} style={{...inputS, minHeight:90, background:'var(--surface)'}}/>
+            <textarea placeholder="Write theoretical pipeline breakdown expressions step by step..." value={answers[i]||""} onChange={e=>setAnswers({...answers, [i]:e.target.value})} rows={3} style={{background:'var(--surface)'}}/>
           )}
         </div>
       ))}
 
-      <button onClick={processSubmission} disabled={submitting || total===0} className="btn-premium" style={{width:'100%', padding:16, fontSize:15, fontWeight:700, marginTop:12}}>
-        {submitting ? 'Transmitting Data Arrays...':'Secure Transmission to Cloud'}
+      <button onClick={pushSubmissions} disabled={submitting || total===0} className="premium-btn" style={{width:'100%', padding:18, fontSize:16, fontWeight:700, marginTop:16, background:'linear-gradient(135deg, var(--green) 0%, #059669 100%)', boxShadow:'0 4px 14px rgba(16,185,129,0.3)'}}>
+        {submitting ? 'Transmitting Arrays...':'Transmit Evaluation Vector to Cloud'}
       </button>
     </div>
   );
 }
 
-// ── TEACHER PANEL CONTAINER ──
+// ── TEACHER PANEL MODULES HUB ──
 function TeacherPanel({onBack}){
   const [view, setView] = useState("list");
   const [tab, setTab] = useState("dpps");
@@ -577,31 +637,31 @@ function TeacherPanel({onBack}){
 
   return (
     <div className="fade-up">
-      <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:24}}>
-        <h3>Control Workspace Terminal</h3>
-        <div style={{display:'flex', gap:10}}>
-          <button onClick={()=>setView("ai")} className="btn-sec" style={{color:'var(--cyan)', borderColor:'rgba(6,182,212,0.3)', background:'rgba(6,182,212,0.05)'}}><i className="fa-solid fa-microchip"></i> Synthetic AI Core</button>
-          <button onClick={()=>{setEditDpp(null); setView("create");}} className="btn-premium">+ Build Framework</button>
+      <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:28, flexWrap:'wrap', gap:14}}>
+        <h3 style={{fontSize:22}}><i className="fa-solid fa-server" style={{color:'var(--accent2)', marginRight:10}}></i> Instructor Command Terminal</h3>
+        <div style={{display:'flex', gap:12}}>
+          <button onClick={()=>setView("ai")} className="sec-btn" style={{color:'var(--cyan)', borderColor:'rgba(6,182,212,0.3)', background:'rgba(6,182,212,0.05)'}}><i className="fa-solid fa-bolt"></i> AI Generation Engine</button>
+          <button onClick={()=>{setEditDpp(null); setView("create");}} className="premium-btn"><i className="fa-solid fa-plus"></i> Build Framework</button>
         </div>
       </div>
 
-      <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(140px, 1fr))', gap:16, marginBottom:30}}>
-        <StatBox icon="fa-solid fa-folder-tree" val={Object.keys(dpps).length} title="Total Packages" />
-        <StatBox icon="fa-solid fa-network-wired" val={resultsArr.length} title="Logs Recorded" />
+      <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(160px, 1fr))', gap:20, marginBottom:32}}>
+        <StatBox icon="fa-solid fa-database" val={Object.keys(dpps).length} title="Data Objects" />
+        <StatBox icon="fa-solid fa-chart-bar" val={resultsArr.length} title="Telemetry Packets" />
       </div>
 
-      <div style={{display:'flex', gap:10, background:'var(--surface)', border:'1px solid var(--border)', borderRadius:12, padding:6, marginBottom:20}}>
-        <button onClick={()=>setTab("dpps")} style={{flex:1, padding:'10px', border:'none', borderRadius:8, fontWeight:600, fontSize:13, cursor:'pointer', background:tab === "dpps"?'var(--surface2)':'transparent', color:tab === "dpps"?'white':'var(--muted)'}}>Package Configs</button>
-        <button onClick={()=>setTab("results")} style={{flex:1, padding:'10px', border:'none', borderRadius:8, fontWeight:600, fontSize:13, cursor:'pointer', background:tab === "results"?'var(--surface2)':'transparent', color:tab === "results"?'white':'var(--muted)'}}>Transmission Logs</button>
+      <div style={{display:'flex', gap:10, background:'var(--surface)', border:'1px solid var(--border)', borderRadius:14, padding:6, marginBottom:24}}>
+        <button onClick={()=>setTab("dpps")} style={{flex:1, padding:'12px', border:'none', borderRadius:10, fontWeight:600, fontSize:14, cursor:'pointer', background:tab === "dpps"?'var(--surface2)':'transparent', color:tab === "dpps"?'white':'var(--muted)', transition:'all 0.2s'}}>Package Settings</button>
+        <button onClick={()=>setTab("results")} style={{flex:1, padding:'12px', border:'none', borderRadius:10, fontWeight:600, fontSize:14, cursor:'pointer', background:tab === "results"?'var(--surface2)':'transparent', color:tab === "results"?'white':'var(--muted)', transition:'all 0.2s'}}>Database Metrics logs</button>
       </div>
 
-      {tab==="dpps" && (
-        <div style={{display:'flex', flexDirection:'column', gap:10}}>
+      {tab Pac==="dpps" && (
+        <div style={{display:'flex', flexDirection:'column', gap:12}}>
           {Object.values(dpps).map(d => (
-            <div key={d.id} onClick={()=>{setDetailId(d.id); setView("detail");}} className="glass-card card-interactive" style={{padding:16, display:'flex', justifyContent:'space-between', alignItems:'center', cursor:'pointer'}}>
+            <div key={d.id} onClick={()=>{setDetailId(d.id); setView("detail");}} className="glass-panel interactive-row">
               <div>
-                <h4 style={{fontSize:15}}>{d.title}</h4>
-                <p style={{fontSize:11, color:'var(--muted)', marginTop:4}}>Target: {d.batch==="class10"?"C10 Board":"C8 Primary"} · {d.questions?.length || 0} Nodes</p>
+                <h4 style={{fontSize:16, fontWeight:600}}>{d.title}</h4>
+                <p style={{fontSize:12, color:'var(--muted)', marginTop:4}}>Target Cohort: {d.batch==="class10"?"C10 Advanced":"C8 Basic"} · Block Contains: {d.questions?.length || 0} logic blocks</p>
               </div>
               <i className="fa-solid fa-chevron-right" style={{color:'var(--dim)'}}></i>
             </div>
@@ -610,16 +670,16 @@ function TeacherPanel({onBack}){
       )}
 
       {tab==="results" && (
-        <div style={{display:'flex', flexDirection:'column', gap:10}}>
+        <div style={{display:'flex', flexDirection:'column', gap:12}}>
           {resultsArr.map((r, i) => (
-            <div key={i} className="glass-card" style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+            <div key={i} className="glass-panel interactive-row" style={{cursor:'default'}}>
               <div>
-                <h4 style={{fontSize:14}}>{r.studentName}</h4>
-                <p style={{fontSize:12, color:'var(--muted)', marginTop:2}}>{r.title}</p>
+                <h4 style={{fontSize:15, fontWeight:600}}>{r.studentName}</h4>
+                <p style={{fontSize:12, color:'var(--muted)', marginTop:4}}>{r.title}</p>
               </div>
               <div style={{textAlign:'right'}}>
-                <span style={{fontWeight:700, color:'var(--green)', fontSize:15}}>{r.pct}%</span>
-                <p style={{fontSize:11, color:'var(--muted)', marginTop:2}}>{r.got}/{r.total} M</p>
+                <span style={{fontWeight:700, color:'var(--green)', fontSize:16}}>{r.pct}% Accuracy</span>
+                <p style={{fontSize:12, color:'var(--muted)', marginTop:2}}>{r.got}/{r.total} Marks allocated</p>
               </div>
             </div>
           ))}
@@ -631,22 +691,22 @@ function TeacherPanel({onBack}){
 
 function StatBox({icon, val, title}){
   return (
-    <div className="glass-card" style={{textAlign:'center', padding:16}}>
-      <i className={icon} style={{color:'var(--accent2)', fontSize:18, marginBottom:8}}></i>
-      <h3>{val}</h3>
-      <p style={{fontSize:10, color:'var(--muted)', textTransform:'uppercase', letterSpacing:0.5, marginTop:4}}>{title}</p>
+    <div className="stat-grid-box">
+      <i className={icon} style={{color:'var(--accent2)', fontSize:20, marginBottom:10}}></i>
+      <h2 style={{fontSize:26, fontWeight:800}}>{val}</h2>
+      <p style={{fontSize:10, color:'var(--muted)', textTransform:'uppercase', letterSpacing:0.8, marginTop:4}}>{title}</p>
     </div>
   );
 }
 
-// ── AI DPP GENERATOR INTERFACE ──
+// ── AI MODULE PARAMETERS SELECTOR ──
 function AiDppGenerator({onSave, onCancel}){
   const [topic, setTopic] = useState("");
   const [batch, setBatch] = useState("");
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState(null);
 
-  async function triggerAiCore(){
+  async function callAiPipeline(){
     if(!topic.trim() || !batch) return;
     setLoading(true);
     try {
@@ -657,96 +717,95 @@ function AiDppGenerator({onSave, onCancel}){
       });
       const data = await res.json();
       const questions = JSON.parse(data.text.replace(/```json|```/g,"").trim());
-      setPreview({id:"AI_"+uid(), title:topic+" – Synthetic Matrix", batch, chapter:topic, questions});
-    } catch(e) { alert("Pipeline execution error."); }
+      setPreview({id:"AI_"+uid(), title:topic+" – Synthetic Matrix Framework", batch, chapter:topic, questions});
+    } catch(e) { alert("AI core translation logic failure."); }
     setLoading(false);
   }
 
   if(preview) {
     return (
-      <div className="fade-up" style={{maxWidth:600, margin:'0 auto'}}>
-        <div className="glass-card" style={{marginBottom:16, textAlign:'center'}}>
-          <i className="fa-solid fa-microchip" style={{fontSize:32, color:'var(--cyan)', marginBottom:12}}></i>
-          <h3>Package Compiled Successfully</h3>
-          <p style={{fontSize:13, color:'var(--muted)', marginTop:4}}>Target structural data blocks written securely.</p>
+      <div style={{maxWidth:650, margin:'0 auto'}} className="fade-up">
+        <div className="glass-panel" style={{marginBottom:20, textAlign:'center', padding:32}}>
+          <i className="fa-solid fa-microchip" style={{fontSize:36, color:'var(--cyan)', marginBottom:14}}></i>
+          <h3>Data Parameters Built Successfully</h3>
+          <p style={{fontSize:13, color:'var(--muted)', marginTop:4}}>Target structural parameters compiled and ready for deployment.</p>
         </div>
-        <div style={{display:'flex', gap:12}}>
-          <button onClick={()=>setPreview(null)} className="btn-sec" style={{flex:1}}>Reset Workspace</button>
-          <button onClick={()=>onSave(preview)} className="btn-premium" style={{flex:1}}>Commit to Cloud</button>
+        <div style={{display:'flex', gap:14}}>
+          <button onClick={()=>setPreview(null)} className="sec-btn" style={{flex:1, justifyContent:'center'}}>Flush Buffer</button>
+          <button onClick={()=>onSave(preview)} className="premium-btn" style={{flex:1}}>Commit to Cloud Node</button>
         </div>
       </div>
     );
   }
 
   return (
-    <div style={{maxWidth:460, margin:'0 auto'}} className="scale-in">
-      <div className="glass-card">
-        <h3 style={{marginBottom:20}}><i className="fa-solid fa-robot" style={{color:'var(--cyan)', marginRight:8}}></i> AI Engine Matrix</h3>
-        <span className="input-label" style={{fontSize:11, fontWeight:700, color:'var(--accent2)', display:'block', marginBottom:6}}>TARGET MATHEMATICAL TOPIC</span>
-        <input placeholder="e.g., Quadratic Equations..." value={topic} onChange={e=>setTopic(e.target.value)} style={{...inputS, marginBottom:16}} />
+    <div style={{maxWidth:500, margin:'0 auto'}} className="scale-in">
+      <div className="glass-panel" style={{padding:32}}>
+        <h3 style={{fontSize:20, marginBottom:20}}><i className="fa-solid fa-robot" style={{color:'var(--cyan)', marginRight:10}}></i> AI Synthesis Hub</h3>
+        <span className="section-label">TARGET MATHEMATICAL DISCIPLINE</span>
+        <input placeholder="e.g., Trigonometric Formulations..." value={topic} onChange={e=>setTopic(e.target.value)} style={{marginBottom:20}} />
         
-        <span className="input-label" style={{fontSize:11, fontWeight:700, color:'var(--accent2)', display:'block', marginBottom:6}}>COHORT TARGET</span>
-        <select value={batch} onChange={e=>setBatch(e.target.value)} style={{...inputS, marginBottom:24}}>
-          <option value="">-- Choose Class --</option>
-          <option value="class10">Class 10 Advanced</option>
-          <option value="class8">Class 8 Standard</option>
+        <span className="section-label">COHORT TARGET CATEGORY</span>
+        <select value={batch} onChange={e=>setBatch(e.target.value)} style={{marginBottom:28}}>
+          <option value="">-- Choose Target Batch --</option>
+          <option value="class10">Class 10 Matriculation</option>
+          <option value="class8">Class 8 Intermediate</option>
         </select>
 
-        <button onClick={triggerAiCore} disabled={loading || !topic.trim()} className="btn-premium" style={{width:'100%'}}>
-          {loading ? 'Executing Engine Models...':'Trigger Configuration Build'}
+        <button onClick={callAiPipeline} disabled={loading || !topic.trim()} className="premium-btn" style={{width:'100%', padding:16}}>
+          {loading ? 'Executing Optimization Core...':'Initialize Core Engine Model'}
         </button>
       </div>
     </div>
   );
 }
 
-// ── MANUAL SCHEDULER FORM ──
+// ── MANUAL SCHEDULER DESIGNER FORM ──
 function DppForm({initial, onSave, onCancel}){
   const [dpp, setDpp] = useState(initial || {...emptyDpp(), id:uid()});
-  function addProblemNode(){ setDpp({...dpp, questions:[...dpp.questions, emptyQ()]}); }
   
   return (
-    <div style={{maxWidth:680, margin:'0 auto'}} className="fade-up">
-      <div className="glass-card" style={{marginBottom:20}}>
-        <h3>Structural Parameter Configuration</h3>
-        <span className="input-label" style={{marginTop:16, display:'block', fontSize:11, fontWeight:700, color:'var(--accent2)'}}>SHEET TITLE DESCRIPTION</span>
-        <input placeholder="e.g. Real Numbers Module..." value={dpp.title} onChange={e=>setDpp({...dpp, title:e.target.value})} style={inputS} />
+    <div style={{maxWidth:700, margin:'0 auto'}} className="fade-up">
+      <div className="glass-panel" style={{marginBottom:24}}>
+        <h3 style={{fontSize:20, marginBottom:16}}>Structural Architecture Configuration</h3>
+        <span className="section-label">MODULE LABEL TITLE</span>
+        <input placeholder="e.g. Real Numbers - Calculus Session..." value={dpp.title} onChange={e=>setDpp({...dpp, title:e.target.value})} style={{marginBottom:18}} />
         
-        <span className="input-label" style={{marginTop:16, display:'block', fontSize:11, fontWeight:700, color:'var(--accent2)'}}>CLASS COHORT</span>
-        <select value={dpp.batch} onChange={e=>setDpp({...dpp, batch:e.target.value})} style={{...inputS, marginTop:6}}>
-          <option value="">-- Choose Class --</option>
+        <span className="section-label">COHORT VARIABLE</span>
+        <select value={dpp.batch} onChange={e=>setDpp({...dpp, batch:e.target.value})}>
+          <option value="">-- Select Category --</option>
           <option value="class10">Class 10</option>
           <option value="class8">Class 8</option>
         </select>
       </div>
 
-      <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:16}}>
-        <h4>Problems Variables Setup ({dpp.questions.length})</h4>
-        <button onClick={addProblemNode} className="btn-premium" style={{padding:'6px 14px', fontSize:12}}>+ Add Problem Block</button>
+      <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:20}}>
+        <h4>Problems Configuration Matrix ({dpp.questions.length})</h4>
+        <button onClick={()=>setDpp({...dpp, questions:[...dpp.questions, emptyQ()]})} className="premium-btn" style={{padding:'8px 16px', fontSize:13}}>+ Append Problem Block</button>
       </div>
 
       {dpp.questions.map((q, i) => (
-        <div key={i} className="glass-card" style={{marginBottom:12}}>
-          <span style={{fontSize:12, fontWeight:700, color:'var(--accent2)'}}>NODE #{i+1}</span>
-          <textarea placeholder="Write algebraic query expression prompt..." value={q.text} onChange={e=>{ let arr=[...dpp.questions]; arr[i].text=e.target.value; setDpp({...dpp, questions:arr}); }} style={{...inputS, minHeight:60, marginTop:8}} />
+        <div key={i} className="glass-panel" style={{marginBottom:14}}>
+          <span className="section-label" style={{color:'var(--accent2)'}}>NODE INSTANCE #{i+1}</span>
+          <textarea placeholder="Write descriptive structural text query..." value={q.text} onChange={e=>{ let arr=[...dpp.questions]; arr[i].text=e.target.value; setDpp({...dpp, questions:arr}); }} rows={2} style={{marginTop:8}} />
         </div>
       ))}
 
-      <button onClick={()=>onSave(dpp)} className="btn-premium" style={{width:'100%', background:'var(--green)', marginTop:12}}>Commit Architecture Configurations</button>
+      <button onClick={()=>onSave(dpp)} className="premium-btn" style={{width:'100%', background:'var(--green)', marginTop:16, padding:16, fontWeight:700, boxShadow:'0 4px 14px rgba(16,185,129,0.3)'}}>Deploy Structure Parameters</button>
     </div>
   );
 }
 
-// ── MODULE DETAIL VIEW AREA ──
+// ── SCHEDULER INDIVIDUAL DETAIL WRAPPER ──
 function DppDetail({dpp, onBack, onEdit, onDelete}){
   return (
-    <div className="scale-in" style={{maxWidth:600, margin:'0 auto'}}>
-      <div className="glass-card">
-        <h3>{dpp.title}</h3>
-        <p style={{fontSize:13, color:'var(--muted)', marginTop:4}}>Pipeline Reference Index: {dpp.id}</p>
-        <div style={{display:'flex', gap:12, marginTop:24}}>
-          <button onClick={onEdit} className="btn-premium" style={{flex:1}}>Modify Workspace Variables</button>
-          <button onClick={onDelete} className="btn-sec" style={{color:'var(--red)', borderColor:'rgba(244,63,94,0.3)', flex:1}}>Purge Package</button>
+    <div style={{maxWidth:600, margin:'0 auto'}} className="scale-in">
+      <div className="glass-panel" style={{padding:32}}>
+        <h3 style={{fontSize:22}}>{dpp.title}</h3>
+        <p style={{fontSize:13, color:'var(--muted)', marginTop:6}}>Cloud Block System Identification Node: <code>{dpp.id}</code></p>
+        <div style={{display:'flex', gap:14, marginTop:32}}>
+          <button onClick={onEdit} className="premium-btn" style={{flex:1}}>Modify Settings Array</button>
+          <button onClick={onDelete} className="sec-btn" style={{color:'var(--red)', borderColor:'rgba(244,63,94,0.3)', flex:1, justifyContent:'center'}}>Wipe Block Data</button>
         </div>
       </div>
     </div>
