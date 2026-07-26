@@ -414,6 +414,35 @@ function dbDeleteDpp(id){
 function dbSubmit(dppId,sub){
   return firebase.database().ref("submissions/"+dppId+"/"+sub.id).set(sub);
 }
+// ── Student ID system (phone-number based login) ───────────────────────────
+function padId(n){ return String(n).padStart(4,"0"); }
+function dbRegisterStudent(phone,name){
+  const studentRef=firebase.database().ref("students/"+phone);
+  return studentRef.once("value").then(snap=>{
+    const existing=snap.val();
+    if(existing){
+      if(existing.name!==name){
+        return studentRef.update({name:name}).then(()=>({...existing,name}));
+      }
+      return existing;
+    }
+    const counterRef=firebase.database().ref("meta/studentCounter");
+    return counterRef.transaction(cur=>(cur||0)+1).then(res=>{
+      const seq=res.snapshot.val();
+      const record={studentId:"SB"+padId(seq),name:name,phone:phone,createdAt:Date.now()};
+      return studentRef.set(record).then(()=>record);
+    });
+  });
+}
+function useStudents(){
+  const [students,setStudents]=useState({});
+  useEffect(()=>{
+    const ref=firebase.database().ref("students");
+    ref.on("value",snap=>setStudents(snap.val()||{}));
+    return ()=>ref.off();
+  },[]);
+  return students;
+}
 function useDpps(){
   const [dpps,setDpps]=useState({});
   useEffect(()=>{
@@ -560,25 +589,44 @@ function PinScreen({pin,setPin,error,onSubmit,onBack}){
 function StudentHome({onBack}){
   const [classSelected,setClassSelected]=useState(null);
   const savedName=typeof localStorage!=="undefined"?localStorage.getItem("student_name")||"":"";
+  const savedPhone=typeof localStorage!=="undefined"?localStorage.getItem("student_phone")||"":"";
+  const savedId=typeof localStorage!=="undefined"?localStorage.getItem("student_id")||"":"";
   const [name,setName]=useState(savedName);
+  const [phone,setPhone]=useState(savedPhone);
+  const [studentId,setStudentId]=useState(savedId);
   const [nameInput,setNameInput]=useState("");
-  const [nameSet,setNameSet]=useState(!!savedName);
+  const [phoneInput,setPhoneInput]=useState("");
+  const [nameSet,setNameSet]=useState(!!savedName&&!!savedPhone);
+  const [regLoading,setRegLoading]=useState(false);
+  const [regErr,setRegErr]=useState("");
   const [activeDpp,setActiveDpp]=useState(null);
   const [tab,setTab]=useState("dpps");
 
-  function confirmName(n){
-    const trimmed=n.trim();
-    if(!trimmed) return;
-    localStorage.setItem("student_name",trimmed);
-    setName(trimmed);
-    setNameSet(true);
+  async function registerStudent(){
+    const trimmedName=nameInput.trim();
+    const trimmedPhone=phoneInput.trim();
+    if(!trimmedName){ setRegErr("Naam likhein"); return; }
+    if(!/^[6-9]\d{9}$/.test(trimmedPhone)){ setRegErr("Sahi 10-digit mobile number likhein"); return; }
+    setRegErr(""); setRegLoading(true);
+    try{
+      const rec=await dbRegisterStudent(trimmedPhone,trimmedName);
+      localStorage.setItem("student_name",rec.name);
+      localStorage.setItem("student_phone",trimmedPhone);
+      localStorage.setItem("student_id",rec.studentId);
+      setName(rec.name); setPhone(trimmedPhone); setStudentId(rec.studentId); setNameSet(true);
+    }catch(e){
+      setRegErr("Network issue — dobara try karein");
+    }
+    setRegLoading(false);
   }
   function changeName(){
     localStorage.removeItem("student_name");
-    setName("");setNameInput("");setNameSet(false);
+    localStorage.removeItem("student_phone");
+    localStorage.removeItem("student_id");
+    setName("");setPhone("");setStudentId("");setNameInput("");setPhoneInput("");setNameSet(false);
   }
 
-  if(activeDpp) return <DppAttempt dpp={activeDpp} name={name} onBack={()=>setActiveDpp(null)}/>;
+  if(activeDpp) return <DppAttempt dpp={activeDpp} name={name} phone={phone} studentId={studentId} onBack={()=>setActiveDpp(null)}/>;
 
   if(!nameSet) return(
     <div style={{minHeight:"100vh",background:"radial-gradient(ellipse at 50% 0%,#efeafe,#ffffff)",display:"flex",alignItems:"center",justifyContent:"center",padding:16}}>
@@ -586,16 +634,23 @@ function StudentHome({onBack}){
         <button onClick={onBack} style={{background:"rgba(99,102,241,.1)",border:"1px solid rgba(99,102,241,.2)",color:"var(--accent2)",fontSize:12,cursor:"pointer",fontWeight:600,padding:"6px 14px",borderRadius:99,marginBottom:20,transition:"all .2s"}}>← Home</button>
         <div style={{textAlign:"center",marginBottom:22}}>
           <div style={{width:72,height:72,background:"linear-gradient(135deg,#5b3df6,#7b4dff)",borderRadius:22,display:"flex",alignItems:"center",justifyContent:"center",fontSize:36,margin:"0 auto 14px",boxShadow:"0 8px 28px rgba(99,102,241,.4)"}}>🎓</div>
-          <h2 style={{color:"var(--text)",fontWeight:800,fontSize:22,fontFamily:"'Poppins',sans-serif"}}>Apna Naam Batao!</h2>
-          <p style={{color:"var(--muted)",fontSize:13,marginTop:5}}>Ek baar daalo, hamesha yaad rahega</p>
+          <h2 style={{color:"var(--text)",fontWeight:800,fontSize:22,fontFamily:"'Poppins',sans-serif"}}>Apna Student ID Banao!</h2>
+          <p style={{color:"var(--muted)",fontSize:13,marginTop:5}}>Phone number se login karo — record hamesha yaad rahega</p>
         </div>
         <span style={labelS}>Aapka Naam</span>
         <input placeholder="Naam likhein…" value={nameInput} onChange={e=>setNameInput(e.target.value)}
-          onKeyDown={e=>e.key==="Enter"&&confirmName(nameInput)} style={inputS} autoFocus/>
-        <button onClick={()=>confirmName(nameInput)} className="btn-glow"
-          style={{...btn("linear-gradient(135deg,#5b3df6,#7b4dff)"),width:"100%",padding:"14px",fontSize:15,marginTop:14,opacity:nameInput.trim()?1:0.5,borderRadius:14}}>
-          Shuru Karein 🚀
+          onKeyDown={e=>e.key==="Enter"&&registerStudent()} style={inputS} autoFocus/>
+        <span style={{...labelS,marginTop:12,display:"block"}}>Mobile Number</span>
+        <input placeholder="10-digit number…" type="tel" inputMode="numeric" maxLength={10} value={phoneInput}
+          onChange={e=>setPhoneInput(e.target.value.replace(/\D/g,"").slice(0,10))}
+          onKeyDown={e=>e.key==="Enter"&&registerStudent()} style={inputS}/>
+        {regErr&&<p style={{color:"var(--red)",fontSize:12,marginTop:8,fontWeight:600}}>⚠️ {regErr}</p>}
+        <button onClick={registerStudent} disabled={regLoading} className="btn-glow"
+          style={{...btn("linear-gradient(135deg,#5b3df6,#7b4dff)"),width:"100%",padding:"14px",fontSize:15,marginTop:14,
+            opacity:(nameInput.trim()&&/^[6-9]\d{9}$/.test(phoneInput)&&!regLoading)?1:0.5,borderRadius:14}}>
+          {regLoading?"Ho raha hai…":"Shuru Karein 🚀"}
         </button>
+        <p style={{color:"var(--dim)",fontSize:11,marginTop:12,textAlign:"center"}}>💡 Ek number = ek hi permanent Student ID, alag naam se dobara login karne se record nahi tootega</p>
       </div>
     </div>
   );
@@ -612,13 +667,16 @@ function StudentHome({onBack}){
         </div>
 
         {/* Greeting Card */}
-        <div className="fade-up greeting-card" style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16}}>
-          <div style={{flex:1}}>
-            <p style={{color:"var(--text)",fontWeight:700,fontSize:17,fontFamily:"'Poppins',sans-serif"}}>Namaste, <span style={{color:"var(--accent2)"}}>{name}! 👋</span></p>
-            <p style={{color:"var(--muted)",fontSize:12,marginTop:3}}>Aaj bhi practice karo, aage badhte raho!</p>
+        <div className="fade-up greeting-card" style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16,gap:10}}>
+          <div style={{flex:1,minWidth:0}}>
+            <p style={{color:"var(--text)",fontWeight:700,fontSize:17,fontFamily:"'Poppins',sans-serif",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>Namaste, <span style={{color:"var(--accent2)"}}>{name}! 👋</span></p>
+            <div style={{display:"flex",alignItems:"center",gap:6,marginTop:5,flexWrap:"wrap"}}>
+              {studentId&&<span style={{background:"linear-gradient(135deg,#5b3df6,#7b4dff)",color:"#fff",fontSize:10,fontWeight:800,padding:"3px 9px",borderRadius:20,letterSpacing:0.5}}>🪪 ID: {studentId}</span>}
+              <span style={{color:"var(--dim)",fontSize:11}}>📱 {phone}</span>
+            </div>
           </div>
-          <div style={{display:"flex",alignItems:"center",gap:8}}>
-            <button onClick={changeName} title="Naam badlo" style={{background:"rgba(99,102,241,.1)",border:"1px solid rgba(99,102,241,.2)",color:"var(--accent2)",fontSize:11,cursor:"pointer",fontWeight:600,padding:"5px 10px",borderRadius:99,transition:"all .2s"}}>✏️ Naam</button>
+          <div style={{display:"flex",alignItems:"center",gap:8,flexShrink:0}}>
+            <button onClick={changeName} title="Logout / number badlo" style={{background:"rgba(99,102,241,.1)",border:"1px solid rgba(99,102,241,.2)",color:"var(--accent2)",fontSize:11,cursor:"pointer",fontWeight:600,padding:"5px 10px",borderRadius:99,transition:"all .2s"}}>🔁 Switch</button>
             <div style={{width:44,height:44,borderRadius:14,background:"linear-gradient(135deg,#5b3df6,#7b4dff)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0,boxShadow:"0 4px 14px rgba(99,102,241,.4)"}}>
               {name.charAt(0).toUpperCase()}
             </div>
@@ -886,13 +944,14 @@ function Leaderboard(){
     if(filterClass!=="all"&&dpp.batch!==filterClass) return;
     Object.values(dppSubs).forEach(sub=>{
       if(!sub||!sub.studentName) return;
+      const key=sub.studentPhone||sub.studentName;
       const answers=sub.answers||{};
       const {got,total,pct}=calcScore(dpp,answers);
-      if(!studentMap[sub.studentName]) studentMap[sub.studentName]={name:sub.studentName,totalGot:0,totalMax:0,attempts:0,bestPct:0};
-      studentMap[sub.studentName].totalGot+=got;
-      studentMap[sub.studentName].totalMax+=total;
-      studentMap[sub.studentName].attempts+=1;
-      if(pct>studentMap[sub.studentName].bestPct) studentMap[sub.studentName].bestPct=pct;
+      if(!studentMap[key]) studentMap[key]={name:sub.studentName,studentId:sub.studentId||"",totalGot:0,totalMax:0,attempts:0,bestPct:0};
+      studentMap[key].totalGot+=got;
+      studentMap[key].totalMax+=total;
+      studentMap[key].attempts+=1;
+      if(pct>studentMap[key].bestPct) studentMap[key].bestPct=pct;
     });
   });
 
@@ -964,7 +1023,7 @@ function Leaderboard(){
           <div style={{...card,padding:"16px"}}>
             <p style={{color:"var(--accent2)",fontWeight:700,fontSize:11,textTransform:"uppercase",letterSpacing:1,marginBottom:12}}>Full Rankings</p>
             {board.map((s,i)=>(
-              <div key={s.name} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 10px",borderRadius:12,marginBottom:6,
+              <div key={s.studentId||s.name} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 10px",borderRadius:12,marginBottom:6,
                 background:i<3?"var(--surface2)":"transparent",border:i<3?"1px solid #e6e3f8":"1px solid transparent"}}>
                 <div style={{width:32,height:32,borderRadius:10,background:i<3?`${colors[i]}22`:"var(--surface2)",
                   display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,
@@ -972,7 +1031,7 @@ function Leaderboard(){
                   {i<3?medals[i]:i+1}
                 </div>
                 <div style={{flex:1,minWidth:0}}>
-                  <p style={{fontWeight:700,color:"var(--text)",fontSize:14,marginBottom:4,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{s.name}</p>
+                  <p style={{fontWeight:700,color:"var(--text)",fontSize:14,marginBottom:4,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{s.name}{s.studentId&&<span style={{color:"var(--dim)",fontWeight:600,fontSize:11}}> · {s.studentId}</span>}</p>
                   {/* Progress Bar */}
                   <div style={{height:6,background:"var(--border)",borderRadius:99,overflow:"hidden"}}>
                     <div style={{height:"100%",width:`${s.avgPct}%`,background:i===0?"linear-gradient(90deg,#f59e0b,#fbbf24)":i===1?"linear-gradient(90deg,#94a3b8,#cbd5e1)":i===2?"linear-gradient(90deg,#cd7c2f,#d97706)":"linear-gradient(90deg,#5b3df6,#7b4dff)",borderRadius:99,transition:"width 1s ease"}}/>
@@ -992,7 +1051,7 @@ function Leaderboard(){
 }
 
 // ── DPP ATTEMPT ───────────────────────────────────────────────────────────
-function DppAttempt({dpp,name,onBack}){
+function DppAttempt({dpp,name,phone,studentId,onBack}){
   const [answers,setAnswers]=useState({});
   const [submitted,setSubmitted]=useState(false);
   const [submitting,setSubmitting]=useState(false);
@@ -1077,7 +1136,7 @@ function DppAttempt({dpp,name,onBack}){
 
     setSubmitting(true);
     const sub={
-      id:uid(),dppId:dpp.id,studentName:name,answers,
+      id:uid(),dppId:dpp.id,studentName:name,studentPhone:phone||"",studentId:studentId||"",answers,
       submittedAt:Date.now(),
       totalTimeTaken:finalTotal,
       questionTimes:finalQTimes
@@ -1098,7 +1157,7 @@ function DppAttempt({dpp,name,onBack}){
     function buildShareText(){
       const stars=result.pct>=80?"⭐⭐⭐":result.pct>=50?"⭐⭐":"⭐";
       return "📐 *Sameer Sir – Maths DPP*\n\n"+
-        "👤 Student: *"+name+"*\n"+
+        "👤 Student: *"+name+"*"+(studentId?" (ID: "+studentId+")":"")+"\n"+
         "📋 DPP: *"+dpp.title+"*\n"+
         "📅 Date: "+new Date().toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"})+"\n\n"+
         "━━━━━━━━━━━━━━━\n"+
@@ -1362,6 +1421,46 @@ function DppAttempt({dpp,name,onBack}){
   );
 }
 
+// ── STUDENTS DIRECTORY ────────────────────────────────────────────────────
+function StudentsDirectory(){
+  const students=useStudents();
+  const [search,setSearch]=useState("");
+  const list=Object.values(students)
+    .sort((a,b)=>(a.studentId||"").localeCompare(b.studentId||""))
+    .filter(s=>{
+      if(!search.trim()) return true;
+      const q=search.trim().toLowerCase();
+      return (s.name||"").toLowerCase().includes(q)||(s.phone||"").includes(q)||(s.studentId||"").toLowerCase().includes(q);
+    });
+  return(
+    <div className="fade-up">
+      <input placeholder="🔍 Naam, number ya Student ID search karein…" value={search} onChange={e=>setSearch(e.target.value)} style={{...inputS,marginBottom:14}}/>
+      {list.length===0?(
+        <div style={{textAlign:"center",padding:"40px 0"}}>
+          <div style={{fontSize:44,marginBottom:8}}>📭</div>
+          <p style={{color:"var(--muted)"}}>Koi student register nahi hua abhi.</p>
+        </div>
+      ):(
+        <div style={{...card,padding:"16px"}}>
+          <p style={{color:"var(--accent2)",fontWeight:700,fontSize:11,textTransform:"uppercase",letterSpacing:1,marginBottom:12}}>Total {list.length} Students</p>
+          {list.map(s=>(
+            <div key={s.phone} style={{display:"flex",alignItems:"center",gap:12,padding:"11px 10px",borderRadius:12,marginBottom:6,background:"var(--surface2)",border:"1px solid var(--border)"}}>
+              <div style={{width:40,height:40,borderRadius:12,background:"linear-gradient(135deg,#5b3df6,#7b4dff)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:17,color:"#fff",fontWeight:800,flexShrink:0}}>
+                {(s.name||"?").charAt(0).toUpperCase()}
+              </div>
+              <div style={{flex:1,minWidth:0}}>
+                <p style={{fontWeight:700,color:"var(--text)",fontSize:14,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{s.name}</p>
+                <p style={{color:"var(--muted)",fontSize:12,marginTop:2}}>📱 {s.phone}</p>
+              </div>
+              <span style={{background:"var(--border)",color:"var(--accent2)",fontSize:11,fontWeight:800,padding:"4px 10px",borderRadius:20,flexShrink:0}}>{s.studentId}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── TEACHER PANEL ─────────────────────────────────────────────────────────
 function TeacherPanel({onBack}){
   const [view,setView]=useState("list");
@@ -1370,6 +1469,7 @@ function TeacherPanel({onBack}){
   const [detailId,setDetailId]=useState(null);
   const dpps=useDpps();
   const allSubs=useAllSubmissions();
+  const students=useStudents();
 
   if(view==="create") return <DppForm initial={editDpp} onSave={async dpp=>{ await dbSaveDpp(dpp); setEditDpp(null); setView("list"); }} onCancel={()=>{setEditDpp(null);setView("list");}}/>;  
   if(view==="ai") return <AiDppGenerator onSave={async dpp=>{ await dbSaveDpp(dpp); setView("list"); }} onCancel={()=>setView("list")}/>;
@@ -1411,11 +1511,12 @@ function TeacherPanel({onBack}){
           <StatBox label="Class 10" value={Object.values(dpps).filter(d=>d.batch==="class10").length} icon="📚"/>
           <StatBox label="Class 8" value={Object.values(dpps).filter(d=>d.batch==="class8").length} icon="📖"/>
           <StatBox label="Submissions" value={allResults.length} icon="📝"/>
+          <StatBox label="Students" value={Object.keys(students).length} icon="🧑‍🎓"/>
         </div>
 
         {/* Tab Bar */}
-        <div className="fade-up" style={{display:"flex",gap:6,marginBottom:18,background:"var(--surface)",borderRadius:16,padding:5,border:"1px solid var(--border)"}}>
-          {[["dpps","📋 DPPs"],["results","📊 Sabka Result"],["leaderboard","🏆 Leaderboard"]].map(([key,label])=>(
+        <div className="fade-up" style={{display:"flex",gap:6,marginBottom:18,background:"var(--surface)",borderRadius:16,padding:5,border:"1px solid var(--border)",flexWrap:"wrap"}}>
+          {[["dpps","📋 DPPs"],["results","📊 Sabka Result"],["leaderboard","🏆 Leaderboard"],["students","🧑‍🎓 Students"]].map(([key,label])=>(
             <button key={key} onClick={()=>setTab(key)}
               style={{flex:1,padding:"10px",borderRadius:10,border:"none",cursor:"pointer",fontWeight:700,fontSize:13,
                 background:tab===key?"linear-gradient(135deg,#5b3df6,#7b4dff)":"none",
@@ -1456,6 +1557,9 @@ function TeacherPanel({onBack}){
         {/* Leaderboard Management Tab */}
         {tab==="leaderboard"&&<TeacherLeaderboard/>}
 
+        {/* Students Directory Tab */}
+        {tab==="students"&&<StudentsDirectory/>}
+
         {/* All Results Tab */}
         {tab==="results"&&(
           <div className="fade-up">
@@ -1468,7 +1572,7 @@ function TeacherPanel({onBack}){
                 <div key={i} style={{background:"var(--surface)",border:"1px solid var(--border)",borderRadius:14,padding:"14px 16px",marginBottom:8}}>
                   <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
                     <div>
-                      <p style={{fontWeight:800,color:"var(--text)",fontSize:14}}>{r.studentName}</p>
+                      <p style={{fontWeight:800,color:"var(--text)",fontSize:14}}>{r.studentName}{r.studentId&&<span style={{color:"var(--dim)",fontWeight:600,fontSize:11}}> · {r.studentId}</span>}</p>
                       <p style={{color:"var(--muted)",fontSize:12,marginTop:2}}>{r.dppTitle}</p>
                       <span style={{background:"var(--border)",color:"var(--accent2)",fontSize:10,fontWeight:700,padding:"2px 8px",borderRadius:20}}>
                         {r.batch==="class10"?"Class 10":r.batch==="class8"?"Class 8":r.batch}
@@ -1809,11 +1913,12 @@ function TeacherLeaderboard(){
     if(!dpp) return;
     Object.values(dppSubs).forEach(sub=>{
       if(!sub||!sub.studentName) return;
+      const key=sub.studentPhone||sub.studentName;
       const {got,total,pct}=calcScore(dpp,sub.answers||{});
-      if(!studentMap[sub.studentName]) studentMap[sub.studentName]={name:sub.studentName,totalGot:0,totalMax:0,attempts:0};
-      studentMap[sub.studentName].totalGot+=got;
-      studentMap[sub.studentName].totalMax+=total;
-      studentMap[sub.studentName].attempts+=1;
+      if(!studentMap[key]) studentMap[key]={key,name:sub.studentName,studentId:sub.studentId||"",phone:sub.studentPhone||"",totalGot:0,totalMax:0,attempts:0};
+      studentMap[key].totalGot+=got;
+      studentMap[key].totalMax+=total;
+      studentMap[key].attempts+=1;
     });
   });
   const board=Object.values(studentMap)
@@ -1826,7 +1931,7 @@ function TeacherLeaderboard(){
     setDeleting(false);setConfirmDelete(null);setRefreshKey(k=>k+1);
   }
 
-  async function deleteStudentSubs(studentName){
+  async function deleteStudentSubs(key){
     setDeleting(true);
     try{
       const snap=await firebase.database().ref("submissions").once("value");
@@ -1835,7 +1940,7 @@ function TeacherLeaderboard(){
       Object.entries(allData).forEach(([dppId,dppSubs])=>{
         if(!dppSubs) return;
         Object.entries(dppSubs).forEach(([subId,sub])=>{
-          if(sub&&sub.studentName===studentName) updates["submissions/"+dppId+"/"+subId]=null;
+          if(sub&&(sub.studentPhone||sub.studentName)===key) updates["submissions/"+dppId+"/"+subId]=null;
         });
       });
       await firebase.database().ref().update(updates);
@@ -1864,11 +1969,11 @@ function TeacherLeaderboard(){
 
       {confirmDelete&&(
         <div style={{background:"rgba(248,113,113,.08)",border:"1px solid rgba(248,113,113,.25)",borderRadius:14,padding:"16px",marginBottom:16,textAlign:"center"}}>
-          <p style={{color:"var(--text)",fontWeight:700,marginBottom:6}}>{confirmDelete==="all"?"Sab submissions delete karna chahte ho?":"'"+confirmDelete+"' ki sab submissions delete karo?"}</p>
+          <p style={{color:"var(--text)",fontWeight:700,marginBottom:6}}>{confirmDelete==="all"?"Sab submissions delete karna chahte ho?":"'"+confirmDelete.name+"' ki sab submissions delete karo?"}</p>
           <p style={{color:"var(--muted)",fontSize:12,marginBottom:14}}>Yeh wapas nahi aayega!</p>
           <div style={{display:"flex",gap:10,justifyContent:"center"}}>
             <button onClick={()=>setConfirmDelete(null)} style={{background:"var(--surface)",border:"1px solid var(--border)",color:"var(--text)",cursor:"pointer",padding:"8px 20px",borderRadius:10,fontWeight:600,fontSize:13}}>Ruko</button>
-            <button onClick={()=>confirmDelete==="all"?deleteAllSubmissions():deleteStudentSubs(confirmDelete)} disabled={deleting}
+            <button onClick={()=>confirmDelete==="all"?deleteAllSubmissions():deleteStudentSubs(confirmDelete.key)} disabled={deleting}
               style={{background:"linear-gradient(135deg,#ef4444,#dc2626)",border:"none",color:"#fff",cursor:"pointer",padding:"8px 20px",borderRadius:10,fontWeight:700,fontSize:13,opacity:deleting?.6:1}}>
               {deleting?"Deleting...":"Haan, Delete Karo"}
             </button>
@@ -1885,19 +1990,19 @@ function TeacherLeaderboard(){
         <div style={{...card,padding:"16px"}}>
           <p style={{color:"var(--accent2)",fontWeight:700,fontSize:11,textTransform:"uppercase",letterSpacing:1,marginBottom:12}}>Rankings ({board.length} students)</p>
           {board.map((s,i)=>(
-            <div key={s.name} style={{display:"flex",alignItems:"center",gap:10,padding:"11px 10px",borderRadius:12,marginBottom:6,
+            <div key={s.key} style={{display:"flex",alignItems:"center",gap:10,padding:"11px 10px",borderRadius:12,marginBottom:6,
               background:i<3?"var(--surface2)":"transparent",border:i<3?"1px solid var(--border)":"1px solid transparent"}}>
               <div style={{width:32,height:32,borderRadius:10,background:i<3?colors[i]+"22":"var(--surface2)",
                 display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,color:i<3?colors[i]:"var(--dim)",fontSize:i<3?18:14,flexShrink:0}}>
                 {i<3?medals[i]:i+1}
               </div>
               <div style={{flex:1,minWidth:0}}>
-                <p style={{fontWeight:700,color:"var(--text)",fontSize:13,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{s.name}</p>
-                <p style={{color:"var(--muted)",fontSize:11,marginTop:1}}>{s.attempts} attempts · {s.totalGot}/{s.totalMax}M</p>
+                <p style={{fontWeight:700,color:"var(--text)",fontSize:13,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{s.name}{s.studentId&&<span style={{color:"var(--dim)",fontWeight:600,fontSize:11}}> · {s.studentId}</span>}</p>
+                <p style={{color:"var(--muted)",fontSize:11,marginTop:1}}>{s.attempts} attempts · {s.totalGot}/{s.totalMax}M{s.phone?" · 📱 "+s.phone:""}</p>
               </div>
               <div style={{display:"flex",alignItems:"center",gap:8}}>
                 <p style={{fontWeight:900,color:i<3?colors[i]:"var(--text)",fontSize:16}}>{s.avgPct}%</p>
-                <button onClick={()=>setConfirmDelete(s.name)} title="Delete"
+                <button onClick={()=>setConfirmDelete({key:s.key,name:s.name})} title="Delete"
                   style={{background:"rgba(248,113,113,.08)",border:"1px solid rgba(248,113,113,.2)",color:"var(--red)",cursor:"pointer",fontSize:12,padding:"4px 8px",borderRadius:8,fontWeight:600,flexShrink:0}}>
                   🗑
                 </button>
