@@ -376,22 +376,7 @@ h1,h2,h3,.display{font-family:'Poppins',system-ui,sans-serif;letter-spacing:-.3p
 </head>
 <body>
 <div id="root"></div>
-<script>
-// Error display for debugging
-window.__errors = [];
-window.onerror = function(msg, src, line, col, err) {
-  var d = document.createElement('div');
-  d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#ff0000;color:#fff;padding:12px;font-size:13px;font-family:monospace;z-index:99999;';
-  d.textContent = 'JS Error: ' + msg + ' (line ' + line + ')';
-  document.body.appendChild(d);
-};
-window.addEventListener('unhandledrejection', function(e) {
-  var d = document.createElement('div');
-  d.style.cssText = 'position:fixed;top:40px;left:0;right:0;background:#cc0000;color:#fff;padding:12px;font-size:13px;font-family:monospace;z-index:99999;';
-  d.textContent = 'Promise Error: ' + (e.reason && e.reason.message ? e.reason.message : e.reason);
-  document.body.appendChild(d);
-});
-</script>
+
 <script type="text/babel">
 const { useState, useEffect, useRef } = React;
 const TEACHER_PIN = "7210";
@@ -500,4 +485,12 @@ function Landing({onSelect}){
       {/* Ambient blobs */}
       <div style={{position:"absolute",width:500,height:500,borderRadius:"50%",background:"radial-gradient(circle,rgba(99,102,241,.1) 0%,transparent 65%)",top:-120,right:-100,pointerEvents:"none"}}/>
       <div style={{position:"absolute",width:350,height:350,borderRadius:"50%",background:"radial-gradient(circle,rgba(167,139,250,.07) 0%,transparent 65%)",bottom:-80,left:-80,pointerEvents:"none"}}/>
-      <div style={{position:"absolute",width:200,height:200,borderRadius:"50%",background:"radial-gradient(circle,rgba(56,189,248,.05) 0%,transparent 70%)",top:"40%",left:"5%",pointerEvents:"none
+      <div style={{position:"absolute",width:200,height:200,borderRadius:"50%",background:"radial-gradient(circle,rgba(56,189,248,.05) 0%,transparent 70%)",top:"40%",left:"5%",pointerEvents:"none"}}/>
+      <div className="fade-up" style={{textAlign:"center",maxWidth:420,width:"100%",position:"relative"}}>
+        {/* Logo */}
+        <div style={{position:"relative",display:"inline-block",marginBottom:22}}>
+          <div style={{width:90,height:90,background:"linear-gradient(135deg,#5b3df6,#7b4dff)",borderRadius:26,display:"flex",alignItems:"center",justifyContent:"center",fontSize:42,animation:"floatGlow 3.5s ease-in-out infinite"}}>📐</div>
+          <div className="live-dot" style={{position:"absolute",bottom:5,right:5,width:10,height:10,boxShadow:"0 0 10px var(--green),0 0 20px rgba(34,211,165,.4)"}}/>
+        </div>
+        <h1 style={{fontSize:34,fontWeight:900,color:"var(--text)",letterSpacing:-1.5,lineHeight:1.1,fontFamily:"'Poppins',sans-serif"}}>Sameer Sir</h1>
+        <p style={{
