@@ -4,11 +4,11 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Maths DPP – Sameer Sir</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js" crossorigin></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js" crossorigin></script>
-<script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js" crossorigin></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js" crossorigin></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-database-compat.js" crossorigin></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-database-compat.js"></script>
 <script>
   const firebaseConfig = {
     apiKey: "AIzaSyCPfxXYuZHLNzksZZ8MnIHWIFNw4xpR5Bk",
@@ -373,30 +373,23 @@ h1,h2,h3,.display{font-family:'Poppins',system-ui,sans-serif;letter-spacing:-.3p
   .hide-sm{display:none!important}
 }
 </style>
-<script>
-window.addEventListener('error', function(e) {
-  if(e.target && e.target.src) {
-    document.body.innerHTML = '<div style="padding:20px;font-family:monospace;background:#1a0000;color:#ff6b6b;min-height:100vh"><h2>CDN Load Error</h2><p>Failed to load: ' + e.target.src + '</p><p>Check your internet connection and try again.</p></div>';
-  }
-}, true);
-</script>
 </head>
 <body>
 <div id="root"></div>
 <script>
+// Error display for debugging
+window.__errors = [];
 window.onerror = function(msg, src, line, col, err) {
-  if(line === 0 || !src) return; // ignore cross-origin noise
   var d = document.createElement('div');
-  d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#ff0000;color:#fff;padding:12px;font-size:12px;font-family:monospace;z-index:99999;';
-  d.textContent = 'JS Error: ' + msg + ' | ' + (src||'?') + ' (line ' + line + ')';
+  d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#ff0000;color:#fff;padding:12px;font-size:13px;font-family:monospace;z-index:99999;';
+  d.textContent = 'JS Error: ' + msg + ' (line ' + line + ')';
   document.body.appendChild(d);
 };
-document.addEventListener('DOMContentLoaded', function() {
-  setTimeout(function() {
-    if(!window.React) {
-      document.body.innerHTML = '<div style="padding:30px;font-family:sans-serif;background:#08071a;color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px"><h2 style="color:#f87171">⚠️ Script Load Failed</h2><p style="color:#a1a1aa">React load nahi ho saka. Internet check karo aur page refresh karo.</p><button onclick="location.reload()" style="background:#6366f1;color:#fff;border:none;padding:12px 24px;border-radius:10px;font-size:16px;cursor:pointer">🔄 Refresh Karo</button></div>';
-    }
-  }, 5000);
+window.addEventListener('unhandledrejection', function(e) {
+  var d = document.createElement('div');
+  d.style.cssText = 'position:fixed;top:40px;left:0;right:0;background:#cc0000;color:#fff;padding:12px;font-size:13px;font-family:monospace;z-index:99999;';
+  d.textContent = 'Promise Error: ' + (e.reason && e.reason.message ? e.reason.message : e.reason);
+  document.body.appendChild(d);
 });
 </script>
 <script type="text/babel">
@@ -503,4 +496,8 @@ function App(){
 // ── LANDING ───────────────────────────────────────────────────────────────
 function Landing({onSelect}){
   return(
-    <div style={{minHeight:"100vh",background:"radial-gradient(ellipse at 55% 0%,#efeafe 0%,#ffffff 55%)",display:"flex",flexDire
+    <div style={{minHeight:"100vh",background:"radial-gradient(ellipse at 55% 0%,#efeafe 0%,#ffffff 55%)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"24px 16px",position:"relative",overflow:"hidden"}}>
+      {/* Ambient blobs */}
+      <div style={{position:"absolute",width:500,height:500,borderRadius:"50%",background:"radial-gradient(circle,rgba(99,102,241,.1) 0%,transparent 65%)",top:-120,right:-100,pointerEvents:"none"}}/>
+      <div style={{position:"absolute",width:350,height:350,borderRadius:"50%",background:"radial-gradient(circle,rgba(167,139,250,.07) 0%,transparent 65%)",bottom:-80,left:-80,pointerEvents:"none"}}/>
+      <div style={{position:"absolute",width:200,height:200,borderRadius:"50%",background:"radial-gradient(circle,rgba(56,189,248,.05) 0%,transparent 70%)",top:"40%",left:"5%",pointerEvents:"none
