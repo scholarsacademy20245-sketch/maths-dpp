@@ -4,11 +4,11 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Maths DPP – Sameer Sir</title>
-<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-database-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-database-compat.js"></script>
 <script>
   const firebaseConfig = {
     apiKey: "AIzaSyCPfxXYuZHLNzksZZ8MnIHWIFNw4xpR5Bk",
@@ -375,9 +375,24 @@ h1,h2,h3,.display{font-family:'Poppins',system-ui,sans-serif;letter-spacing:-.3p
 </style>
 </head>
 <body>
-<div id="root"><div style="min-height:100vh;background:#08071a;display:flex;align-items:center;justify-content:center;color:#a78bfa;font-family:sans-serif;font-size:16px">Loading...</div></div>
-
-<script type="text/babel" data-presets="react">
+<div id="root"></div>
+<script>
+// Error display for debugging
+window.__errors = [];
+window.onerror = function(msg, src, line, col, err) {
+  var d = document.createElement('div');
+  d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#ff0000;color:#fff;padding:12px;font-size:13px;font-family:monospace;z-index:99999;';
+  d.textContent = 'JS Error: ' + msg + ' (line ' + line + ')';
+  document.body.appendChild(d);
+};
+window.addEventListener('unhandledrejection', function(e) {
+  var d = document.createElement('div');
+  d.style.cssText = 'position:fixed;top:40px;left:0;right:0;background:#cc0000;color:#fff;padding:12px;font-size:13px;font-family:monospace;z-index:99999;';
+  d.textContent = 'Promise Error: ' + (e.reason && e.reason.message ? e.reason.message : e.reason);
+  document.body.appendChild(d);
+});
+</script>
+<script type="text/babel">
 const { useState, useEffect, useRef } = React;
 const TEACHER_PIN = "7210";
 
@@ -490,4 +505,943 @@ function Landing({onSelect}){
         {/* Logo */}
         <div style={{position:"relative",display:"inline-block",marginBottom:22}}>
           <div style={{width:90,height:90,background:"linear-gradient(135deg,#5b3df6,#7b4dff)",borderRadius:26,display:"flex",alignItems:"center",justifyContent:"center",fontSize:42,animation:"floatGlow 3.5s ease-in-out infinite"}}>📐</div>
-          <div className="live-dot" style={{position:"absolute",bottom:5,right:5,width:10,height:10,boxShadow:"0 0 10px var(--green),0 0 20px rgba(34,211,165,.4)
+          <div className="live-dot" style={{position:"absolute",bottom:5,right:5,width:10,height:10,boxShadow:"0 0 10px var(--green),0 0 20px rgba(34,211,165,.4)"}}/>
+        </div>
+        <h1 style={{fontSize:34,fontWeight:900,color:"var(--text)",letterSpacing:-1.5,lineHeight:1.1,fontFamily:"'Poppins',sans-serif"}}>Sameer Sir</h1>
+        <p style={{color:"var(--accent2)",fontSize:14,marginTop:6,marginBottom:4,fontWeight:600,letterSpacing:.5}}>Maths DPP Portal</p>
+        <div style={{display:"inline-flex",alignItems:"center",gap:6,background:"rgba(34,211,165,.08)",border:"1px solid rgba(34,211,165,.2)",borderRadius:99,padding:"5px 14px",marginBottom:36}}>
+          <span className="live-dot"/>
+          <span style={{color:"var(--green)",fontSize:12,fontWeight:600}}>Live · Firebase Connected</span>
+        </div>
+        <div className="stagger" style={{display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap"}}>
+          <RoleCard icon="🎓" title="Student Corner" sub="DPP attempt karo" grad="linear-gradient(135deg,#5b3df6 0%,#7b4dff 100%)" onClick={()=>onSelect("student")}/>
+          <RoleCard icon="👨‍🏫" title="Teacher Panel" sub="DPP manage karo" grad="linear-gradient(135deg,#0891b2 0%,#0e7490 100%)" onClick={()=>onSelect("teacher")}/>
+        </div>
+        <p style={{color:"var(--dim)",fontSize:12,marginTop:28,letterSpacing:.3}}>Class 8 & Class 10 · Daily Practice Problems</p>
+      </div>
+    </div>
+  );
+}
+function RoleCard({icon,title,sub,grad,onClick}){
+  const [hov,setHov]=useState(false);
+  return(
+    <div onClick={onClick} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)} className="btn-glow ripple"
+      style={{background:grad,borderRadius:22,padding:"28px 32px",cursor:"pointer",width:168,
+        boxShadow:hov?"0 20px 48px rgba(99,102,241,.45),0 0 0 1px rgba(255,255,255,.1)":"0 4px 24px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.06)",
+        transform:hov?"translateY(-5px) scale(1.04)":"none",transition:"all .25s cubic-bezier(.22,1,.36,1)",textAlign:"center",position:"relative",overflow:"hidden"}}>
+      <div style={{position:"absolute",inset:0,background:"linear-gradient(135deg,rgba(255,255,255,.12) 0%,transparent 60%)",pointerEvents:"none"}}/>
+      <div style={{fontSize:42,marginBottom:12,filter:"drop-shadow(0 4px 8px rgba(0,0,0,.3))"}}>{icon}</div>
+      <p style={{color:"#fff",fontWeight:800,fontSize:15,marginBottom:4,letterSpacing:.2}}>{title}</p>
+      <p style={{color:"rgba(255,255,255,.65)",fontSize:12,fontWeight:500}}>{sub}</p>
+    </div>
+  );
+}
+
+// ── PIN ───────────────────────────────────────────────────────────────────
+function PinScreen({pin,setPin,error,onSubmit,onBack}){
+  return(
+    <div style={{minHeight:"100vh",background:"radial-gradient(ellipse at 50% 0%,#efeafe,#ffffff)",display:"flex",alignItems:"center",justifyContent:"center",padding:16}}>
+      <div className="pop-in" style={{...card,maxWidth:320,width:"100%",textAlign:"center",padding:"32px 28px",boxShadow:"0 24px 64px rgba(0,0,0,.5),0 0 0 1px rgba(99,102,241,.15)"}}>
+        <button onClick={onBack} style={{background:"rgba(99,102,241,.1)",border:"1px solid rgba(99,102,241,.2)",color:"var(--accent2)",fontSize:12,cursor:"pointer",fontWeight:600,padding:"6px 14px",borderRadius:99,marginBottom:20,transition:"all .2s"}}>← Wapas</button>
+        <div style={{width:64,height:64,background:"linear-gradient(135deg,#5b3df6,#7b4dff)",borderRadius:18,display:"flex",alignItems:"center",justifyContent:"center",fontSize:30,margin:"0 auto 16px",boxShadow:"0 8px 24px rgba(99,102,241,.4)"}}>🔐</div>
+        <h2 style={{color:"var(--text)",marginBottom:6,fontWeight:800,fontSize:20}}>Teacher Login</h2>
+        <p style={{color:"var(--muted)",fontSize:13,marginBottom:20}}>Apna PIN enter karein</p>
+        <input type="password" placeholder="• • • •" value={pin}
+          onChange={e=>setPin(e.target.value)} onKeyDown={e=>e.key==="Enter"&&onSubmit()}
+          style={{...inputS,textAlign:"center",letterSpacing:10,fontSize:24,marginBottom:10,border:error?"1.5px solid var(--red)":"1.5px solid var(--border)"}}/>
+        {error&&<div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,color:"var(--red)",fontSize:13,marginBottom:10,background:"rgba(248,113,113,.08)",padding:"8px",borderRadius:10}}>❌ Galat PIN! Dobara try karein.</div>}
+        <button onClick={onSubmit} className="btn-glow" style={{...btn("linear-gradient(135deg,#5b3df6,#7b4dff)"),width:"100%",padding:"14px",fontSize:15,marginTop:4,borderRadius:14}}>Login करें →</button>
+      </div>
+    </div>
+  );
+}
+// ── STUDENT HOME ──────────────────────────────────────────────────────────
+function StudentHome({onBack}){
+  const [classSelected,setClassSelected]=useState(null);
+  const [activeDpp,setActiveDpp]=useState(null);
+  const [tab,setTab]=useState("dpps");
+
+  // Phone-based login state
+  const [loginStep,setLoginStep]=useState("phone"); // "phone" | "register" | "done"
+  const [phoneInput,setPhoneInput]=useState("");
+  const [nameInput,setNameInput]=useState("");
+  const [studentProfile,setStudentProfile]=useState(null); // {name, phone, studentId}
+  const [loginLoading,setLoginLoading]=useState(false);
+  const [loginErr,setLoginErr]=useState("");
+
+  // Check localStorage for saved session
+  useEffect(()=>{
+    const saved=localStorage.getItem("student_profile");
+    if(saved){
+      try{
+        const p=JSON.parse(saved);
+        if(p&&p.phone&&p.name){ setStudentProfile(p); setLoginStep("done"); }
+      }catch(e){}
+    }
+  },[]);
+
+  function formatPhone(raw){
+    // Keep only digits, limit to 10
+    return raw.replace(/\D/g,"").slice(0,10);
+  }
+
+  async function handlePhoneSubmit(){
+    const phone=phoneInput.trim();
+    if(phone.length!==10){setLoginErr("10 digit ka phone number daalo");return;}
+    setLoginLoading(true);setLoginErr("");
+    try{
+      const snap=await firebase.database().ref("students/"+phone).once("value");
+      const existing=snap.val();
+      if(existing&&existing.name){
+        const profile={name:existing.name,phone,studentId:"SA"+phone};
+        localStorage.setItem("student_profile",JSON.stringify(profile));
+        setStudentProfile(profile);
+        setLoginStep("done");
+      } else {
+        setLoginStep("register");
+      }
+    }catch(e){setLoginErr("Network error. Dobara try karo.");}
+    setLoginLoading(false);
+  }
+
+  async function handleRegister(){
+    const name=nameInput.trim();
+    if(!name){setLoginErr("Apna naam likhein");return;}
+    const phone=phoneInput.trim();
+    setLoginLoading(true);setLoginErr("");
+    try{
+      const profile={name,phone,studentId:"SA"+phone,joinedAt:Date.now()};
+      await firebase.database().ref("students/"+phone).set(profile);
+      const localProfile={name,phone,studentId:"SA"+phone};
+      localStorage.setItem("student_profile",JSON.stringify(localProfile));
+      setStudentProfile(localProfile);
+      setLoginStep("done");
+    }catch(e){setLoginErr("Save nahi hua. Dobara try karo.");}
+    setLoginLoading(false);
+  }
+
+  function logout(){
+    localStorage.removeItem("student_profile");
+    setStudentProfile(null);setLoginStep("phone");
+    setPhoneInput("");setNameInput("");setLoginErr("");
+  }
+
+  const name=studentProfile?studentProfile.name:"";
+
+  if(activeDpp) return <DppAttempt dpp={activeDpp} name={name} onBack={()=>setActiveDpp(null)}/>;
+
+  // ── Phone Login Screen ──
+  if(loginStep!=="done") return(
+    <div style={{minHeight:"100vh",background:"radial-gradient(ellipse 80% 60% at 50% -10%,#ede9ff,#ffffff 65%)",display:"flex",alignItems:"center",justifyContent:"center",padding:16,position:"relative",overflow:"hidden"}}>
+      {/* Decorative blobs */}
+      <div style={{position:"absolute",width:320,height:320,borderRadius:"50%",background:"radial-gradient(circle,rgba(99,102,241,.1) 0%,transparent 70%)",top:-60,right:-60,pointerEvents:"none"}}/>
+      <div style={{position:"absolute",width:220,height:220,borderRadius:"50%",background:"radial-gradient(circle,rgba(124,58,237,.08) 0%,transparent 70%)",bottom:-40,left:-40,pointerEvents:"none"}}/>
+
+      <div className="pop-in" style={{maxWidth:380,width:"100%",position:"relative"}}>
+        {/* Card */}
+        <div style={{background:"rgba(255,255,255,.92)",backdropFilter:"blur(24px)",border:"1px solid rgba(99,102,241,.18)",borderRadius:28,padding:"32px 28px",boxShadow:"0 24px 64px rgba(91,61,246,.18),0 4px 16px rgba(0,0,0,.06)"}}>
+          <button onClick={onBack} style={{background:"rgba(99,102,241,.08)",border:"1px solid rgba(99,102,241,.15)",color:"var(--accent2)",fontSize:12,cursor:"pointer",fontWeight:700,padding:"6px 16px",borderRadius:99,marginBottom:22,transition:"all .2s"}}>← Home</button>
+
+          <div style={{textAlign:"center",marginBottom:24}}>
+            <div style={{width:76,height:76,background:"linear-gradient(135deg,#5b3df6,#a78bfa)",borderRadius:24,display:"flex",alignItems:"center",justifyContent:"center",fontSize:38,margin:"0 auto 14px",boxShadow:"0 10px 30px rgba(91,61,246,.4)"}}>
+              {loginStep==="phone"?"📱":"🎓"}
+            </div>
+            {loginStep==="phone"&&<>
+              <h2 style={{color:"var(--text)",fontWeight:900,fontSize:23,fontFamily:"'Poppins',sans-serif",letterSpacing:-.5}}>Student Login</h2>
+              <p style={{color:"var(--muted)",fontSize:13,marginTop:6}}>Apna <b>phone number</b> daalo — yahi tumhari ID hai!</p>
+            </>}
+            {loginStep==="register"&&<>
+              <h2 style={{color:"var(--text)",fontWeight:900,fontSize:23,fontFamily:"'Poppins',sans-serif",letterSpacing:-.5}}>Pehli Baar? 👋</h2>
+              <p style={{color:"var(--muted)",fontSize:13,marginTop:6}}>Phone: <b style={{color:"var(--accent2)"}}>+91 {phoneInput}</b></p>
+              <p style={{color:"var(--muted)",fontSize:12,marginTop:3}}>Ek baar naam daalo, phir phone number se seedha login hoga!</p>
+            </>}
+          </div>
+
+          {loginStep==="phone"&&<>
+            <span style={labelS}>📱 Phone Number</span>
+            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+              <div style={{background:"var(--surface2)",border:"1.5px solid var(--border)",borderRadius:12,padding:"12px 14px",fontSize:14,fontWeight:700,color:"var(--muted)",flexShrink:0,minWidth:54,textAlign:"center"}}>+91</div>
+              <input
+                placeholder="10 digit number"
+                value={phoneInput}
+                inputMode="numeric"
+                maxLength={10}
+                onChange={e=>setPhoneInput(formatPhone(e.target.value))}
+                onKeyDown={e=>e.key==="Enter"&&handlePhoneSubmit()}
+                style={{...inputS,letterSpacing:2,fontSize:18,fontWeight:700,textAlign:"center"}}
+                autoFocus
+              />
+            </div>
+            {loginErr&&<div style={{color:"var(--red)",fontSize:12,background:"rgba(239,68,68,.07)",border:"1px solid rgba(239,68,68,.2)",borderRadius:10,padding:"8px 12px",marginBottom:10,textAlign:"center"}}>⚠️ {loginErr}</div>}
+            <button onClick={handlePhoneSubmit} disabled={loginLoading||phoneInput.length!==10} className="btn-glow"
+              style={{...btn("linear-gradient(135deg,#5b3df6,#7b4dff)"),width:"100%",padding:"14px",fontSize:15,marginTop:6,borderRadius:16,opacity:phoneInput.length===10?1:0.45}}>
+              {loginLoading?"⏳ Dhundh rahe hain...":"Aage Badhein →"}
+            </button>
+          </>}
+
+          {loginStep==="register"&&<>
+            <span style={labelS}>✏️ Apna Poora Naam</span>
+            <input
+              placeholder="Yahan naam likhein…"
+              value={nameInput}
+              onChange={e=>setNameInput(e.target.value)}
+              onKeyDown={e=>e.key==="Enter"&&handleRegister()}
+              style={inputS}
+              autoFocus
+            />
+            {loginErr&&<div style={{color:"var(--red)",fontSize:12,background:"rgba(239,68,68,.07)",border:"1px solid rgba(239,68,68,.2)",borderRadius:10,padding:"8px 12px",marginBottom:10,marginTop:8,textAlign:"center"}}>⚠️ {loginErr}</div>}
+            <div style={{display:"flex",gap:10,marginTop:14}}>
+              <button onClick={()=>{setLoginStep("phone");setLoginErr("");}} style={{...btn("var(--surface2)"),flex:1,color:"var(--muted)",border:"1px solid var(--border)"}}>← Wapas</button>
+              <button onClick={handleRegister} disabled={loginLoading||!nameInput.trim()} className="btn-glow"
+                style={{...btn("linear-gradient(135deg,#5b3df6,#7b4dff)"),flex:2,padding:"14px",fontSize:15,borderRadius:16,opacity:nameInput.trim()?1:0.45}}>
+                {loginLoading?"⏳ Save ho raha...":"Register Karo 🚀"}
+              </button>
+            </div>
+          </>}
+        </div>
+
+        {/* Info note */}
+        <div style={{textAlign:"center",marginTop:16,color:"var(--muted)",fontSize:12}}>
+          🔒 Phone number sirf tumhari ID ke liye use hoga — kisi se share nahi hoga
+        </div>
+      </div>
+    </div>
+  );
+
+  return(
+    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#f6f6fd,#eeeafd,#ffffff)",padding:"20px 16px"}}>
+      <div style={{maxWidth:600,margin:"0 auto"}}>
+        {/* Header */}
+        <div className="fade-up" style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
+          <button onClick={onBack} style={{background:"var(--surface)",border:"none",color:"var(--accent2)",fontSize:13,cursor:"pointer",fontWeight:600,padding:"8px 14px",borderRadius:10}}>← Home</button>
+          <div>
+            <h2 style={{color:"var(--text)",fontWeight:800,fontSize:19,fontFamily:"'Poppins',sans-serif"}}>🎓 Student Corner</h2>
+          </div>
+        </div>
+
+        {/* Greeting Card */}
+        <div className="fade-up greeting-card" style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16}}>
+          <div style={{flex:1,minWidth:0}}>
+            <p style={{color:"var(--text)",fontWeight:700,fontSize:17,fontFamily:"'Poppins',sans-serif"}}>Namaste, <span style={{color:"var(--accent2)"}}>{name}! 👋</span></p>
+            <div style={{display:"flex",alignItems:"center",gap:6,marginTop:4}}>
+              <span style={{background:"rgba(99,102,241,.1)",border:"1px solid rgba(99,102,241,.18)",borderRadius:99,padding:"2px 10px",fontSize:11,fontWeight:700,color:"var(--accent2)"}}>📱 SA{studentProfile&&studentProfile.phone}</span>
+            </div>
+            <p style={{color:"var(--muted)",fontSize:12,marginTop:4}}>Aaj bhi practice karo, aage badhte raho! 🔥</p>
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:8,flexShrink:0}}>
+            <button onClick={logout} title="Logout" style={{background:"rgba(239,68,68,.07)",border:"1px solid rgba(239,68,68,.18)",color:"var(--red)",fontSize:11,cursor:"pointer",fontWeight:600,padding:"5px 10px",borderRadius:99,transition:"all .2s"}}>↩ Logout</button>
+            <div style={{width:46,height:46,borderRadius:14,background:"linear-gradient(135deg,#5b3df6,#a78bfa)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0,boxShadow:"0 4px 14px rgba(99,102,241,.4)"}}>
+              {name.charAt(0).toUpperCase()}
+            </div>
+          </div>
+        </div>
+
+        {/* Tab Bar */}
+        <div className="fade-up" style={{display:"flex",gap:6,marginBottom:20,background:"var(--surface)",borderRadius:16,padding:5,border:"1px solid var(--border)"}}>
+          {[["dpps","📚 DPPs"],["leaderboard","🏆 Leaderboard"]].map(([key,label])=>(
+            <button key={key} onClick={()=>{setTab(key);setClassSelected(null);}}
+              style={{flex:1,padding:"10px",borderRadius:10,border:"none",cursor:"pointer",fontWeight:700,fontSize:13,
+                background:tab===key?"linear-gradient(135deg,#5b3df6,#7b4dff)":"none",
+                color:tab===key?"#fff":"var(--muted)",transition:"all .2s"}}>
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {/* DPPs Tab */}
+        {tab==="dpps"&&(
+          <>
+            {!classSelected&&(
+              <div className="fade-up">
+                <p style={{color:"var(--accent2)",fontWeight:700,fontSize:11,textTransform:"uppercase",letterSpacing:1,marginBottom:12}}>Apni Class Chunein</p>
+                <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
+                  <ClassCard num="8" color="linear-gradient(135deg,#0891b2,#0e7490)" onClick={()=>setClassSelected("class8")}/>
+                  <ClassCard num="10" color="linear-gradient(135deg,#7b4dff,#5b3df6)" onClick={()=>setClassSelected("class10")}/>
+                </div>
+              </div>
+            )}
+            {classSelected&&(
+              <div className="fade-up">
+                <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
+                  <button onClick={()=>setClassSelected(null)} style={{background:"var(--surface)",border:"none",color:"var(--accent2)",fontSize:13,cursor:"pointer",fontWeight:600,padding:"6px 12px",borderRadius:8}}>← Classes</button>
+                  <h3 style={{color:"var(--text)",fontWeight:800,fontSize:16}}>{classSelected==="class10"?"📚 Class 10":"📚 Class 8"} DPPs</h3>
+                </div>
+                <DppList classKey={classSelected} name={name} onSelect={setActiveDpp}/>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Leaderboard Tab */}
+        {tab==="leaderboard"&&<Leaderboard/>}
+      </div>
+    </div>
+  );
+}
+
+function ClassCard({num,color,onClick}){
+  const [hov,setHov]=useState(false);
+  return(
+    <div onClick={onClick} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)} className="btn-glow ripple"
+      style={{background:color,borderRadius:20,padding:"24px 28px",cursor:"pointer",flex:1,minWidth:130,textAlign:"center",
+        boxShadow:hov?"0 16px 40px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.1)":"0 4px 16px rgba(0,0,0,.3),0 0 0 1px rgba(255,255,255,.06)",
+        transform:hov?"translateY(-4px) scale(1.03)":"none",transition:"all .25s cubic-bezier(.22,1,.36,1)",position:"relative",overflow:"hidden"}}>
+      <div style={{position:"absolute",inset:0,background:"linear-gradient(135deg,rgba(255,255,255,.15) 0%,transparent 50%)",pointerEvents:"none"}}/>
+      <div style={{fontSize:36,marginBottom:8,filter:"drop-shadow(0 2px 6px rgba(0,0,0,.3))"}}>{num==="8"?"📗":"📘"}</div>
+      <p style={{color:"#fff",fontWeight:900,fontSize:22,letterSpacing:-0.5}}>Class {num}</p>
+      <p style={{color:"rgba(255,255,255,.7)",fontSize:12,marginTop:3,fontWeight:500}}>DPPs dekhein →</p>
+    </div>
+  );
+}
+
+const CLASS10_CHAPTERS=[
+  "Real Numbers","Polynomials","Linear Equations","Quadratic Equations",
+  "Arithmetic Progressions","Triangles","Coordinate Geometry","Introduction to Trigonometry",
+  "Heights and Distances","Circles","Constructions","Areas Related to Circles",
+  "Surface Areas and Volumes","Statistics","Probability"
+];
+const CLASS8_CHAPTERS=[
+  "Rational Numbers","Linear Equations in One Variable","Understanding Quadrilaterals",
+  "Practical Geometry","Data Handling","Squares and Square Roots","Cubes and Cube Roots",
+  "Comparing Quantities","Algebraic Expressions","Visualising Solid Shapes",
+  "Mensuration","Exponents and Powers","Direct and Inverse Proportions",
+  "Factorisation","Introduction to Graphs","Playing with Numbers"
+];
+
+function DppList({classKey,name,onSelect}){
+  const dpps=useDpps();
+  const [openChapter,setOpenChapter]=useState(null);
+  const [search,setSearch]=useState("");
+
+  const allForClass=Object.values(dpps).filter(d=>d.batch===classKey);
+  const chapters=classKey==="class10"?CLASS10_CHAPTERS:CLASS8_CHAPTERS;
+
+  // Group by chapter
+  const byChapter={};
+  allForClass.forEach(d=>{
+    const ch=d.chapter||"Other";
+    if(!byChapter[ch]) byChapter[ch]=[];
+    byChapter[ch].push(d);
+  });
+
+  // Search mode
+  if(search.trim()){
+    const filtered=allForClass.filter(d=>
+      d.title.toLowerCase().includes(search.toLowerCase())||
+      (d.chapter||"").toLowerCase().includes(search.toLowerCase())
+    );
+    return(
+      <div>
+        <div className="search-wrap" style={{marginBottom:12}}>
+          <span className="search-icon">🔍</span>
+          <input className="search-input" placeholder="DPP ya chapter dhundho..." value={search} onChange={e=>setSearch(e.target.value)} autoFocus/>
+          <button onClick={()=>setSearch("")} style={{background:"none",border:"none",color:"var(--muted)",cursor:"pointer",fontSize:16,padding:"0 8px"}}>✕</button>
+        </div>
+        {filtered.length===0?(
+          <div style={{textAlign:"center",padding:"36px 0"}}>
+            <div style={{fontSize:40,marginBottom:10}}>🤔</div>
+            <p style={{color:"var(--muted)"}}>Koi DPP nahi mili</p>
+          </div>
+        ):(
+          <div className="stagger-sm">
+            {filtered.map(d=><DppCard key={d.id} dpp={d} onSelect={()=>onSelect(d)}/>)}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  if(allForClass.length===0) return(
+    <div style={{textAlign:"center",padding:"48px 0"}}>
+      <div style={{fontSize:48,marginBottom:10}}>📭</div>
+      <p style={{color:"var(--muted)",fontSize:14}}>Is class ki abhi koi DPP nahi hai.</p>
+    </div>
+  );
+
+  // Chapter folder view
+  return(
+    <div>
+      <div className="search-wrap" style={{marginBottom:16}}>
+        <span className="search-icon">🔍</span>
+        <input className="search-input" placeholder="DPP ya chapter dhundho..." value={search} onChange={e=>setSearch(e.target.value)}/>
+      </div>
+      {chapters.map((ch,ci)=>{
+        const chDpps=byChapter[ch]||[];
+        const isOpen=openChapter===ch;
+        const hasOtherDpps=byChapter["Other"]&&ch===chapters[chapters.length-1];
+        return(
+          <div key={ch}>
+            <div onClick={()=>setOpenChapter(isOpen?null:ch)} className="card-hover"
+              style={{display:"flex",alignItems:"center",justifyContent:"space-between",
+                padding:"13px 16px",marginBottom:6,borderRadius:14,cursor:"pointer",
+                background:isOpen?"rgba(99,102,241,.1)":"var(--surface)",
+                border:`1px solid ${isOpen?"rgba(99,102,241,.35)":"var(--border)"}`,
+                transition:"all .2s",boxShadow:isOpen?"0 4px 16px rgba(99,102,241,.12)":"none"}}>
+              <div style={{display:"flex",alignItems:"center",gap:10}}>
+                <div style={{width:36,height:36,borderRadius:10,background:chDpps.length>0?"linear-gradient(135deg,#5b3df6,#7b4dff)":"var(--surface2)",
+                  display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,flexShrink:0,
+                  boxShadow:chDpps.length>0?"0 4px 10px rgba(99,102,241,.3)":"none"}}>
+                  {chDpps.length>0?"📂":"📁"}
+                </div>
+                <div>
+                  <p style={{fontWeight:700,color:chDpps.length>0?"var(--text)":"var(--muted)",fontSize:14,fontFamily:"'Poppins',sans-serif"}}>
+                    Ch {ci+1}. {ch}
+                  </p>
+                  <p style={{color:"var(--muted)",fontSize:11,marginTop:1}}>{chDpps.length>0?`${chDpps.length} DPP available`:"Jald aayega"}</p>
+                </div>
+              </div>
+              <div style={{display:"flex",alignItems:"center",gap:8}}>
+                {chDpps.length>0&&<span className="badge" style={{background:"rgba(99,102,241,.12)",color:"var(--accent2)",border:"1px solid rgba(99,102,241,.18)"}}>{chDpps.length}</span>}
+                <span style={{color:"var(--muted)",fontSize:16,transition:"transform .2s",transform:isOpen?"rotate(90deg)":"none",display:"inline-block"}}>›</span>
+              </div>
+            </div>
+            {isOpen&&chDpps.length>0&&(
+              <div style={{paddingLeft:16,marginBottom:8}} className="stagger-sm">
+                {chDpps.map(d=><DppCard key={d.id} dpp={d} onSelect={()=>onSelect(d)}/>)}
+              </div>
+            )}
+          </div>
+        );
+      })}
+      {byChapter["Other"]&&byChapter["Other"].length>0&&(
+        <div>
+          <div onClick={()=>setOpenChapter(openChapter==="Other"?null:"Other")} className="card-hover"
+            style={{display:"flex",alignItems:"center",justifyContent:"space-between",
+              padding:"13px 16px",marginBottom:6,borderRadius:14,cursor:"pointer",
+              background:openChapter==="Other"?"rgba(99,102,241,.1)":"var(--surface)",
+              border:`1px solid ${openChapter==="Other"?"rgba(99,102,241,.35)":"var(--border)"}`,transition:"all .2s"}}>
+            <div style={{display:"flex",alignItems:"center",gap:10}}>
+              <div style={{width:36,height:36,borderRadius:10,background:"linear-gradient(135deg,#0891b2,#0e7490)",dis // ── DPP ATTEMPT ───────────────────────────────────────────────────────────
+function DppAttempt({dpp,name,onBack}){
+  const [answers,setAnswers]=useState({});
+  const [submitted,setSubmitted]=useState(false);
+  const [submitting,setSubmitting]=useState(false);
+  const [result,setResult]=useState(null);
+  const [sharing,setSharing]=useState(false);
+  const [copied,setCopied]=useState(false);
+  const scoreCardRef=useRef(null);
+
+  // ── Timer State ──
+  const [totalElapsed,setTotalElapsed]=useState(0); // seconds
+  const [qTimes,setQTimes]=useState({}); // {qIndex: seconds}
+  const [activeQ,setActiveQ]=useState(null); // which question is currently being viewed
+  const startTimeRef=useRef(Date.now());
+  const qStartRef=useRef({}); // {qIndex: timestamp}
+  const totalTimerRef=useRef(null);
+  const qTimerRef=useRef(null);
+
+  // Start overall timer on mount
+  React.useEffect(()=>{
+    startTimeRef.current=Date.now();
+    totalTimerRef.current=setInterval(()=>{
+      setTotalElapsed(Math.floor((Date.now()-startTimeRef.current)/1000));
+    },1000);
+    return ()=>{
+      clearInterval(totalTimerRef.current);
+      clearInterval(qTimerRef.current);
+    };
+  },[]);
+
+  // Track per-question time using IntersectionObserver
+  React.useEffect(()=>{
+    if(submitted) return;
+    const observers=[];
+    dpp.questions.forEach((_,i)=>{
+      const el=document.getElementById(`question-card-${i}`);
+      if(!el) return;
+      const obs=new IntersectionObserver((entries)=>{
+        entries.forEach(entry=>{
+          if(entry.isIntersecting){
+            // Question came into view
+            qStartRef.current[i]=Date.now();
+            setActiveQ(i);
+          } else {
+            // Question left view — save time spent
+            if(qStartRef.current[i]){
+              const spent=Math.floor((Date.now()-qStartRef.current[i])/1000);
+              setQTimes(prev=>({...prev,[i]:(prev[i]||0)+spent}));
+              qStartRef.current[i]=null;
+            }
+          }
+        });
+      },{threshold:0.5});
+      obs.observe(el);
+      observers.push(obs);
+    });
+    return ()=>observers.forEach(o=>o.disconnect());
+  },[submitted]);
+
+  function formatTime(secs){
+    if(secs<60) return `${secs}s`;
+    const m=Math.floor(secs/60);
+    const s=secs%60;
+    return s>0?`${m}m ${s}s`:`${m}m`;
+  }
+
+  const answered=Object.keys(answers).length;
+  const total=dpp.questions.length;
+  const progress=Math.round((answered/total)*100);
+
+  async function submit(){
+    // Freeze all pending question timers
+    const finalQTimes={...qTimes};
+    dpp.questions.forEach((_,i)=>{
+      if(qStartRef.current[i]){
+        const spent=Math.floor((Date.now()-qStartRef.current[i])/1000);
+        finalQTimes[i]=(finalQTimes[i]||0)+spent;
+        qStartRef.current[i]=null;
+      }
+    });
+    clearInterval(totalTimerRef.current);
+    const finalTotal=Math.floor((Date.now()-startTimeRef.current)/1000);
+
+    setSubmitting(true);
+    const savedProfile=typeof localStorage!=="undefined"?JSON.parse(localStorage.getItem("student_profile")||"null"):null;
+    const sub={
+      id:uid(),dppId:dpp.id,studentName:name,
+      studentId:savedProfile?savedProfile.studentId:"",
+      studentPhone:savedProfile?savedProfile.phone:"",
+      answers,
+      submittedAt:Date.now(),
+      totalTimeTaken:finalTotal,
+      questionTimes:finalQTimes
+    };
+    await dbSubmit(dpp.id,sub);
+    setResult({...calcScore(dpp,answers),totalTimeTaken:finalTotal,questionTimes:finalQTimes});
+    setSubmitted(true);setSubmitting(false);
+  }
+
+  if(submitted&&result){
+    const emoji=result.pct>=80?"🏆":result.pct>=50?"👍":"💪";
+    const msg=result.pct>=80?"Shaabaash! Bahut achha kiya!":result.pct>=50?"Achha hua! Aur practice karo!":"Koi baat nahi! Agli baar aur mehnat karo!";
+
+    const correctCount=dpp.questions.filter((_,i)=>{const q=dpp.questions[i];return q.type!=="subjective"&&q.answer&&(answers[i]||"").toUpperCase()===q.answer.toUpperCase();}).length;
+    const wrongCount=dpp.questions.filter((_,i)=>{const q=dpp.questions[i];return q.type!=="subjective"&&q.answer&&answers[i]&&(answers[i]||"").toUpperCase()!==q.answer.toUpperCase();}).length;
+    const skipCount=dpp.questions.filter((_,i)=>!answers[i]).length;
+
+    function buildShareText(){
+      const stars=result.pct>=80?"⭐⭐⭐":result.pct>=50?"⭐⭐":"⭐";
+      return "📐 *Sameer Sir – Maths DPP*\n\n"+
+        "👤 Student: *"+name+"*\n"+
+        "📋 DPP: *"+dpp.title+"*\n"+
+        "📅 Date: "+new Date().toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"})+"\n\n"+
+        "━━━━━━━━━━━━━━━\n"+
+        stars+" *Score: "+result.got+"/"+result.total+" ("+result.pct+"%)* \n"+
+        "━━━━━━━━━━━━━━━\n\n"+
+        "✅ Sahi: "+correctCount+"\n"+
+        "❌ Galat: "+wrongCount+"\n"+
+        "⏭ Chhoda: "+skipCount+"\n"+
+        (result.totalTimeTaken>0?"⏱ Time: "+(Math.floor(result.totalTimeTaken/60)>0?Math.floor(result.totalTimeTaken/60)+" min "+result.totalTimeTaken%60+" sec":result.totalTimeTaken+" sec")+"\n":"")+
+        "\n"+
+        msg+"\n\n"+
+        "_Powered by Sameer Sir DPP Portal_ 🚀";
+    }
+
+    function shareWhatsApp(){
+      const text=encodeURIComponent(buildShareText());
+      window.open("https://wa.me/?text="+text,"_blank");
+    }
+
+    async function copyResult(){
+      try{
+        await navigator.clipboard.writeText(buildShareText());
+      }catch(e){
+        const ta=document.createElement("textarea");
+        ta.value=buildShareText();
+        document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);
+      }
+      setCopied(true);setTimeout(()=>setCopied(false),2500);
+    }
+
+    async function shareNative(){
+      if(navigator.share){try{await navigator.share({title:"Maths DPP Result",text:buildShareText()});}catch(e){}}
+      else shareWhatsApp();
+    }
+
+    async function downloadCard(){
+      setSharing(true);
+      const loadLib=()=>new Promise((res,rej)=>{
+        if(window.html2canvas)return res();
+        const s=document.createElement("script");
+        s.src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+        s.onload=res;s.onerror=rej;document.head.appendChild(s);
+      });
+      try{
+        await loadLib();
+        const canvas=await window.html2canvas(scoreCardRef.current,{backgroundColor:"#0f0c29",scale:2,useCORS:true});
+        const link=document.createElement("a");
+        link.download="DPP_Result_"+name+".png";
+        link.href=canvas.toDataURL("image/png");link.click();
+      }catch(e){alert("Screenshot nahi ho saka. Text copy karein!");}
+      setSharing(false);
+    }
+
+    return(
+      <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#f6f6fd,#eeeafd,#ffffff)",padding:"22px 16px"}}>
+        <div className="fade-up" style={{maxWidth:600,margin:"0 auto"}}>
+
+          {/* Shareable Score Card */}
+          <div ref={scoreCardRef} style={{...card,textAlign:"center",marginBottom:16,position:"relative",overflow:"hidden"}}>
+            <div style={{position:"absolute",top:-40,right:-40,width:180,height:180,borderRadius:"50%",background:"radial-gradient(circle,rgba(99,102,241,.12) 0%,transparent 70%)",pointerEvents:"none"}}/>
+            <div style={{position:"absolute",bottom:-30,left:-30,width:140,height:140,borderRadius:"50%",background:"radial-gradient(circle,rgba(167,139,250,.08) 0%,transparent 70%)",pointerEvents:"none"}}/>
+            <div style={{display:"inline-flex",alignItems:"center",gap:6,background:"rgba(99,102,241,.12)",border:"1px solid rgba(99,102,241,.25)",borderRadius:99,padding:"4px 14px",marginBottom:14}}>
+              <span style={{fontSize:11,color:"var(--accent2)",fontWeight:700,letterSpacing:.5}}>📐 SAMEER SIR MATHS DPP</span>
+            </div>
+            <div style={{fontSize:60,marginBottom:6}}>{emoji}</div>
+            <h2 style={{color:"var(--text)",fontWeight:900,fontSize:22,marginBottom:2}}>Submit Ho Gaya!</h2>
+            <p style={{color:"var(--muted)",fontSize:13,marginBottom:4}}>{dpp.title}</p>
+            <p style={{color:"var(--accent2)",fontSize:13,fontWeight:700,marginBottom:16}}>👤 {name}</p>
+            {result.total>0&&(
+              <div style={{background:"linear-gradient(135deg,#efeafe,#e4ddfd)",border:"2px solid #5b3df6",borderRadius:20,padding:"22px",marginBottom:16,display:"inline-block",minWidth:220,boxShadow:"0 8px 32px rgba(99,102,241,.35)"}}>
+                <p style={{color:"var(--muted)",fontSize:11,fontWeight:700,textTransform:"uppercase",letterSpacing:1.2,marginBottom:10}}>Your Score</p>
+                <div style={{display:"flex",alignItems:"baseline",justifyContent:"center",gap:4}}>
+                  <span style={{fontSize:48,fontWeight:900,color:"var(--accent2)",fontFamily:"'Poppins',sans-serif"}}>{result.got}</span>
+                  <span style={{fontSize:22,color:"var(--dim)",fontFamily:"'Poppins',sans-serif"}}>/</span>
+                  <span style={{fontSize:48,fontWeight:900,color:"var(--text)",fontFamily:"'Poppins',sans-serif"}}>{result.total}</span>
+                </div>
+                <div style={{height:8,background:"rgba(255,255,255,.08)",borderRadius:99,margin:"14px 0 8px",overflow:"hidden"}}>
+                  <div style={{height:"100%",width:`${result.pct}%`,background:"linear-gradient(90deg,#5b3df6,#7b4dff)",borderRadius:99,transition:"width 1.4s var(--ease-out)"}}/>
+                </div>
+                <p style={{color:"var(--accent2)",fontWeight:900,fontSize:26,fontFamily:"'Poppins',sans-serif"}}>{result.pct}%</p>
+              </div>
+            )}
+            <div style={{display:"flex",gap:10,justifyContent:"center",marginTop:8,marginBottom:10,flexWrap:"wrap"}}>
+              {[{icon:"✅",label:"Sahi",val:correctCount,color:"var(--green)"},{icon:"❌",label:"Galat",val:wrongCount,color:"var(--red)"},{icon:"⏭",label:"Chhoda",val:skipCount,color:"var(--muted)"}].map(s=>(
+                <div key={s.label} style={{background:"var(--surface2)",border:"1px solid var(--border)",borderRadius:12,padding:"8px 18px",textAlign:"center"}}>
+                  <p style={{fontSize:18,marginBottom:2}}>{s.icon}</p>
+                  <p style={{color:s.color,fontWeight:900,fontSize:16}}>{s.val}</p>
+                  <p style={{color:"var(--muted)",fontSize:10,fontWeight:600}}>{s.label}</p>
+                </div>
+              ))}
+            </div>
+            <p style={{color:"var(--muted)",fontSize:13,marginTop:4}}>{msg}</p>
+            {/* Total Time Taken */}
+            {result.totalTimeTaken>0&&(
+              <div style={{display:"inline-flex",alignItems:"center",gap:8,background:"rgba(248,113,113,.08)",border:"1px solid rgba(248,113,113,.2)",borderRadius:12,padding:"8px 18px",margin:"10px 0 4px"}}>
+                <span style={{fontSize:18}}>⏱</span>
+                <div>
+                  <p style={{color:"#ef4444",fontWeight:900,fontSize:16,fontFamily:"'Poppins',sans-serif"}}>
+                    {Math.floor(result.totalTimeTaken/60)>0?`${Math.floor(result.totalTimeTaken/60)} min ${result.totalTimeTaken%60} sec`:`${result.totalTimeTaken} sec`}
+                  </p>
+                  <p style={{color:"rgba(248,113,113,.6)",fontSize:10,fontWeight:700}}>TOTAL TIME LIYA</p>
+                </div>
+              </div>
+            )}
+            <p style={{color:"var(--dim)",fontSize:10,marginTop:8}}>{new Date().toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"})}</p>
+          </div>
+
+          {/* Share Buttons */}
+          <div style={{...card,marginBottom:16}}>
+            <p style={{color:"var(--accent2)",fontWeight:700,fontSize:11,textTransform:"uppercase",letterSpacing:1,marginBottom:14,textAlign:"center"}}>📤 Result Share Karo</p>
+            <div style={{display:"flex",flexDirection:"column",gap:10}}>
+              <button onClick={shareWhatsApp} className="btn-glow ripple" style={{...btn("linear-gradient(135deg,#16a34a,#15803d)"),width:"100%",padding:"14px",fontSize:15,borderRadius:14,display:"flex",alignItems:"center",justifyContent:"center",gap:10}}>
+                <span style={{fontSize:20}}>💬</span> WhatsApp par Share Karo
+              </button>
+              {typeof navigator!=="undefined"&&navigator.share&&(
+                <button onClick={shareNative} className="btn-glow ripple" style={{...btn("linear-gradient(135deg,#0891b2,#0e7490)"),width:"100%",padding:"14px",fontSize:15,borderRadius:14,display:"flex",alignItems:"center",justifyContent:"center",gap:10}}>
+                  <span style={{fontSize:20}}>📲</span> Share Karo (Apps)
+                </button>
+              )}
+              <button onClick={copyResult} className="btn-glow ripple" style={{...btn(copied?"linear-gradient(135deg,#16a34a,#15803d)":"linear-gradient(135deg,#7b4dff,#5b3df6)"),width:"100%",padding:"14px",fontSize:15,borderRadius:14,display:"flex",alignItems:"center",justifyContent:"center",gap:10,transition:"all .3s"}}>
+                <span style={{fontSize:20}}>{copied?"✅":"📋"}</span>{copied?"Copied! Ab paste karo":"Text Copy Karo"}
+              </button>
+              <button onClick={downloadCard} disabled={sharing} className="btn-glow ripple" style={{...btn("linear-gradient(135deg,#b45309,#d97706)"),width:"100%",padding:"14px",fontSize:15,borderRadius:14,display:"flex",alignItems:"center",justifyContent:"center",gap:10,opacity:sharing?0.7:1}}>
+                <span style={{fontSize:20}}>{sharing?"⏳":"📸"}</span>{sharing?"Screenshot le raha hai...":"Screenshot Download Karo"}
+              </button>
+            </div>
+          </div>
+
+          {/* Result Breakdown */}
+          <div style={{...card,marginBottom:16}}>
+            <p style={{color:"var(--accent2)",fontWeight:700,fontSize:11,textTransform:"uppercase",letterSpacing:1,marginBottom:14}}>Result Breakdown</p>
+            {dpp.questions.map((q,i)=>{
+              const studentAns=answers[i];
+              const isSubj=q.type==="subjective";
+              const isCorrect=!isSubj&&q.answer&&(studentAns||"").toUpperCase()===q.answer.toUpperCase();
+              const isWrong=!isSubj&&q.answer&&studentAns&&!isCorrect;
+              return(
+                <div key={i} style={{border:"1.5px solid",borderColor:isCorrect?"#16a34a44":isWrong?"#ef444444":"var(--border)",
+                  borderRadius:12,padding:"12px 14px",marginBottom:8,background:isCorrect?"#14532d12":isWrong?"#7f1d1d12":"var(--surface2)"}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6,gap:8}}>
+                    <p style={{fontWeight:700,color:"var(--text)",fontSize:13,flex:1}}>
+                      {isCorrect?"✅":isWrong?"❌":"📝"} Q{i+1}. {q.text}
+                      {q.marks&&<span style={{color:"var(--dim)",fontWeight:400,fontSize:11}}> [{q.marks}M]</span>}
+                    </p>
+                    {result.questionTimes&&result.questionTimes[i]>0&&(
+                      <span style={{flexShrink:0,background:"rgba(248,113,113,.08)",border:"1px solid rgba(248,113,113,.18)",borderRadius:8,padding:"3px 8px",fontSize:10,color:"#ef4444",fontWeight:700,whiteSpace:"nowrap"}}>
+                        ⏱ {result.questionTimes[i]<60?`${result.questionTimes[i]}s`:`${Math.floor(result.questionTimes[i]/60)}m ${result.questionTimes[i]%60}s`}
+                      </span>
+                    )}
+                  </div>
+                  {q.image&&<img src={q.image} alt="" style={{maxWidth:"100%",maxHeight:160,borderRadius:8,marginBottom:6,display:"block"}}/>}
+                  <p style={{fontSize:12,color:"var(--accent2)"}}>Aapka Jawab: <strong style={{color:isCorrect?"var(--green)":isWrong?"var(--red)":"var(--text)"}}>{studentAns||"—"}</strong></p>
+                  {isWrong&&(
+                    <p style={{fontSize:12,fontWeight:700,color:"var(--green)",marginTop:5,background:"#14532d22",borderRadius:8,padding:"5px 10px",display:"inline-block"}}>
+                      ✅ Sahi Jawab: {q.answer}{q.type==="mcq"&&q.options[MCQ_OPTS.indexOf(q.answer)]&&<span> — {q.options[MCQ_OPTS.indexOf(q.answer)]}</span>}
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          <button onClick={onBack} style={{...btn("linear-gradient(135deg,#5b3df6,#7b4dff)"),width:"100%",padding:"13px",fontSize:15,marginBottom:28}}>← Wapas Jao</button>
+        </div>
+      </div>
+    );
+  }
+
+  return(
+    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#f6f6fd,#eeeafd,#ffffff)",padding:"20px 16px"}}>
+      <div style={{maxWidth:640,margin:"0 auto"}}>
+        {/* Header + Progress */}
+        <div className="fade-up" style={{...card,marginBottom:14}}>
+          <button onClick={onBack} style={{background:"none",border:"none",color:"var(--accent2)",fontSize:13,cursor:"pointer",fontWeight:600,marginBottom:8,display:"block"}}>← Back</button>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:12}}>
+            <div>
+              <h2 style={{color:"var(--text)",fontWeight:800,fontSize:17}}>{dpp.title}</h2>
+              <p style={{color:"var(--muted)",fontSize:12,marginTop:2}}>👤 {name} · {total} Questions</p>
+            </div>
+            <div style={{display:"flex",gap:8}}>
+              {/* Live Timer */}
+              <div style={{background:"rgba(248,113,113,.1)",border:"1px solid rgba(248,113,113,.3)",borderRadius:12,padding:"8px 14px",textAlign:"center",minWidth:72}}>
+                <p style={{color:"#ef4444",fontWeight:900,fontSize:15,fontFamily:"'Poppins',sans-serif",letterSpacing:.5}}>
+                  {Math.floor(totalElapsed/60).toString().padStart(2,"0")}:{(totalElapsed%60).toString().padStart(2,"0")}
+                </p>
+                <p style={{color:"rgba(248,113,113,.6)",fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:.5}}>⏱ Time</p>
+              </div>
+              <div style={{background:"var(--surface2)",border:"1px solid #ddd4fb",borderRadius:12,padding:"8px 14px",textAlign:"center"}}>
+                <p style={{color:"var(--accent2)",fontWeight:900,fontSize:16}}>{answered}/{total}</p>
+                <p style={{color:"var(--dim)",fontSize:10,fontWeight:600}}>ANSWERED</p>
+              </div>
+            </div>
+          </div>
+          {/* Progress Bar */}
+          <div style={{display:"flex",alignItems:"center",gap:10}}>
+            <div style={{flex:1,height:8,background:"var(--border)",borderRadius:99,overflow:"hidden"}}>
+              <div style={{height:"100%",width:`${progress}%`,background:"linear-gradient(90deg,#5b3df6,#7b4dff)",borderRadius:99,transition:"width 0.4s ease"}}/>
+            </div>
+            <span style={{color:"var(--accent2)",fontWeight:700,fontSize:13,minWidth:36}}>{progress}%</span>
+          </div>
+        </div>
+
+        {dpp.questions.map((q,i)=>(
+          <div key={i} id={`question-card-${i}`} className="fade-up" style={{...card,borderColor:answers[i]?"#5b3df6":"var(--border)",marginBottom:10}}>
+            <p style={{fontWeight:800,color:"var(--text)",marginBottom:12,fontSize:14,lineHeight:1.5}}>
+              <span style={{color:"var(--accent2)",marginRight:6}}>Q{i+1}.</span>{q.text}
+              {q.marks&&<span style={{color:"var(--dim)",fontWeight:400,fontSize:11}}> [{q.marks}M]</span>}
+            </p>
+            {q.image&&<img src={q.image} alt="q" style={{maxWidth:"100%",maxHeight:200,borderRadius:10,border:"1px solid var(--border)",marginBottom:10,display:"block"}}/>}
+            {q.type==="mcq"&&(
+              <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                {MCQ_OPTS.map((opt,oi)=>q.options[oi]&&(
+                  <label key={opt} className={`mcq-option${answers[i]===opt?" selected":""}`}
+                    style={{display:"flex",alignItems:"center",gap:12,
+                      background:answers[i]===opt?"rgba(99,102,241,.18)":"var(--surface2)",
+                      border:`2px solid ${answers[i]===opt?"#5b3df6":"var(--border)"}`,
+                      borderRadius:13,padding:"11px 16px",
+            // ── TEACHER PANEL ─────────────────────────────────────────────────────────
+function TeacherPanel({onBack}){
+  const [view,setView]=useState("list");
+  const [tab,setTab]=useState("dpps"); // dpps | results
+  const [editDpp,setEditDpp]=useState(null);
+  const [detailId,setDetailId]=useState(null);
+  const dpps=useDpps();
+  const allSubs=useAllSubmissions();
+
+  if(view==="create") return <DppForm initial={editDpp} onSave={async dpp=>{ await dbSaveDpp(dpp); setEditDpp(null); setView("list"); }} onCancel={()=>{setEditDpp(null);setView("list");}}/>;  
+  if(view==="ai") return <AiDppGenerator onSave={async dpp=>{ await dbSaveDpp(dpp); setView("list"); }} onCancel={()=>setView("list")}/>;
+  if(view==="detail"&&detailId){
+    const dpp=dpps[detailId];
+    if(!dpp) return null;
+    return <DppDetail dpp={dpp} onBack={()=>{setDetailId(null);setView("list");}} onEdit={()=>{setEditDpp(dpp);setView("create");}} onDelete={async()=>{ await dbDeleteDpp(detailId); setDetailId(null); setView("list"); }}/>;
+  }
+
+  // All results: flatten
+  const allResults=[];
+  Object.entries(allSubs).forEach(([dppId,dppSubs])=>{
+    const dpp=dpps[dppId];
+    if(!dpp) return;
+    Object.values(dppSubs).forEach(sub=>{
+      const sc=calcScore(dpp,sub.answers);
+      allResults.push({...sub,dppTitle:dpp.title,batch:dpp.batch,...sc});
+    });
+  });
+  allResults.sort((a,b)=>b.submittedAt-a.submittedAt);
+
+  return(
+    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#f6f6fd,#eeeafd,#ffffff)",padding:"20px 16px"}}>
+      <div style={{maxWidth:700,margin:"0 auto"}}>
+        <div className="fade-up" style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+          <div>
+            <button onClick={onBack} style={{background:"none",border:"none",color:"var(--accent2)",fontSize:13,cursor:"pointer",fontWeight:600,marginBottom:4,display:"block"}}>← Logout</button>
+            <h2 style={{color:"var(--text)",fontSize:21,fontWeight:900}}>👨‍🏫 Teacher Panel</h2>
+          </div>
+          {tab==="dpps"&&<div style={{display:"flex",gap:8}}>
+            <button onClick={()=>setView("ai")} style={{...btn("linear-gradient(135deg,#7b4dff,#7b4dff)",{padding:"11px 14px",fontSize:13})}}>🤖 AI DPP</button>
+            <button onClick={()=>{setEditDpp(null);setView("create");}} style={{...btn("linear-gradient(135deg,#5b3df6,#7b4dff)",{padding:"11px 14px",fontSize:13})}}>+ New DPP</button>
+          </div>}
+        </div>
+
+        {/* Stats Row */}
+        <div className="fade-up" style={{display:"flex",gap:10,marginBottom:18,flexWrap:"wrap"}}>
+          <StatBox label="Total DPPs" value={Object.keys(dpps).length} icon="📋"/>
+          <StatBox label="Class 10" value={Object.values(dpps).filter(d=>d.batch==="class10").length} icon="📚"/>
+          <StatBox label="Class 8" value={Object.values(dpps).filter(d=>d.batch==="class8").length} icon="📖"/>
+          <StatBox label="Submissions" value={allResults.length} icon="📝"/>
+        </div>
+
+        {/* Tab Bar */}
+        <div className="fade-up" style={{display:"flex",gap:5,marginBottom:18,background:"var(--surface)",borderRadius:16,padding:5,border:"1px solid var(--border)",overflowX:"auto"}}>
+          {[["dpps","📋 DPPs"],["students","👥 Students"],["results","📊 Results"],["leaderboard","🏆 Top"]].map(([key,label])=>(
+            <button key={key} onClick={()=>setTab(key)}
+              style={{flex:1,padding:"9px 6px",borderRadius:10,border:"none",cursor:"pointer",fontWeight:700,fontSize:12,whiteSpace:"nowrap",
+                background:tab===key?"linear-gradient(135deg,#5b3df6,#7b4dff)":"none",
+                color:tab===key?"#fff":"var(--muted)",transition:"all .2s"}}>
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {/* DPPs Tab */}
+        {tab==="dpps"&&(
+          <div className="fade-up">
+            {Object.keys(dpps).length===0
+              ? <div style={{textAlign:"center",padding:"50px 0"}}>
+                  <div style={{fontSize:50,marginBottom:8}}>📭</div>
+                  <p style={{color:"var(--muted)"}}>Koi DPP nahi hai. "+ New DPP" dabao!</p>
+                </div>
+              : Object.values(dpps).map(d=>(
+                <div key={d.id} onClick={()=>{setDetailId(d.id);setView("detail");}}
+                  style={{background:"var(--surface)",border:"1px solid var(--border)",borderRadius:14,padding:"14px 16px",marginBottom:8,cursor:"pointer",
+                    display:"flex",justifyContent:"space-between",alignItems:"center"}}
+                  onMouseEnter={e=>{e.currentTarget.style.borderColor="#5b3df6";e.currentTarget.style.background="var(--border)";}}
+                  onMouseLeave={e=>{e.currentTarget.style.borderColor="var(--border)";e.currentTarget.style.background="var(--surface)";}}>
+                  <div>
+                    <p style={{fontWeight:800,color:"var(--text)",marginBottom:5}}>{d.title}</p>
+                    <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
+                      <span style={{background:"var(--border)",color:"var(--accent2)",fontSize:11,fontWeight:700,padding:"2px 10px",borderRadius:20}}>{d.batch==="class10"?"Class 10":d.batch==="class8"?"Class 8":d.batch}</span>
+                      <span style={{background:"var(--surface2)",color:"var(--muted)",fontSize:11,padding:"2px 10px",borderRadius:20}}>{d.questions.length} Qs</span>
+                    </div>
+                  </div>
+                  <span style={{color:"var(--dim)",fontSize:18}}>›</span>
+                </div>
+              ))
+            }
+          </div>
+        )}
+
+        {/* Students Tab */}
+        {tab==="students"&&<TeacherStudents/>}
+
+        {/* Leaderboard Management Tab */}
+        {tab==="leaderboard"&&<TeacherLeaderboard/>}
+
+        {/* All Results Tab */}
+        {tab==="results"&&(
+          <div className="fade-up">
+            {allResults.length===0
+              ? <div style={{textAlign:"center",padding:"50px 0"}}>
+                  <div style={{fontSize:50,marginBottom:8}}>📭</div>
+                  <p style={{color:"var(--muted)"}}>Abhi koi submission nahi hai.</p>
+                </div>
+              : allResults.map((r,i)=>(
+                <div key={i} style={{background:"var(--surface)",border:"1px solid var(--border)",borderRadius:14,padding:"14px 16px",marginBottom:8}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
+                    <div>
+                      <p style={{fontWeight:800,color:"var(--text)",fontSize:14}}>{r.studentName}</p>
+                      <div style={{display:"flex",gap:5,alignItems:"center",marginTop:2,flexWrap:"wrap"}}>
+                        {r.studentPhone&&<span style={{background:"rgba(99,102,241,.1)",color:"var(--accent2)",fontSize:10,fontWeight:700,padding:"2px 8px",borderRadius:20}}>📱 {r.studentPhone}</span>}
+                        <span style={{background:"var(--border)",color:"var(--accent2)",fontSize:10,fontWeight:700,padding:"2px 8px",borderRadius:20}}>
+                          {r.batch==="class10"?"Class 10":r.batch==="class8"?"Class 8":r.batch}
+                        </span>
+                      </div>
+                      <p style={{color:"var(--muted)",fontSize:11,marginTop:2}}>{r.dppTitle}</p>
+                    </div>
+                    <div style={{textAlign:"right"}}>
+                      <p style={{fontWeight:900,color:"var(--accent2)",fontSize:18}}>{r.pct}%</p>
+                      <p style={{color:"var(--dim)",fontSize:11}}>{r.got}/{r.total}M</p>
+                      {r.totalTimeTaken>0&&(
+                        <p style={{color:"#ef4444",fontSize:10,fontWeight:700,marginTop:2}}>
+                          ⏱ {Math.floor(r.totalTimeTaken/60)>0?`${Math.floor(r.totalTimeTaken/60)}m ${r.totalTimeTaken%60}s`:`${r.totalTimeTaken}s`}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  {/* Per-Question Time Chips */}
+                  {r.questionTimes&&Object.keys(r.questionTimes).length>0&&(
+                    <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:8}}>
+                      {Object.entries(r.questionTimes).sort((a,b)=>Number(a[0])-Number(b[0])).map(([qi,t])=>(
+                        <span key={qi} style={{background:"rgba(248,113,113,.08)",border:"1px solid rgba(248,113,113,.18)",borderRadius:7,padding:"2px 7px",fontSize:10,color:"#ef4444",fontWeight:700}}>
+                          Q{Number(qi)+1}: {t<60?`${t}s`:`${Math.floor(t/60)}m${t%60}s`}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {/* Progress Bar */}
+                  <div style={{display:"flex",alignItems:"center",gap:8}}>
+                    <div style={{flex:1,height:6,background:"var(--border)",borderRadius:99,overflow:"hidden"}}>
+                      <div style={{height:"100%",width:`${r.pct}%`,borderRadius:99,
+                        background:r.pct>=80?"linear-gradient(90deg,#16a34a,#4ade80)":r.pct>=50?"linear-gradient(90deg,#d97706,#fbbf24)":"linear-gradient(90deg,#dc2626,#ef4444)",
+                        transition:"width 0.8s ease"}}/>
+                    </div>
+                    <span style={{color:"var(--dim)",fontSize:10,minWidth:32}}>{new Date(r.submittedAt).toLocaleDateString("en-IN")}</span>
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+
+// ── AI DPP GENERATOR ─────────────────────────────────────────────────────
+function AiDppGenerator({onSave,onCancel}){
+  const [topic,setTopic]=useState("");
+  const [batch,setBatch]=useState("");
+  const [qCount,setQCount]=useState("10");
+  const [level,setLevel]=useState("medium");
+  const [qTypes,setQTypes]=useState(["mcq","truefalse","subjective"]);
+  const [instructions,setInstructions]=useState("");
+  const [loading,setLoading]=useState(false);
+  const [preview,setPreview]=useState(null);
+  const [err,setErr]=useState("");
+
+  async function generate(){
+    if(!topic.trim()||!batch){setErr("Topic aur class dono zaruri hain!");return;}
+    setErr("");setLoading(true);setPreview(null);
+    try{
+      const levelMap={easy:"Easy (basic concepts, direct formulas, NCERT level)",medium:"Medium (application based, moderate difficulty, board exam level)",hard:"Hard (HOTS, challenging, competition/olympiad level)"};
+      const typeLabel=qTypes.length===3?"Mix of MCQ, True/False, and Subjective":"Only create these types: "+qTypes.join(", ");
+      const prompt=`You are a Maths teacher creating a DPP (Daily Practice Problem) for Indian school students.
+
+Topic: ${topic}
+Class: ${batch==="class10"?"Class 10":"Class 8"}
+Number of questions: ${qCount}
+Difficulty Level: ${levelMap[level]}
+Question Types: ${typeLabel}
+${instructions.trim()?"Special Instructions from teacher: "+instructions.trim():""}
+
+For MCQ: provide 4 options and correct answer as "A", "B", "C", or "D"
+For True/False: answer as "True" or "False"  
+For Subjective: provide the correct answer/solution
+
+Return ONLY a valid JSON array, no explanation, no markdown:
+[
+  {"text":"question text","type":"mcq","options":["opt1","opt2","opt3","opt4"],"answer":"A","marks":"1"},
+  {"text":"question text","type":"truefalse","options":[],"answer":"True","marks":"1"},
+  {"text":"question text","type":"subjective","options":[],"answer":"solution here","marks":"2"}
+]`;
+
+      const res=await fetch("https://maths-dpp-production.up.railway.app/generate",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({prompt})
+      });
+      const data=await res.json();
+      if(data.error){setErr("API Error: "+data.error.message);setLoading(false);return;}
+      const text=data.text;
+      // Clean and fix potentially truncated JSON
+      let clean=text.replace(/```json|
