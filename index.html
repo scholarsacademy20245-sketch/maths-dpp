@@ -375,9 +375,9 @@ h1,h2,h3,.display{font-family:'Poppins',system-ui,sans-serif;letter-spacing:-.3p
 </style>
 </head>
 <body>
-<div id="root"></div>
+<div id="root"><div style="min-height:100vh;background:#08071a;display:flex;align-items:center;justify-content:center;color:#a78bfa;font-family:sans-serif;font-size:16px">Loading...</div></div>
 
-<script type="text/babel">
+<script type="text/babel" data-presets="react">
 const { useState, useEffect, useRef } = React;
 const TEACHER_PIN = "7210";
 
@@ -490,7 +490,4 @@ function Landing({onSelect}){
         {/* Logo */}
         <div style={{position:"relative",display:"inline-block",marginBottom:22}}>
           <div style={{width:90,height:90,background:"linear-gradient(135deg,#5b3df6,#7b4dff)",borderRadius:26,display:"flex",alignItems:"center",justifyContent:"center",fontSize:42,animation:"floatGlow 3.5s ease-in-out infinite"}}>📐</div>
-          <div className="live-dot" style={{position:"absolute",bottom:5,right:5,width:10,height:10,boxShadow:"0 0 10px var(--green),0 0 20px rgba(34,211,165,.4)"}}/>
-        </div>
-        <h1 style={{fontSize:34,fontWeight:900,color:"var(--text)",letterSpacing:-1.5,lineHeight:1.1,fontFamily:"'Poppins',sans-serif"}}>Sameer Sir</h1>
-        <p style={{
+          <div className="live-dot" style={{position:"absolute",bottom:5,right:5,width:10,height:10,boxShadow:"0 0 10px var(--green),0 0 20px rgba(34,211,165,.4)
