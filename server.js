@@ -15,3 +15,11 @@ app.get('*', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+// Self-ping every 10 minutes to keep the free instance awake
+const SELF_URL = process.env.SELF_URL || 'https://maths-dpp.onrender.com';
+setInterval(() => {
+  fetch(SELF_URL)
+    .then(() => console.log(`Self-ping sent to ${SELF_URL} at ${new Date().toISOString()}`))
+    .catch(err => console.log('Self-ping failed:', err.message));
+}, 10 * 60 * 1000); // 10 minutes
