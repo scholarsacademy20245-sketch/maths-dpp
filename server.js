@@ -8,6 +8,15 @@ const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
 
 app.use(express.json({ limit: '2mb' }));
 
+// Allow cross-origin requests (e.g. from GitHub Pages) to hit /generate
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') return res.sendStatus(200);
+  next();
+});
+
 // Serve all static files (index.html, css, js, images, etc.) from this folder
 app.use(express.static(__dirname));
 
