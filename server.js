@@ -1,29 +1,17 @@
-import express from "express";
-import cors from "cors";
-import { GoogleGenAI } from "@google/genai";
-
+const express = require('express');
+const path = require('path');
 const app = express();
-app.use(cors());
-app.use(express.json());
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const PORT = process.env.PORT || 3000;
 
-app.post("/generate", async (req, res) => {
-  try {
-    const { prompt } = req.body;
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
-      config: {
-        maxOutputTokens: 8000,
-      },
-    });
-    const text = response.candidates[0].content.parts[0].text;
-    res.json({ text: text });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: { message: err.message || "Unknown error" } });
-  }
+// Serve all static files (index.html, css, js, images, etc.) from this folder
+app.use(express.static(__dirname));
+
+// For any route, send index.html (SPA behavior)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.listen(process.env.PORT || 3000);
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
