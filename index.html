@@ -588,7 +588,7 @@ function Landing({onSelect}){
           <RoleCard icon="🎓" title="Student Corner" sub="DPP attempt karo" grad="linear-gradient(135deg,#059967 0%,#f0d382 100%)" onClick={()=>onSelect("student")}/>
           <RoleCard icon="👨‍🏫" title="Teacher Panel" sub="DPP manage karo" grad="linear-gradient(135deg,#0891b2 0%,#0e7490 100%)" onClick={()=>onSelect("teacher")}/>
         </div>
-        <p style={{color:"var(--dim)",fontSize:12,marginTop:28,letterSpacing:.3}}>Class 8 & Class 10 · Daily Practice Problems</p>
+        <p style={{color:"var(--dim)",fontSize:12,marginTop:28,letterSpacing:.3}}>Class 7, Class 8 & Class 10 · Daily Practice Problems</p>
       </div>
     </div>
   );
@@ -747,6 +747,7 @@ function StudentHome({onBack}){
               <div className="fade-up">
                 <p style={{color:"var(--accent2)",fontWeight:700,fontSize:11,textTransform:"uppercase",letterSpacing:1,marginBottom:12}}>Apni Class Chunein</p>
                 <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
+                  <ClassCard num="7" color="linear-gradient(135deg,#7c3aed,#6d28d9)" onClick={()=>setClassSelected("class7")}/>
                   <ClassCard num="8" color="linear-gradient(135deg,#0891b2,#0e7490)" onClick={()=>setClassSelected("class8")}/>
                   <ClassCard num="10" color="linear-gradient(135deg,#059669,#10b981)" onClick={()=>setClassSelected("class10")}/>
                 </div>
@@ -756,7 +757,7 @@ function StudentHome({onBack}){
               <div className="fade-up">
                 <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
                   <button onClick={()=>setClassSelected(null)} style={{background:"var(--surface)",border:"none",color:"var(--accent2)",fontSize:13,cursor:"pointer",fontWeight:600,padding:"6px 12px",borderRadius:8}}>← Classes</button>
-                  <h3 style={{color:"var(--text)",fontWeight:800,fontSize:16}}>{classSelected==="class10"?"📚 Class 10":"📚 Class 8"} DPPs</h3>
+                  <h3 style={{color:"var(--text)",fontWeight:800,fontSize:16}}>{classSelected==="class10"?"📚 Class 10":classSelected==="class8"?"📚 Class 8":"📚 Class 7"} DPPs</h3>
                 </div>
                 <DppList classKey={classSelected} name={name} onSelect={setActiveDpp}/>
               </div>
@@ -802,6 +803,14 @@ const CLASS8_CHAPTERS=[
   "Mensuration","Exponents and Powers","Direct and Inverse Proportions",
   "Factorisation","Introduction to Graphs","Playing with Numbers"
 ];
+const CLASS7_CHAPTERS=[
+  "Large Numbers Around Us","Arithmetic Expressions","A Peek Beyond the Point",
+  "Expressions Using Letter-Numbers","Parallel and Intersecting Lines","Number Play",
+  "A Tale of Three Intersecting Lines","Working with Fractions",
+  "Geometric Twins","Operations with Integers","Finding Common Ground",
+  "Another Peek Beyond the Point","Connecting the Dots","Constructions and Tilings",
+  "Finding the Unknown"
+];
 
 function DppList({classKey,name,onSelect}){
   const dpps=useDpps();
@@ -809,7 +818,7 @@ function DppList({classKey,name,onSelect}){
   const [search,setSearch]=useState("");
 
   const allForClass=Object.values(dpps).filter(d=>d.batch===classKey);
-  const chapters=classKey==="class10"?CLASS10_CHAPTERS:CLASS8_CHAPTERS;
+  const chapters=classKey==="class10"?CLASS10_CHAPTERS:classKey==="class8"?CLASS8_CHAPTERS:CLASS7_CHAPTERS;
 
   // Group by chapter
   const byChapter={};
@@ -1022,7 +1031,7 @@ function Leaderboard(){
       {/* Filter + Refresh */}
       <div style={{display:"flex",gap:8,marginBottom:16,alignItems:"center"}}>
         <div style={{display:"flex",flex:1,gap:6,background:"var(--surface)",borderRadius:16,padding:5,border:"1px solid var(--border)"}}>
-          {[["all","🌐 All"],["class10","Class 10"],["class8","Class 8"]].map(([k,l])=>(
+          {[["all","🌐 All"],["class10","Class 10"],["class8","Class 8"],["class7","Class 7"]].map(([k,l])=>(
             <button key={k} onClick={()=>setFilterClass(k)}
               className="btn-glow"
               style={{flex:1,padding:"9px 4px",borderRadius:12,border:"none",cursor:"pointer",fontWeight:700,fontSize:12,
@@ -1558,6 +1567,7 @@ function TeacherPanel({onBack}){
           <StatBox label="Total DPPs" value={Object.keys(dpps).length} icon="📋"/>
           <StatBox label="Class 10" value={Object.values(dpps).filter(d=>d.batch==="class10").length} icon="📚"/>
           <StatBox label="Class 8" value={Object.values(dpps).filter(d=>d.batch==="class8").length} icon="📖"/>
+          <StatBox label="Class 7" value={Object.values(dpps).filter(d=>d.batch==="class7").length} icon="📗"/>
           <StatBox label="Submissions" value={allResults.length} icon="📝"/>
           <StatBox label="Students" value={Object.keys(students).length} icon="🧑‍🎓"/>
         </div>
@@ -1591,7 +1601,7 @@ function TeacherPanel({onBack}){
                   <div>
                     <p style={{fontWeight:800,color:"var(--text)",marginBottom:5}}>{d.title}</p>
                     <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
-                      <span style={{background:"var(--border)",color:"var(--accent2)",fontSize:11,fontWeight:700,padding:"2px 10px",borderRadius:20}}>{d.batch==="class10"?"Class 10":d.batch==="class8"?"Class 8":d.batch}</span>
+                      <span style={{background:"var(--border)",color:"var(--accent2)",fontSize:11,fontWeight:700,padding:"2px 10px",borderRadius:20}}>{d.batch==="class10"?"Class 10":d.batch==="class8"?"Class 8":d.batch==="class7"?"Class 7":d.batch}</span>
                       <span style={{background:"var(--surface2)",color:"var(--muted)",fontSize:11,padding:"2px 10px",borderRadius:20}}>{d.questions.length} Qs</span>
                     </div>
                   </div>
@@ -1623,7 +1633,7 @@ function TeacherPanel({onBack}){
                       <p style={{fontWeight:800,color:"var(--text)",fontSize:14}}>{r.studentName}{r.studentId&&<span style={{color:"var(--dim)",fontWeight:600,fontSize:11}}> · {r.studentId}</span>}</p>
                       <p style={{color:"var(--muted)",fontSize:12,marginTop:2}}>{r.dppTitle}</p>
                       <span style={{background:"var(--border)",color:"var(--accent2)",fontSize:10,fontWeight:700,padding:"2px 8px",borderRadius:20}}>
-                        {r.batch==="class10"?"Class 10":r.batch==="class8"?"Class 8":r.batch}
+                        {r.batch==="class10"?"Class 10":r.batch==="class8"?"Class 8":r.batch==="class7"?"Class 7":r.batch}
                       </span>
                     </div>
                     <div style={{textAlign:"right"}}>
@@ -1687,7 +1697,7 @@ function AiDppGenerator({onSave,onCancel}){
       const prompt=`You are a Maths teacher creating a DPP (Daily Practice Problem) for Indian school students.
 
 Topic: ${topic}
-Class: ${batch==="class10"?"Class 10":"Class 8"}
+Class: ${batch==="class10"?"Class 10":batch==="class8"?"Class 8":"Class 7"}
 Number of questions: ${qCount}
 Difficulty Level: ${levelMap[level]}
 Question Types: ${typeLabel}
@@ -1704,7 +1714,7 @@ Return ONLY a valid JSON array, no explanation, no markdown:
   {"text":"question text","type":"subjective","options":[],"answer":"solution here","marks":"2"}
 ]`;
 
-      const res=await fetch("https://maths-dpp.onrender.com/generate",{
+      const res=await fetch("https://maths-dpp-production.up.railway.app/generate",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({prompt})
@@ -1751,7 +1761,7 @@ Return ONLY a valid JSON array, no explanation, no markdown:
             <span style={{fontSize:28}}>🤖</span>
             <div>
               <h2 style={{color:"var(--text)",fontWeight:900,fontSize:18}}>{preview.title}</h2>
-              <p style={{color:"var(--muted)",fontSize:12}}>{preview.batch==="class10"?"Class 10":"Class 8"} · {preview.questions.length} Questions</p>
+              <p style={{color:"var(--muted)",fontSize:12}}>{preview.batch==="class10"?"Class 10":preview.batch==="class8"?"Class 8":"Class 7"} · {preview.questions.length} Questions</p>
             </div>
           </div>
           <div style={{display:"inline-flex",alignItems:"center",gap:6,background:"rgba(34,211,165,.1)",border:"1px solid rgba(34,211,165,.2)",borderRadius:99,padding:"4px 12px",marginTop:6}}>
@@ -1809,6 +1819,7 @@ Return ONLY a valid JSON array, no explanation, no markdown:
             <option value="">-- Class Chunein --</option>
             <option value="class10">Class 10</option>
             <option value="class8">Class 8</option>
+            <option value="class7">Class 7 (Ganita Prakash)</option>
           </select>
 
           <span style={labelS}>Kitne Questions?</span>
@@ -1894,7 +1905,7 @@ function DppDetail({dpp,onBack,onEdit,onDelete}){
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:10}}>
             <div>
               <h2 style={{color:"var(--text)",fontSize:19,fontWeight:800,marginBottom:6}}>{dpp.title}</h2>
-              <span style={{background:"var(--border)",color:"var(--accent2)",fontSize:11,fontWeight:700,padding:"3px 12px",borderRadius:20}}>{dpp.batch==="class10"?"Class 10":"Class 8"}</span>
+              <span style={{background:"var(--border)",color:"var(--accent2)",fontSize:11,fontWeight:700,padding:"3px 12px",borderRadius:20}}>{dpp.batch==="class10"?"Class 10":dpp.batch==="class8"?"Class 8":"Class 7"}</span>
               <span style={{marginLeft:6,background:"var(--surface2)",color:"var(--muted)",fontSize:11,padding:"3px 12px",borderRadius:20}}>{dpp.questions.length} Qs</span>
             </div>
             <div style={{display:"flex",gap:8}}>
@@ -2092,11 +2103,12 @@ function DppForm({initial,onSave,onCancel}){
             <option value="">-- Class Chunein --</option>
             <option value="class10">Class 10</option>
             <option value="class8">Class 8</option>
+            <option value="class7">Class 7 (Ganita Prakash)</option>
           </select>
           <span style={labelS}>Chapter</span>
           <select value={dpp.chapter||""} onChange={e=>setField("chapter",e.target.value)} style={inputS}>
             <option value="">-- Chapter Chunein --</option>
-            {(dpp.batch==="class10"?CLASS10_CHAPTERS:dpp.batch==="class8"?CLASS8_CHAPTERS:[]).map((ch,i)=>(
+            {(dpp.batch==="class10"?CLASS10_CHAPTERS:dpp.batch==="class8"?CLASS8_CHAPTERS:dpp.batch==="class7"?CLASS7_CHAPTERS:[]).map((ch,i)=>(
               <option key={ch} value={ch}>Ch {i+1}. {ch}</option>
             ))}
             {!dpp.batch&&<option disabled>Pehle class chunein</option>}
@@ -2382,7 +2394,28 @@ var ALL_DPPS = [
     {text:"Card drawn from 52 cards. Find probability of getting a ten.",type:"subjective",options:[],answer:"1/13",marks:"1",image:""},
     {text:"Die with faces A,B,C,D,E,A. Find prob of (i) A (ii) D",type:"subjective",options:[],answer:"(i) 1/3 (ii) 1/6",marks:"2",image:""},
     {text:"P(A wins tennis) = 0.62. Find P(B wins).",type:"subjective",options:[],answer:"0.38",marks:"2",image:""}
-  ]}
+  ],
+  {id:"C7CH1DPP1",title:"Large Numbers Around Us – DPP 1",batch:"class7",chapter:"Large Numbers Around Us",questions:[
+    {text:"1 crore mein kitne lakhs hote hain?",type:"mcq",options:["10","100","1000","10000"],answer:"A",marks:"1",image:""},
+    {text:"Indian system mein 1,00,00,000 ko kya kehte hain?",type:"mcq",options:["Ten Lakh","One Crore","Ten Crore","One Arab"],answer:"B",marks:"1",image:""},
+    {text:"Round off karo 4,76,532 ko nearest lakh mein.",type:"mcq",options:["4,00,000","5,00,000","4,80,000","4,70,000"],answer:"B",marks:"1",image:""},
+    {text:"International system mein 10,000,000 ko kya kehte hain?",type:"mcq",options:["One Lakh","Ten Million","One Billion","One Million"],answer:"B",marks:"1",image:""},
+    {text:"Sahi ya galat: 1 billion = 100 crore",type:"truefalse",options:[],answer:"True",marks:"1",image:""}
+  ]},
+  {id:"C7CH2DPP1",title:"Arithmetic Expressions – DPP 1",batch:"class7",chapter:"Arithmetic Expressions",questions:[
+    {text:"Calculate: 12 + 3 × 4 – 2",type:"mcq",options:["50","22","58","16"],answer:"B",marks:"1",image:""},
+    {text:"BODMAS mein B ka matlab kya hai?",type:"mcq",options:["Brackets","Boldness","Both","Basic"],answer:"A",marks:"1",image:""},
+    {text:"Solve: (5 + 3) × (10 – 4)",type:"mcq",options:["48","38","44","52"],answer:"A",marks:"1",image:""},
+    {text:"Sahi ya galat: 8 ÷ 2 + 3 = 8 ÷ (2 + 3)",type:"truefalse",options:[],answer:"False",marks:"1",image:""},
+    {text:"Solve: 100 – [40 + {30 – (10 + 5)}]",type:"mcq",options:["25","35","45","15"],answer:"B",marks:"1",image:""}
+  ]},
+  {id:"C7CH10DPP1",title:"Operations with Integers – DPP 1",batch:"class7",chapter:"Operations with Integers",questions:[
+    {text:"(-5) × (-3) = ?",type:"mcq",options:["-15","15","-8","8"],answer:"B",marks:"1",image:""},
+    {text:"(-12) ÷ 4 = ?",type:"mcq",options:["3","-3","8","-8"],answer:"B",marks:"1",image:""},
+    {text:"Sahi ya galat: Negative × Negative = Positive",type:"truefalse",options:[],answer:"True",marks:"1",image:""},
+    {text:"(-7) + (+7) = ?",type:"mcq",options:["14","-14","0","1"],answer:"C",marks:"1",image:""},
+    {text:"(-3) × 4 × (-2) = ?",type:"mcq",options:["-24","24","-9","9"],answer:"B",marks:"1",image:""}
+  ]}}
 ];
 
 function seedAllDpps(){
