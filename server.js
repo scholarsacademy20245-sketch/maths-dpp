@@ -3,8 +3,8 @@ const path = require('path');
 const app = express();
 
 const PORT = process.env.PORT || 3000;
-const GROQ_API_KEY = process.env.GROQ_API_KEY;
-const GROQ_MODEL = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
 
 app.use(express.json({ limit: '2mb' }));
 
@@ -20,41 +20,37 @@ app.use((req, res, next) => {
 // Serve all static files (index.html, css, js, images, etc.) from this folder
 app.use(express.static(__dirname));
 
-// AI DPP generator endpoint (now using Groq instead of Gemini)
+// AI DPP generator endpoint
 app.post('/generate', async (req, res) => {
   try {
-    if (!GROQ_API_KEY) {
-      return res.status(500).json({ error: { message: 'GROQ_API_KEY set nahi hai server pe.' } });
+    if (!GEMINI_API_KEY) {
+      return res.status(500).json({ error: { message: 'GEMINI_API_KEY set nahi hai server pe.' } });
     }
     const { prompt } = req.body;
     if (!prompt) {
       return res.status(400).json({ error: { message: 'Prompt missing hai.' } });
     }
 
-    const groqRes = await fetch(
-      'https://api.groq.com/openai/v1/chat/completions',
+    const geminiRes = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
       {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${GROQ_API_KEY}`
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: GROQ_MODEL,
-          messages: [{ role: 'user', content: prompt }]
+          contents: [{ parts: [{ text: prompt }] }]
         })
       }
     );
 
-    const groqData = await groqRes.json();
+    const geminiData = await geminiRes.json();
 
-    if (groqData.error) {
-      return res.status(500).json({ error: { message: groqData.error.message || 'Groq API error' } });
+    if (geminiData.error) {
+      return res.status(500).json({ error: { message: geminiData.error.message || 'Gemini API error' } });
     }
 
-    const text = groqData?.choices?.[0]?.message?.content;
+    const text = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!text) {
-      return res.status(500).json({ error: { message: 'Groq se koi response nahi mila.' } });
+      return res.status(500).json({ error: { message: 'Gemini se koi response nahi mila.' } });
     }
 
     res.json({ text });
