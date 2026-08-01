@@ -265,6 +265,27 @@ function TeacherPanel({onLogout}){
           </div>
         </div>
 
+        <div style={{marginBottom:'40px'}}>
+          <h3 style={{marginBottom:'20px', fontSize:'1.3rem', color:'var(--accent3)'}}>📁 Class Folders</h3>
+          <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(200px, 1fr))', gap:'20px'}}>
+            <div style={{padding:'20px', background:'linear-gradient(135deg,var(--surface2),var(--surface))', border:'2px solid var(--border)', borderRadius:'16px', cursor:'pointer', textAlign:'center', transition:'all .3s'}}>
+              <div style={{fontSize:'3rem', marginBottom:'12px'}}>📘</div>
+              <div style={{fontSize:'1.2rem', fontWeight:'700', color:'var(--accent3)', marginBottom:'8px'}}>Class 10</div>
+              <div style={{fontSize:'.9rem', color:'var(--muted)'}}>{dppStats.class10} DPPs</div>
+            </div>
+            <div style={{padding:'20px', background:'linear-gradient(135deg,var(--surface2),var(--surface))', border:'2px solid var(--border)', borderRadius:'16px', cursor:'pointer', textAlign:'center', transition:'all .3s'}}>
+              <div style={{fontSize:'3rem', marginBottom:'12px'}}>📙</div>
+              <div style={{fontSize:'1.2rem', fontWeight:'700', color:'var(--accent3)', marginBottom:'8px'}}>Class 8</div>
+              <div style={{fontSize:'.9rem', color:'var(--muted)'}}>{dppStats.class8} DPPs</div>
+            </div>
+            <div style={{padding:'20px', background:'linear-gradient(135deg,var(--surface2),var(--surface))', border:'2px solid var(--border)', borderRadius:'16px', cursor:'pointer', textAlign:'center', transition:'all .3s'}}>
+              <div style={{fontSize:'3rem', marginBottom:'12px'}}>📕</div>
+              <div style={{fontSize:'1.2rem', fontWeight:'700', color:'var(--accent3)', marginBottom:'8px'}}>Class 7</div>
+              <div style={{fontSize:'.9rem', color:'var(--muted)'}}>{dppStats.class7} DPPs</div>
+            </div>
+          </div>
+        </div>
+
         <div className="upload-section">
           <h3>➕ नया DPP Upload करो</h3>
           <div className="upload-controls">
@@ -304,6 +325,27 @@ function TeacherPanel({onLogout}){
               )}
             </div>
           ))}
+        </div>
+
+        <div className="class-management" style={{marginTop:'50px',paddingTop:'30px',borderTop:'2px solid var(--border)'}}>
+          <h3>🔍 सभी Classes की सभी DPPs</h3>
+          {dpps.length > 0 ? (
+            <div className="dpp-list">
+              {dpps.map((dpp) => (
+                <div key={dpp.key} className="dpp-item">
+                  <div className="dpp-item-info">
+                    <div className="dpp-item-title">{dpp.title}</div>
+                    <div className="dpp-item-meta">
+                      {dpp.batch === 'class10' ? '📘 Class 10' : dpp.batch === 'class8' ? '📙 Class 8' : '📕 Class 7'} 
+                      &nbsp;|&nbsp;📝 {dpp.questions?.length || 0} Questions | ID: {dpp.id}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{textAlign:'center',padding:'20px',color:'var(--muted)'}}>कोई DPP नहीं</div>
+          )}
         </div>
       </div>
     </div>
