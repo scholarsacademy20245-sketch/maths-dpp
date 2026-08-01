@@ -1175,7 +1175,7 @@ function DppAttempt({dpp,name,phone,studentId,onBack}){
   }
 
   const answered=Object.keys(answers).length;
-  const total=dpp.questions.length;
+  const total=(dpp.questions||[]).length;
   const progress=Math.round((answered/total)*100);
 
   async function submit(){
@@ -1906,7 +1906,7 @@ function DppDetail({dpp,onBack,onEdit,onDelete}){
             <div>
               <h2 style={{color:"var(--text)",fontSize:19,fontWeight:800,marginBottom:6}}>{dpp.title}</h2>
               <span style={{background:"var(--border)",color:"var(--accent2)",fontSize:11,fontWeight:700,padding:"3px 12px",borderRadius:20}}>{dpp.batch==="class10"?"Class 10":dpp.batch==="class8"?"Class 8":"Class 7"}</span>
-              <span style={{marginLeft:6,background:"var(--surface2)",color:"var(--muted)",fontSize:11,padding:"3px 12px",borderRadius:20}}>{dpp.questions.length} Qs</span>
+              <span style={{marginLeft:6,background:"var(--surface2)",color:"var(--muted)",fontSize:11,padding:"3px 12px",borderRadius:20}}>{(dpp.questions||[]).length} Qs</span>
             </div>
             <div style={{display:"flex",gap:8}}>
               <button onClick={onEdit} style={{...btn("#0891b2",{padding:"8px 14px",fontSize:12})}}>✏️ Edit</button>
@@ -1927,8 +1927,8 @@ function DppDetail({dpp,onBack,onEdit,onDelete}){
         </div>
 
         <div className="fade-up" style={{...card,marginBottom:12}}>
-          <p style={{color:"var(--accent2)",fontWeight:700,fontSize:11,textTransform:"uppercase",letterSpacing:1,marginBottom:12}}>Questions ({dpp.questions.length})</p>
-          {dpp.questions.map((q,i)=>(
+          <p style={{color:"var(--accent2)",fontWeight:700,fontSize:11,textTransform:"uppercase",letterSpacing:1,marginBottom:12}}>Questions ({(dpp.questions||[]).length})</p>
+          {(dpp.questions||[]).map((q,i)=>(
             <div key={i} style={{border:"1px solid var(--border)",borderRadius:11,padding:"10px 13px",marginBottom:7,background:"var(--surface2)"}}>
               <p style={{fontWeight:700,color:"var(--text)",fontSize:13}}>Q{i+1}. {q.text} <span style={{color:"var(--dim)",fontWeight:400}}>({q.type}, {q.marks||1}M)</span></p>
               {q.image&&<img src={q.image} alt="q" style={{maxWidth:"100%",maxHeight:140,borderRadius:8,marginTop:5,display:"block"}}/>}
