@@ -442,6 +442,37 @@ function emptyOpts(){ return ["","","",""]; }
 function emptyQ(){ return {text:"",type:"mcq",options:emptyOpts(),answer:"",marks:""}; }
 function emptyDpp(){ return {title:"",batch:"",chapter:"",questions:[]}; }
 
+// ── Math text → Unicode symbols ───────────────────────────────────────────
+function formatMath(text){
+  if(!text) return "";
+  return text
+    .replace(/\btheta\b/gi,"θ")
+    .replace(/\balpha\b/gi,"α")
+    .replace(/\bbeta\b/gi,"β")
+    .replace(/\bgamma\b/gi,"γ")
+    .replace(/\bdelta\b/gi,"Δ")
+    .replace(/\bpi\b/gi,"π")
+    .replace(/\bphi\b/gi,"φ")
+    .replace(/\blambda\b/gi,"λ")
+    .replace(/\bsigma\b/gi,"σ")
+    .replace(/\bomega\b/gi,"ω")
+    .replace(/\binfinity\b/gi,"∞")
+    .replace(/sqrt\(([^)]+)\)/gi,"√($1)")
+    .replace(/root\(([^)]+)\)/gi,"√($1)")
+    .replace(/\^2/g,"²")
+    .replace(/\^3/g,"³")
+    .replace(/\^4/g,"⁴")
+    .replace(/\^n/g,"ⁿ")
+    .replace(/!=/g,"≠")
+    .replace(/\bnot equal to\b/gi,"≠")
+    .replace(/<=/g,"≤")
+    .replace(/>=/g,"≥")
+    .replace(/\bgreater than or equal to\b/gi,"≥")
+    .replace(/\bless than or equal to\b/gi,"≤")
+    .replace(/\bdegrees\b/gi,"°")
+    .replace(/\*\*/g,"^");
+}
+
 // ── Firebase ──────────────────────────────────────────────────────────────
 function dbSaveDpp(dpp){
   return firebase.database().ref("dpps/"+dpp.id).set(dpp);
@@ -1420,7 +1451,7 @@ function DppAttempt({dpp,name,phone,studentId,onBack}){
         {dpp.questions.map((q,i)=>(
           <div key={i} id={`question-card-${i}`} className="fade-up" style={{...card,borderColor:answers[i]?"#10b981":"var(--border)",marginBottom:10}}>
             <p style={{fontWeight:800,color:"var(--text)",marginBottom:12,fontSize:14,lineHeight:1.5}}>
-              <span style={{color:"var(--accent2)",marginRight:6}}>Q{i+1}.</span>{q.text}
+              <span style={{color:"var(--accent2)",marginRight:6}}>Q{i+1}.</span>{formatMath(q.text)}
               {q.marks&&<span style={{color:"var(--dim)",fontWeight:400,fontSize:11}}> [{q.marks}M]</span>}
             </p>
             {q.image&&<img src={q.image} alt="q" style={{maxWidth:"100%",maxHeight:200,borderRadius:10,border:"1px solid var(--border)",marginBottom:10,display:"block"}}/>}
@@ -1445,7 +1476,7 @@ function DppAttempt({dpp,name,phone,studentId,onBack}){
                     </div>
                     <input type="radio" name={`q${i}`} value={opt} checked={answers[i]===opt} onChange={()=>setAnswers(a=>({...a,[i]:opt}))} style={{display:"none"}}/>
                     <span style={{color:"var(--accent2)",fontWeight:800,minWidth:22,fontFamily:"'Poppins',sans-serif"}}>{opt}</span>
-                    <span style={{color:"var(--text)",fontSize:13,lineHeight:1.4}}>{q.options[oi]}</span>
+                    <span style={{color:"var(--text)",fontSize:13,lineHeight:1.4}}>{formatMath(q.options[oi])}</span>
                   </label>
                 ))}
               </div>
@@ -1801,16 +1832,16 @@ Return ONLY a valid JSON array with no extra text:
           {preview.questions.map((q,i)=>(
             <div key={i} style={{border:"1px solid var(--border)",borderRadius:11,padding:"12px 14px",marginBottom:8,background:"var(--surface2)"}}>
               <p style={{fontWeight:700,color:"var(--text)",fontSize:13,marginBottom:6}}>
-                <span style={{color:"var(--accent2)"}}>Q{i+1}.</span> {q.text}
+                <span style={{color:"var(--accent2)"}}>Q{i+1}.</span> {formatMath(q.text)}
                 <span style={{color:"var(--dim)",fontWeight:400,fontSize:11}}> [{q.marks}M · {q.type}]</span>
               </p>
               {q.type==="mcq"&&q.options.map((o,oi)=>(
                 <p key={oi} style={{fontSize:12,color:["A","B","C","D"][oi]===q.answer?"var(--green)":"var(--muted)",marginLeft:10,marginTop:2}}>
-                  {["A","B","C","D"][oi]}. {o} {["A","B","C","D"][oi]===q.answer?"✅":""}
+                  {["A","B","C","D"][oi]}. {formatMath(o)} {["A","B","C","D"][oi]===q.answer?"✅":""}
                 </p>
               ))}
               {q.type==="truefalse"&&<p style={{fontSize:12,color:"var(--green)",marginLeft:10,marginTop:2}}>Ans: {q.answer} ✅</p>}
-              {q.type==="subjective"&&<p style={{fontSize:12,color:"var(--accent2)",marginLeft:10,marginTop:2,fontStyle:"italic"}}>Ans: {q.answer}</p>}
+              {q.type==="subjective"&&<p style={{fontSize:12,color:"var(--accent2)",marginLeft:10,marginTop:2,fontStyle:"italic"}}>Ans: {formatMath(q.answer)}</p>}
             </div>
           ))}
         </div>
