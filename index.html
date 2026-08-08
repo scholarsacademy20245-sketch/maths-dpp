@@ -1695,24 +1695,42 @@ function AiDppGenerator({onSave,onCancel}){
     try{
       const levelMap={easy:"Easy (basic concepts, direct formulas, NCERT level)",medium:"Medium (application based, moderate difficulty, board exam level)",hard:"Hard (HOTS, challenging, competition/olympiad level)"};
       const typeLabel=qTypes.length===3?"Mix of MCQ, True/False, and Subjective":"Only create these types: "+qTypes.join(", ");
-      const prompt=`You are a Maths teacher creating a DPP (Daily Practice Problem) for Indian school students.
+      const prompt=`You are an expert Indian Maths teacher with 15+ years of experience, creating high-quality DPP (Daily Practice Problems) for CBSE/RBSE students.
+
+TASK: Create ${qCount} mathematics questions on the topic below.
 
 Topic: ${topic}
-Class: ${batch==="class10"?"Class 10":batch==="class8"?"Class 8":"Class 7"}
-Number of questions: ${qCount}
-Difficulty Level: ${levelMap[level]}
-Question Types: ${typeLabel}
-${instructions.trim()?"Special Instructions from teacher: "+instructions.trim():""}
+Class: ${batch==="class10"?"Class 10 (CBSE/RBSE)":batch==="class8"?"Class 8 (CBSE/RBSE)":"Class 7 (CBSE/RBSE)"}
+Difficulty: ${levelMap[level]}
+Question Types Required: ${typeLabel}
+${instructions.trim()?"Teacher's Special Instructions: "+instructions.trim():""}
 
-For MCQ: provide 4 options and correct answer as "A", "B", "C", or "D"
-For True/False: answer as "True" or "False"  
-For Subjective: provide the correct answer/solution
+STRICT RULES FOR QUESTION QUALITY:
+1. Every question must be unique, meaningful, and test actual mathematical understanding
+2. MCQ options must be plausible — wrong options should be common student mistakes, not random numbers
+3. Subjective questions must have clear, step-by-step solutions in the answer field
+4. Questions must follow NCERT syllabus for the given class
+5. Use variety: some formula-based, some word problems, some concept-based
+6. For Class 10: include board exam style questions
+7. Do NOT repeat similar questions — each must test a different concept or skill
 
-Return ONLY a valid JSON array, no explanation, no markdown:
+MATH FORMATTING (VERY IMPORTANT):
+- Write equations in plain text: 2x^2 + 5x - 3 = 0
+- Fractions: write as 3/4 or (a+b)/(c+d)
+- Square root: write as sqrt(x) or root(x)
+- Powers: use ^ symbol like x^2, x^3
+- Do NOT use LaTeX dollar signs $ anywhere
+- Do NOT use backslash commands like \\frac or \\sqrt
+
+For MCQ: 4 options (A/B/C/D), mark correct answer
+For True/False: answer must be "True" or "False"
+For Subjective: write complete solution with steps in answer field
+
+Return ONLY a valid JSON array with no extra text:
 [
-  {"text":"question text","type":"mcq","options":["opt1","opt2","opt3","opt4"],"answer":"A","marks":"1"},
-  {"text":"question text","type":"truefalse","options":[],"answer":"True","marks":"1"},
-  {"text":"question text","type":"subjective","options":[],"answer":"solution here","marks":"2"}
+  {"text":"question text here","type":"mcq","options":["option1","option2","option3","option4"],"answer":"A","marks":"1"},
+  {"text":"question text here","type":"truefalse","options":[],"answer":"True","marks":"1"},
+  {"text":"question text here","type":"subjective","options":[],"answer":"Step 1: ... Step 2: ... Final Answer: ...","marks":"3"}
 ]`;
 
       const res=await fetch("/generate",{
@@ -1741,12 +1759,19 @@ Return ONLY a valid JSON array, no explanation, no markdown:
       }
       const questions=JSON.parse(clean);
       if(!questions.length) throw new Error("AI ne koi question nahi banaya. Dobara try karo.");
+      // Remove any $ LaTeX signs that slipped through
+      const cleanQ=questions.map(q=>({
+        ...q,
+        text: q.text.replace(/\$/g,"").replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g,"$1/$2").replace(/\\sqrt\{([^}]+)\}/g,"sqrt($1)").trim(),
+        options: (q.options||[]).map(o=>o.replace(/\$/g,"").trim()),
+        answer: (q.answer||"").replace(/\$/g,"").trim()
+      }));
       const dpp={
         id:"AI_"+uid(),
         title:topic+" – DPP (AI)",
         batch,
         chapter:topic,
-        questions:questions.map(q=>({...q,image:""}))
+        questions:cleanQ.map(q=>({...q,image:""}))
       };
       setPreview(dpp);
     }catch(e){setErr("Error: "+e.message);}
