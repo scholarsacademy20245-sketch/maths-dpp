@@ -1,5 +1,7 @@
 import os
 import requests
+import threading
+import time
 from flask import Flask, request, jsonify, send_file
 
 app = Flask(__name__)
@@ -35,6 +37,20 @@ def generate():
         return jsonify({"text": text})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+def keep_alive():
+    url = os.environ.get("RENDER_EXTERNAL_URL", "https://maths-dpp.onrender.com")
+    while True:
+        time.sleep(600)  # 10 minutes
+        try:
+            requests.get(url, timeout=10)
+            print("✅ Keep-alive ping sent!")
+        except Exception as e:
+            print(f"⚠️ Ping failed: {e}")
+
+# Start keep-alive thread
+t = threading.Thread(target=keep_alive, daemon=True)
+t.start()
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
