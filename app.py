@@ -25,7 +25,11 @@ def generate():
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key={GEMINI_API_KEY}"
     payload = {
         "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {"maxOutputTokens": 2000, "temperature": 0.7}
+        "generationConfig": {
+            "maxOutputTokens": 8192,
+            "temperature": 0.7,
+            "thinkingConfig": {"thinkingBudget": 0}
+        }
     }
 
     try:
